@@ -148,38 +148,19 @@ public class LearnWordActivity extends AppCompatActivity {
         }//for
         //перемешать коллекцию выбранных слов
         Collections.shuffle(listIdLearnWords);
-
-        //выбираем метод изучения слов
-        Intent intent;
-        switch (method) {
-            case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
-                intent = new Intent(this, ChooseRussianWordActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
-                intent = new Intent(this, ChooseHebrewWordActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
-                intent = new Intent(this, ChooseCoupleActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
-                intent = new Intent(this, WriteInRussianActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
-                intent = new Intent(this, WriteInHebrewActivity.class);
-                startAnyMethod(intent);
-                break;
-        }//switch
+        startMethod();
     }//randomWords
 
     //запуск активности любого метода изучения слов
-    private void startAnyMethod(Intent intent) {
+    private void startMethod() {
+        Intent intent = new Intent(this, BackgroundMethodActivity.class);
         intent.putStringArrayListExtra(
                 "idList",
                 (ArrayList<String>) listIdLearnWords
+        );
+        intent.putExtra(
+                "method",
+                method
         );
         intent.putExtra(
                 "wordsCount",

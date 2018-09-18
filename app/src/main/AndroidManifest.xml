@@ -32,12 +32,8 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity android:name=".LearnWordActivity" />
-        <activity android:name=".ChooseRussianWordActivity" />
         <activity android:name=".SelectLearnWordActivity" />
-        <activity android:name=".ChooseHebrewWordActivity" />
-        <activity android:name=".ChooseCoupleActivity" />
-        <activity android:name=".WriteInRussianActivity" />
-        <activity android:name=".WriteInHebrewActivity"></activity>
+        <activity android:name=".BackgroundMethodActivity"></activity>
     </application>
 
 </manifest>

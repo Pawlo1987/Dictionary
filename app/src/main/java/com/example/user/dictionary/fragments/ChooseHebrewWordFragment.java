@@ -1,0 +1,277 @@
+package com.example.user.dictionary.fragments;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.example.user.dictionary.DBUtilities;
+import com.example.user.dictionary.FileUtilities;
+import com.example.user.dictionary.R;
+import com.example.user.dictionary.Utils;
+import com.example.user.dictionary.Word;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+//Фрагмент в которой происходит работа
+//по изучению слов
+//выводится слово на русском
+//и нужно выбрать правельный перевод
+public class ChooseHebrewWordFragment extends Fragment {
+    Context context;
+    DBUtilities dbUtilities;
+    com.example.user.dictionary.FileUtilities FileUtilities;
+    List<String> listCursorNum; // коллекция id слов для изучения
+    List<Word> listWords; // коллекция слов для изучения
+    List<Button> buttonsList;//коллекция кнопок
+    TextView tvWordChTrWo;
+    TextView tvTranscChTrWo;
+    Button btnTr1ChTrWo;
+    Button btnTr2ChTrWo;
+    Button btnTr3ChTrWo;
+    Button btnTr4ChTrWo;
+    Button btnTr5ChTrWo;
+    int progressTime = 0;
+    int progressIter;
+    CountDownTimer countDownTimer;
+    int selectPos = 0;  //выбранная позиция
+    int wordsCount = 10;
+    private Cursor cursor;
+    ProgressBar pbBaMeAc;
+
+    // при запросе с INNER JOIN обязательно указываем в запросе:
+    // имя таблицы и имя столбца
+    // SELECT таблица.столбец FROM таблица
+    //основной запрос
+    String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dbUtilities.open();
+        buttonsList = new ArrayList<>();
+        listCursorNum = new ArrayList<>();
+        listWords  = new ArrayList<>();
+        listCursorNum.addAll(getArguments().getStringArrayList("idList"));
+        wordsCount = getArguments().getInt("wordsCount",0);
+    }//onCreate
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View resultView = inflater.inflate(R.layout.fragment_choose_word,  container, false);
+        tvWordChTrWo = resultView.findViewById(R.id.tvWordChTrWo);
+        tvTranscChTrWo = resultView.findViewById(R.id.tvTranscChTrWo);
+        btnTr1ChTrWo = resultView.findViewById(R.id.btnTr1ChTrWo);
+        btnTr2ChTrWo = resultView.findViewById(R.id.btnTr2ChTrWo);
+        btnTr3ChTrWo = resultView.findViewById(R.id.btnTr3ChTrWo);
+        btnTr4ChTrWo = resultView.findViewById(R.id.btnTr4ChTrWo);
+        btnTr5ChTrWo = resultView.findViewById(R.id.btnTr5ChTrWo);
+
+        buttonsList.add(btnTr1ChTrWo);
+        buttonsList.add(btnTr2ChTrWo);
+        buttonsList.add(btnTr3ChTrWo);
+        buttonsList.add(btnTr4ChTrWo);
+        buttonsList.add(btnTr5ChTrWo);
+
+        pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
+
+        btnTr1ChTrWo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressBtnTest(0);
+            }
+        });
+        btnTr2ChTrWo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressBtnTest(1);
+            }
+        });
+        btnTr3ChTrWo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressBtnTest(2);
+            }
+        });
+        btnTr4ChTrWo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressBtnTest(3);
+            }
+        });
+        btnTr5ChTrWo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pressBtnTest(4);
+            }
+        });
+
+        cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+        progressIter = 100 / wordsCount;
+        progressTime = 0;
+        createWordList();
+        startLearnWord();
+        return resultView;
+    }//onCreateView
+
+    //обработчик любой нажатой клавиши
+    private void pressBtnTest(int k) {
+        String selectWord = buttonsList.get(k).getText().toString();
+        if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+            buttonsList.get(k).setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+        }else {
+            buttonsList.get(k).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            btnSelectTrue();
+        }//if-else
+    }//pressBtnTest
+
+    // Метод onAttach() вызывается в начале жизненного цикла фрагмента, и именно здесь
+    // мы можем получить контекст фрагмента, в качестве которого выступает класс MainActivity.
+    //onAttach(Context) не вызовется до API 23 версии вместо этого будет вызван onAttach(Activity),
+    //коий устарел с 23 API
+    //Так что вызовем onAttachToContext
+    //https://ru.stackoverflow.com/questions/507008/%D0%9D%D0%B5-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-onattach
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachToContext(context);
+    }//onAttach
+
+    //устарел с 23 API
+    //Так что вызовем onAttachToContext
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }//if
+    }//onAttach
+
+    //Вызовется в момент присоединения фрагмента к активити
+    protected void onAttachToContext(Context context) {
+        //здесь всегда есть контекст и метод всегда вызовется.
+        //тут можно кастовать контест к активити.
+        //но лучше к реализуемому ею интерфейсу
+        //чтоб не проверять из какого пакета активити в каждом из случаев
+        this.context = context;
+        FileUtilities = new FileUtilities(context);
+        dbUtilities = new DBUtilities(context);
+    }//onAttachToContext
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+    }//onDetach
+
+    //обработка правельно выбранного перевода
+    private void btnSelectTrue() {
+        //увеличиваем прогресс бар
+        progressTime = progressTime + progressIter;
+        pbBaMeAc.setProgress(progressTime);
+        //отключаем кнопки для исключения случайного нажатия
+        for (int i = 0; i < 5; i++) {
+            buttonsList.get(i).setEnabled(false);
+        }//for
+        //для создания небольшой задерки в 500 миллисекунд
+        //Создаем таймер обратного отсчета на 500 миллисекунд с шагом отсчета
+        //в 1 секунду (задаем значения в миллисекундах):
+        countDownTimer = new CountDownTimer(500, 1000) {
+            //Здесь можно выполнить какието дейстивия через кажду секунду
+            //до конца счета таймера
+            public void onTick(long millisUntilFinished) { }
+            //Задаем действия после завершения отсчета (запускаем главную активность)
+            public void onFinish(){
+                //включаем кнопки обратно
+                for (int i = 0; i < 5; i++) {
+                    buttonsList.get(i).setEnabled(true);
+                }//for
+                //переход к следующему слову или выход из режима изучения
+                //так как закончились слова
+                if(selectPos < wordsCount-1){
+                    selectPos++;
+                    startLearnWord();
+                }else{
+                    getActivity().finish();
+                }//if-else
+            }//onFinish
+        };//countDownTimer
+        //запускам таймер
+        countDownTimer.start();
+    }//btnSelect
+
+    //запуск начала изучения
+    private void startLearnWord() {
+        tvWordChTrWo.setText(listWords.get(selectPos).getStrRus());
+        tvTranscChTrWo.setVisibility(View.GONE);
+        List<Integer> listNumForBtn = new ArrayList<>();
+        listNumForBtn.add(selectPos);
+        for (int i = 0; i < 4; i++) {
+            int k;
+            while(true) {
+                k = Utils.getRandom(0, wordsCount-1);
+                if((k>0)&&(k<wordsCount-1)&&(!listNumForBtn.contains(k))) break;
+            }//while
+            listNumForBtn.add(k);
+        }//for
+
+        //перемешать коллекцию переводов для вывода названия кнопок
+        Collections.shuffle(listNumForBtn);
+        //устанавливаем нормальный цвет кнопок
+        for (int i = 0; i < 5; i++) {
+            buttonsList.get(i).setBackgroundColor(
+                    context.getResources().getColor(R.color.colorButtonNormal)
+            );
+        }//for
+        //устанавливаем слова на русском в кнопки
+        for (int i = 0; i < 5; i++) {
+            buttonsList.get(i).setText(
+                    listWords.get(listNumForBtn.get(i)).getStrHeb()
+            );
+        }//for
+    }//startLearnWord
+
+    //создаем коллекцию объектов слов для изучения
+    private void createWordList() {
+        Word word = new Word();
+        for (int i = 0; i < wordsCount; i++) {
+            cursor.moveToPosition(
+                    Integer.parseInt(listCursorNum.get(i))
+            );
+
+            //получаем данные из курсора для фильтрации
+            word.setIdWord(cursor.getString(0));     //id слова
+            word.setStrRus(cursor.getString(1));     //слово на русском
+            word.setStrHeb(cursor.getString(2));     //слово на иврите
+            word.setStrTrans(cursor.getString(3));   //транскрпция слова на иврите
+//            word.setGenRus(cursor.getString(4));     //род слова в русском
+//            word.setGenHeb(cursor.getString(5));     //род слова в иврите
+//            word.setMeaning(cursor.getString(6));    //значение слова в предложении
+//            word.setQuantity(cursor.getString(7));   //множественное или едиственное слово
+
+            //добавляем новое слово в коллекцию
+            listWords.add(word);
+            word = new Word();
+        }//while
+    }//createWordList
+}//ChooseHebrewWordFragment

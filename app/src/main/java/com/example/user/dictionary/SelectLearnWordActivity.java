@@ -99,48 +99,22 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btnOkSLWAc:
                 //проверка - чтоб отмеченных слов для изучения было минимум 8
-                if (listCursorNum.size() >= 8)
-                    startLearnSelectWords();
+                if (listCursorNum.size() >= 8){
+                    //перемешать коллекцию выбранных слов
+                    Collections.shuffle(listCursorNum);
+                    startAnyMethod();
+                }
                 else
                     Toast.makeText(context, "You need 8 word minimum", Toast.LENGTH_SHORT).show();
                 break;
         }//switch
     }//onClick
 
-    //начинаем изучать выбранныае слова
-    private void startLearnSelectWords() {
-        //перемешать коллекцию выбранных слов
-        Collections.shuffle(listCursorNum);
+    //запуск активности любого метода изучения слов
+    private void startAnyMethod() {
         int method = getIntent().getIntExtra("method", 0);
 
-        //выбираем метод изучения слов
-        Intent intent;
-        switch (method) {
-            case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
-                intent = new Intent(this, ChooseRussianWordActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
-                intent = new Intent(this, ChooseHebrewWordActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
-                intent = new Intent(this, ChooseCoupleActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
-                intent = new Intent(this, WriteInRussianActivity.class);
-                startAnyMethod(intent);
-                break;
-            case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
-                intent = new Intent(this, WriteInHebrewActivity.class);
-                startAnyMethod(intent);
-                break;
-        }//switch
-    }//startLearnSelectWords
-
-    //запуск активности любого метода изучения слов
-    private void startAnyMethod(Intent intent) {
+        Intent intent = new Intent(this, BackgroundMethodActivity.class);
         intent.putStringArrayListExtra(
                 "idList",
                 (ArrayList<String>) listCursorNum
@@ -148,6 +122,10 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         intent.putExtra(
                 "wordsCount",
                 listCursorNum.size()
+        );
+        intent.putExtra(
+                "method",
+                method
         );
         startActivity(intent);
     }//startAnyMethod
