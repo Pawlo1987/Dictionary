@@ -14,7 +14,7 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LongClick to copied Translation"
+        android:text="LongClick to copied Hebrew Word"
         android:textAlignment="center" />
 
     <Spinner

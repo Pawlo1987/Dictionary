@@ -1,7 +1,12 @@
 package com.example.user.dictionary;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,10 +52,22 @@ public class ViewDictionaryActivity extends AppCompatActivity {
             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_dictionary);
+        //Для sdk>23 сначала надо предоставить разрешение.
+        //без него не будет доступа к общей внутреней памяти телефона
+        //и мы не сможеш импортировать и экспортировать БД.
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Если у нас нет разрешения
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},1
+            );
+        }//if (permission != PackageManager.PERMISSION_GRANTED)
 
         //добавляем actionBar (стрелка сверху слева)
         actionBar = getSupportActionBar();

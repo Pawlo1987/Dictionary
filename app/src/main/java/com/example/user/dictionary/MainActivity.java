@@ -1,22 +1,16 @@
 package com.example.user.dictionary;
 
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-
-import java.io.File;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
+    }//onCreate
 
     public void onClick(View view) {
         switch (view.getId()) {
@@ -39,16 +33,16 @@ public class MainActivity extends AppCompatActivity {
     private void learnWords() {
         Intent intent = new Intent(this, LearnWordActivity.class);
         startActivity(intent);
-    }
+    }//learnWords
 
     private void addNewWord() {
         Intent intent = new Intent(this, AddNewWordActivity.class);
         startActivity(intent);
-    }
+    }//learnWords
 
     private void viewDictionary() {
         Intent intent = new Intent(this, ViewDictionaryActivity.class);
         startActivity(intent);
-    }
+    }//viewDictionary
 
 } //MainActivity
