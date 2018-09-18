@@ -33,7 +33,8 @@
         <activity android:name=".BackgroundMethodActivity" />
         <activity android:name=".CreateProfileActivity" />
         <activity android:name=".AuthorizationProfileActivity" />
-        <activity android:name=".ProfileParametersActivity"></activity>
+        <activity android:name=".ProfileParametersActivity" />
+        <activity android:name=".SelectNextLearnWordActivity"></activity>
     </application>
 
 </manifest>

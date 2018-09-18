@@ -277,7 +277,6 @@ public class EditWordActivity extends AppCompatActivity {
             //получаем курсор данных из БД
             String query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            cursor.moveToPosition(0);
             //если найденно повторение
             if (cursor.getCount() > 1) {
                 Toast.makeText(context, "Found a match! Correct hebrew word!", Toast.LENGTH_SHORT).show();
@@ -296,64 +295,106 @@ public class EditWordActivity extends AppCompatActivity {
                     "WHERE translations.hebrew_id = \"" + idHebrew + "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             //количество запесей переводов в БД
-            l = cursor.getCount();
-            //если количество записей совпадает просто перезаписываем записи
-            //если нет то удаляем старые и записываем новые
-            if (l == listETTranslations.size()) {
-                for (int i = 0; i < l; i++) {
-                    cursor.moveToPosition(i);
-                    //перезаписываем слова
-                    dbUtilities.updTableRussians(String.valueOf(cursor.getInt(1)), listETTranslations.get(i).getText().toString());
-                }// for (int i = 0; i < l; i++)
-            } else {
-                for (int i = 0; i < l; i++) {
-                    cursor.moveToPosition(i);
+            int m = cursor.getCount();
+
+            //записываем старые значения idTranslations до редактирования
+            List<Integer> listOldIdTransl = new ArrayList<>();
+            //записываем старые значения idRussian до редактирования
+            List<Integer> listOldIdRus = new ArrayList<>();
+            for (int i = 0; i < m; i++) {
+                cursor.moveToPosition(i);
+                listOldIdTransl.add(cursor.getInt(0));
+                listOldIdRus.add(cursor.getInt(1));
+            }//for (int i = 0; i < m; i++)
+
+            //проверяем на повторение русское слово в БД
+            //получаем курсор данных из БД
+            for (int i = 0; i < l; i++) {
+                //берем значение из коллекции
+                //используем предварительно функцию trim чтоб убрать лишние пробелы
+                ruWord = listETTranslations.get(i).getText().toString().trim();
+                //если строка пустая берем следующу итерацию
+                //если не пустая обрабатываем
+                if (ruWord.equals("")) continue;
+                else ruWord = listETTranslations.get(i).getText().toString();
+
+                query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+
+                //если слово новое и повторений не найденно
+                //т.е. в курсоре пусто
+                if (cursor.getCount() == 0) {
+                    //записываем новое слово в таблицу russian
+                    dbUtilities.insertIntoRussians(ruWord);
+                    //получаем id последней записи russian
+                    query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
+                    cursor = dbUtilities.getDb().rawQuery(query, null);
+                }//if-else
+
+                //записываем id записи в таблице russian
+                //для дальнейшей работы
+                cursor.moveToPosition(0);
+                listRussianId.add(Integer.parseInt(cursor.getString(0)));
+            }//for (int i = 0; i < l; i++)
+
+            //необходимо удалить старые записи
+            //которые не записаны в ходе редактирования
+            //Выбираем
+            int nOld = listOldIdRus.size();
+            //коллекция не совпадающих russianId для проверки и удаления
+            List<Integer> checkAndRemove = new ArrayList<>();
+            //если новых записей больше чем старых
+            //мы можем проверить все старые записи
+            //на совпадение в новой коллекции
+            for (int i = 0; i < nOld; i++) {
+                if (!listRussianId.contains(listOldIdRus.get(i)))
+                    checkAndRemove.add(listOldIdRus.get(i));
+            }//for (int i = 0; i < l; i++)
+            //проверка относится ли данное russianId к нескольким словам
+            int n = checkAndRemove.size();
+            for (int i = 0; i < n; i++) {
+                query = "SELECT translations.id, translations.russian_id FROM translations " +
+                        "WHERE translations.russian_id = \"" + checkAndRemove.get(i) + "\"";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                cursor.moveToPosition(0);
+                //если russianId принадлежит к одному слову
+                //т.е. размер курсора = 1
+                // если нет то просто удаляем запись из translations
+                //т.е. рвем связь между словом и переводом
+                if (cursor.getCount() == 1) {
+                    //теперь удаляем запись относящуюся к нашему idHebrew
+                    query = "SELECT translations.id, translations.russian_id FROM translations " +
+                            "WHERE translations.russian_id = \"" + checkAndRemove.get(i) + "\" " +
+                            "AND translations.hebrew_id = \"" + idHebrew + "\" ";
+                    cursor = dbUtilities.getDb().rawQuery(query, null);
+                    cursor.moveToPosition(0);
                     //удаляем запись по id из таблицы translations
                     dbUtilities.removeColumnById(cursor.getString(0), "translations");
                     //удаляем запись по id из таблицы russian
                     dbUtilities.removeColumnById(cursor.getString(1), "russian");
-                }// for (int i = 0; i < l; i++)
-
-                //количество запесей сделаных пользователем в EditWordActivity
-                l = listETTranslations.size();
-                //проверяем на повторение русское слово в БД
-                //получаем курсор данных из БД
-                for (int i = 0; i < l; i++) {
-                    //берем значение из коллекции
-                    //используем предварительно функцию trim чтоб убрать лишние пробелы
-                    ruWord = listETTranslations.get(i).getText().toString().trim();
-                    //если строка пустая берем следующу итерацию
-                    //если не пустая обрабатываем
-                    if (ruWord.equals("")) continue;
-                    else ruWord = listETTranslations.get(i).getText().toString();
-
-                    query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
+                } else {
+                    //теперь удаляем запись относящуюся к нашему idHebrew
+                    query = "SELECT translations.id, translations.russian_id FROM translations " +
+                            "WHERE translations.russian_id = \"" + checkAndRemove.get(i) + "\" " +
+                            "AND translations.hebrew_id = \"" + idHebrew + "\" ";
                     cursor = dbUtilities.getDb().rawQuery(query, null);
-
-                    //если слово новое и повторений не найденно
-                    //т.е. в курсоре пусто
-                    if (cursor.getCount() == 0) {
-                        //записываем новое слово в таблицу russian
-                        dbUtilities.insertIntoRussians(ruWord);
-                        //получаем id последней записи russian
-                        query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
-                        cursor = dbUtilities.getDb().rawQuery(query, null);
-                    }//if-else
-
-                    //записываем id записи в таблице russian
-                    //для дальнейшей работы
                     cursor.moveToPosition(0);
-                    listRussianId.add(Integer.parseInt(cursor.getString(0)));
-                }//for (int i = 0; i < l; i++)
-                ////////////работа с таблицей translations, если есть необходимость////////
-                //если количество записей в таблице russian не равно введеным заново
-                //то перезаписываем записи таблицы translations
-                l = listRussianId.size();
-                for (int i = 0; i < l; i++) {
-                    //записываем новую строку в таблицу translations
+                    //удаляем запись по id из таблицы translations
+                    dbUtilities.removeColumnById(cursor.getString(0), "translations");
+                }//if (cursor.getCount() == 1)
+            }//for (int i = 0; i < n; i++)
+
+            ////////////работа с таблицей translations, если есть необходимость////////
+            //если количество записей в таблице russian не равно введеным заново
+            //то перезаписываем записи таблицы translations
+            l = listRussianId.size();
+            for (int i = 0; i < l; i++) {
+                //записываем новую строку в таблицу translations
+                //проверяем если russianId содержится в старых записях
+                // то нету смысла перезаписывать связи в таблицы translations
+                if (!listOldIdRus.contains(listRussianId.get(i)))
                     dbUtilities.insertIntoTranslations(Integer.parseInt(idHebrew), listRussianId.get(i));
-                }//for (int i = 0; i < l; i++)
-            }//if(l == listETTranslations.size())
+            }//for (int i = 0; i < l; i++)
 
             ///////////////////////работа с транскрипцией//////////////////////////
             //проверяем на повторение транскипцию

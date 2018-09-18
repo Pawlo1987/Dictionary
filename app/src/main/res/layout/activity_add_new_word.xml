@@ -63,11 +63,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="gender"
+                    android:text="Sentence meaning"
                     android:textSize="18sp" />
 
                 <Spinner
-                    android:id="@+id/spGenderANWAc"
+                    android:id="@+id/spMeaningANWAc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"></Spinner>
@@ -180,11 +180,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sentence meaning"
+                    android:text="gender"
                     android:textSize="18sp" />
 
                 <Spinner
-                    android:id="@+id/spMeaningANWAc"
+                    android:id="@+id/spGenderANWAc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"></Spinner>

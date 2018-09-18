@@ -8,16 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class SelectLearnWordsRecyclerAdapter  extends
-        RecyclerView.Adapter<SelectLearnWordsRecyclerAdapter.ViewHolder>{
+public class SelectNextLearnWordRecyclerAdapter extends
+        RecyclerView.Adapter<SelectNextLearnWordRecyclerAdapter.ViewHolder>{
 
     //поля класса SelectLearnWordsRecyclerAdapter
     private LayoutInflater inflater;
     Context context;
+    private RadioButton lastCheckedRB = null;
+    private int selectIdHebrew;
+
     private Cursor cursor;
     DBUtilities dbUtilities;
     private String filter;
@@ -25,14 +30,15 @@ public class SelectLearnWordsRecyclerAdapter  extends
     private List<String> listCursorNum;
 
     //конструктор
-    SelectLearnWordsRecyclerAdapter(Context context, String mainQuery,
-                                    String filter, List<String> listCursorNum) {
+    SelectNextLearnWordRecyclerAdapter(Context context, String mainQuery,
+                                       String filter, List<String> listCursorNum, int selectIdHebrew) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
         this.context = context;
         this.filter = filter;
         this.listCursorNum = listCursorNum;
+        this.selectIdHebrew = selectIdHebrew;
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
@@ -40,15 +46,15 @@ public class SelectLearnWordsRecyclerAdapter  extends
 
     //создаем новую разметку(View) путем указания разметки
     @Override
-    public SelectLearnWordsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SelectNextLearnWordRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = inflater.inflate(R.layout.recycler_adapter_select_learn_words, parent, false);
-        return new SelectLearnWordsRecyclerAdapter.ViewHolder(view);
+        View view = inflater.inflate(R.layout.recycler_adapter_select_next_learn_word, parent, false);
+        return new SelectNextLearnWordRecyclerAdapter.ViewHolder(view);
     }
 
     //привязываем элементы разметки к переменным объекта(в данном случае к курсору)
     @Override
-    public void onBindViewHolder(SelectLearnWordsRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(SelectNextLearnWordRecyclerAdapter.ViewHolder holder, final int position) {
         // переходим в курсоре на текущую позицию
         cursor.moveToPosition(position);
 
@@ -62,8 +68,6 @@ public class SelectLearnWordsRecyclerAdapter  extends
         //получаем данные из курсора для фильтрации
         translations = cursorTr.getString(0);     //слово на русском
         word = cursor.getString(1);     //слово на иврите
-        if(listCursorNum.contains(String.valueOf(position)))
-            holder.cbSelectLearnWordsRA.setChecked(true);
 
         // получение данных
         //фильтрация элементов для бинарного поиска
@@ -88,26 +92,29 @@ public class SelectLearnWordsRecyclerAdapter  extends
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvWordSLWRA, tvTranslationsSLWRA;
         final CardView cvMainSLWRA;
-        final CheckBox cbSelectLearnWordsRA;
+        final RadioGroup rgSelectNextLearnWordRA;
 
         ViewHolder(final View view) {
             super(view);
-            cbSelectLearnWordsRA = view.findViewById(R.id.cbSelectLearnWordsRA);
+            rgSelectNextLearnWordRA = view.findViewById(R.id.rgSelectNextLearnWordRA);
             cvMainSLWRA = view.findViewById(R.id.cvMainSLWRA);
             tvWordSLWRA = view.findViewById(R.id.tvWordSLWRA);
             tvTranslationsSLWRA = view.findViewById(R.id.tvTranslationsSLWRA);
 
-            cbSelectLearnWordsRA.setOnClickListener(new View.OnClickListener() {
+            //обработка нажатой RadioButton
+            rgSelectNextLearnWordRA.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View v) {
-                    // переходим в курсоре на текущую позицию
-                    cursor.moveToPosition(getAdapterPosition());
-                    //получаем данные из курсора для фильтрации
-                    if(cbSelectLearnWordsRA.isChecked())
-                        listCursorNum.add(String.valueOf(getAdapterPosition()));
-                    else listCursorNum.remove(String.valueOf(getAdapterPosition()));
-                }//onClick
-            });//setOnClickListener
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    RadioButton rbSelectNextLearnWordRA = (RadioButton) group.findViewById(checkedId);
+                    if (lastCheckedRB != null) {
+                        lastCheckedRB.setChecked(false);
+                    }
+                    //store the clicked radiobutton
+                    lastCheckedRB = rbSelectNextLearnWordRA;
+                    selectIdHebrew = getAdapterPosition();
+
+                }//onCheckedChanged
+            });
         } // ViewHolder
     }//class ViewHolder
 

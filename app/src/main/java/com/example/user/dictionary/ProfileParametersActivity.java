@@ -187,7 +187,7 @@ public class ProfileParametersActivity extends AppCompatActivity {
         if (cbWriteHebrewMethodPPAc.isChecked()) listMethods.add(5);
         //проверка на случай невыбранного метода
         if (listMethods.size() > 0) {
-            Intent intent = new Intent(this, SelectLearnWordActivity.class);
+            Intent intent = new Intent(this, SelectNextLearnWordActivity.class);
             intent.putIntegerArrayListExtra(
                     "listMethods", (ArrayList<Integer>) listMethods
             );
