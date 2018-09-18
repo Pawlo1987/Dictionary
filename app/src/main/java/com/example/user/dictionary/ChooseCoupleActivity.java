@@ -32,6 +32,7 @@ public class ChooseCoupleActivity extends AppCompatActivity {
     Button btnHe3ChCoAc;
     Button btnHe4ChCoAc;
     Button btnHe5ChCoAc;
+    List<Button> buttonsList;//коллекция кнопок
     int selectPos = 0;  //выбранная позиция
     int wordsCount = 10;
     int progressTime = 0;
@@ -73,16 +74,27 @@ public class ChooseCoupleActivity extends AppCompatActivity {
         wordHe = new ArrayList<>();
         listWords  = new ArrayList<>();
         pbChCoAc = findViewById(R.id.pbChCoAc);
+        buttonsList = new ArrayList<>();
         btnTr1ChCoAc = findViewById(R.id.btnTr1ChCoAc);
+        buttonsList.add(btnTr1ChCoAc);
         btnTr2ChCoAc = findViewById(R.id.btnTr2ChCoAc);
+        buttonsList.add(btnTr2ChCoAc);
         btnTr3ChCoAc = findViewById(R.id.btnTr3ChCoAc);
+        buttonsList.add(btnTr3ChCoAc);
         btnTr4ChCoAc = findViewById(R.id.btnTr4ChCoAc);
+        buttonsList.add(btnTr4ChCoAc);
         btnTr5ChCoAc = findViewById(R.id.btnTr5ChCoAc);
+        buttonsList.add(btnTr5ChCoAc);
         btnHe1ChCoAc = findViewById(R.id.btnHe1ChCoAc);
+        buttonsList.add(btnHe1ChCoAc);
         btnHe2ChCoAc = findViewById(R.id.btnHe2ChCoAc);
+        buttonsList.add(btnHe2ChCoAc);
         btnHe3ChCoAc = findViewById(R.id.btnHe3ChCoAc);
+        buttonsList.add(btnHe3ChCoAc);
         btnHe4ChCoAc = findViewById(R.id.btnHe4ChCoAc);
+        buttonsList.add(btnHe4ChCoAc);
         btnHe5ChCoAc = findViewById(R.id.btnHe5ChCoAc);
+        buttonsList.add(btnHe5ChCoAc);
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         listCursorNum.addAll(getIntent().getStringArrayListExtra("idList"));
         wordsCount = getIntent().getIntExtra("wordsCount",0);
@@ -94,200 +106,79 @@ public class ChooseCoupleActivity extends AppCompatActivity {
 
     //обработчик кнопок при изучении
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.btnTr1ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressTr) {
-                    flagPressBtnTr[0] = true;
-                    flagAnyBtnPressTr = true;
-                    selectWordTr = btnTr1ChCoAc.getText().toString();
-                    btnTr1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressHe) checkPressBtn();
-                }else{
-                    if(flagPressBtnTr[0]) {
-                        flagPressBtnTr[0] = false;
-                        flagAnyBtnPressTr = false;
-                        btnTr1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(0);
                 break;
-
             case R.id.btnTr2ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressTr) {
-                    flagPressBtnTr[1] = true;
-                    flagAnyBtnPressTr = true;
-                    selectWordTr = btnTr2ChCoAc.getText().toString();
-                    btnTr2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressHe) checkPressBtn();
-                }else{
-                    if(flagPressBtnTr[1]) {
-                        flagPressBtnTr[1] = false;
-                        flagAnyBtnPressTr = false;
-                        btnTr2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(1);
                 break;
-
             case R.id.btnTr3ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressTr) {
-                    flagPressBtnTr[2] = true;
-                    flagAnyBtnPressTr = true;
-                    selectWordTr = btnTr3ChCoAc.getText().toString();
-                    btnTr3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressHe) checkPressBtn();
-                }else{
-                    if(flagPressBtnTr[2]) {
-                        flagPressBtnTr[2] = false;
-                        flagAnyBtnPressTr = false;
-                        btnTr3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(2);
                 break;
-
             case R.id.btnTr4ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressTr) {
-                    flagPressBtnTr[3] = true;
-                    flagAnyBtnPressTr = true;
-                    selectWordTr = btnTr4ChCoAc.getText().toString();
-                    btnTr4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressHe) checkPressBtn();
-                }else{
-                    if(flagPressBtnTr[3]) {
-                        flagPressBtnTr[3] = false;
-                        flagAnyBtnPressTr = false;
-                        btnTr4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(3);
                 break;
-
             case R.id.btnTr5ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressTr) {
-                    flagPressBtnTr[4] = true;
-                    flagAnyBtnPressTr = true;
-                    selectWordTr = btnTr5ChCoAc.getText().toString();
-                    btnTr5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressHe) checkPressBtn();
-                }else{
-                    if(flagPressBtnTr[4]) {
-                        flagPressBtnTr[4] = false;
-                        flagAnyBtnPressTr = false;
-                        btnTr5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(4);
                 break;
-
             case R.id.btnHe1ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressHe) {
-                    flagPressBtnHe[0] = true;
-                    flagAnyBtnPressHe = true;
-                    selectWordHe = btnHe1ChCoAc.getText().toString();
-                    btnHe1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressTr) checkPressBtn();
-                }else{
-                    if(flagPressBtnHe[0]) {
-                        flagPressBtnHe[0] = false;
-                        flagAnyBtnPressHe = false;
-                        btnHe1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(5);
                 break;
-
             case R.id.btnHe2ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressHe) {
-                    flagPressBtnHe[1] = true;
-                    flagAnyBtnPressHe = true;
-                    selectWordHe = btnHe2ChCoAc.getText().toString();
-                    btnHe2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressTr) checkPressBtn();
-                }else{
-                    if(flagPressBtnHe[1]) {
-                        flagPressBtnHe[1] = false;
-                        flagAnyBtnPressHe = false;
-                        btnHe2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(6);
                 break;
-
             case R.id.btnHe3ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressHe) {
-                    flagPressBtnHe[2] = true;
-                    flagAnyBtnPressHe = true;
-                    selectWordHe = btnHe3ChCoAc.getText().toString();
-                    btnHe3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressTr) checkPressBtn();
-                }else{
-                    if(flagPressBtnHe[2]) {
-                        flagPressBtnHe[2] = false;
-                        flagAnyBtnPressHe = false;
-                        btnHe3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(7);
                 break;
-
             case R.id.btnHe4ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressHe) {
-                    flagPressBtnHe[3] = true;
-                    flagAnyBtnPressHe = true;
-                    selectWordHe = btnHe4ChCoAc.getText().toString();
-                    btnHe4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressTr) checkPressBtn();
-                }else{
-                    if(flagPressBtnHe[3]) {
-                        flagPressBtnHe[3] = false;
-                        flagAnyBtnPressHe = false;
-                        btnHe4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(8);
                 break;
-
             case R.id.btnHe5ChCoAc:
-                //проверяем флаг и выполняем действие в layout и правим массив флагов
-                if(!flagAnyBtnPressHe) {
-                    flagPressBtnHe[4] = true;
-                    flagAnyBtnPressHe = true;
-                    selectWordHe = btnHe5ChCoAc.getText().toString();
-                    btnHe5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
-                    //проверяем флаг нажатия кнопок в соседнем столбце
-                    //если "да" проверяем совпадение перевода и слова
-                    if(flagAnyBtnPressTr) checkPressBtn();
-                }else{
-                    if(flagPressBtnHe[4]) {
-                        flagPressBtnHe[4] = false;
-                        flagAnyBtnPressHe = false;
-                        btnHe5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-                    }
-                }//if-else
+                pressBtnTest(9);
                 break;
-
         }//switch
     }//onClick
+
+    //проверяем нажатие кнопок
+    private void pressBtnTest(int i) {
+        if(i<=4) {
+            //проверяем флаг и выполняем действие в layout и правим массив флагов
+            if (!flagAnyBtnPressTr) {
+                flagPressBtnTr[i] = true;
+                flagAnyBtnPressTr = true;
+                selectWordTr = buttonsList.get(i).getText().toString();
+                buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
+                //проверяем флаг нажатия кнопок в соседнем столбце
+                //если "да" проверяем совпадение перевода и слова
+                if (flagAnyBtnPressHe) checkPressBtn();
+            } else {
+                if (flagPressBtnTr[i]) {
+                    flagPressBtnTr[i] = false;
+                    flagAnyBtnPressTr = false;
+                    buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+                }
+            }//if-else
+        }else{
+            int j = i-5;
+            //проверяем флаг и выполняем действие в layout и правим массив флагов
+                if(!flagAnyBtnPressHe) {
+                    flagPressBtnHe[j] = true;
+                    flagAnyBtnPressHe = true;
+                    selectWordHe = buttonsList.get(i).getText().toString();
+                    buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
+                    //проверяем флаг нажатия кнопок в соседнем столбце
+                    //если "да" проверяем совпадение перевода и слова
+                    if(flagAnyBtnPressTr) checkPressBtn();
+                }else{
+                    if(flagPressBtnHe[j]) {
+                        flagPressBtnHe[j] = false;
+                        flagAnyBtnPressHe = false;
+                        buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+                    }
+                }//if-else
+        }//if-else
+    }//pressBtnTest
 
     //проверка совпадения нажатой пары клавиш
     private void checkPressBtn() {
@@ -299,51 +190,32 @@ public class ChooseCoupleActivity extends AppCompatActivity {
         // ивритовских слов
         String strHe  = wordHe.get(indexTr);
         if(selectWordHe.equals(strHe)){
+            //снимаем флаги нажатых клавиш
+            flagAnyBtnPressHe = false;
+            flagAnyBtnPressTr = false;
             //увеличиваем прогресс бар
             progressTime = progressTime + progressIter;
             pbChCoAc.setProgress(progressTime);
-        }
-    }//checkPressBtn
-
-    //обработка правельно выбранного перевода
-    private void btnSelectTrue() {
-        //увеличиваем прогресс бар
-        progressTime = progressTime + progressIter;
-        pbChCoAc.setProgress(progressTime);
-        //отключаем кнопки для исключения случайного нажатия
-//        btnTr1ChTrAc.setEnabled(false);
-//        btnTr2ChTrAc.setEnabled(false);
-//        btnTr3ChTrAc.setEnabled(false);
-//        btnTr4ChTrAc.setEnabled(false);
-//        btnTr5ChTrAc.setEnabled(false);
-        //для создания небольшой задерки в 500 миллисекунд
-        //Создаем таймер обратного отсчета на 500 миллисекунд с шагом отсчета
-        //в 1 секунду (задаем значения в миллисекундах):
-        countDownTimer = new CountDownTimer(500, 1000) {
-            //Здесь можно выполнить какието дейстивия через кажду секунду
-            //до конца счета таймера
-            public void onTick(long millisUntilFinished) { }
-            //Задаем действия после завершения отсчета (запускаем главную активность)
-            public void onFinish(){
-                //включаем кнопки обратно
-//                btnTr1ChTrAc.setEnabled(true);
-//                btnTr2ChTrAc.setEnabled(true);
-//                btnTr3ChTrAc.setEnabled(true);
-//                btnTr4ChTrAc.setEnabled(true);
-//                btnTr5ChTrAc.setEnabled(true);
-                //переход к следующему слову или выход из режима изучения
-                //так как закончились слова
-                if(selectPos < wordsCount-1){
-                    selectPos++;
-                    startLearnWord();
+            // убираем с экрана элементы которые совпали
+            //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
+            for (int i = 0; i < 10; i++) {
+                if(i<=4) {
+                    if(flagPressBtnTr[i]) {
+                        buttonsList.get(i).setEnabled(false);
+                        buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                        flagPressBtnTr[i] = false;
+                    }//if
                 }else{
-                    finish();
-                }//if-else
-            }//onFinish
-        };//countDownTimer
-        //запускам таймер
-        countDownTimer.start();
-    }//btnSelect
+                    int j = i-5;
+                    if(flagPressBtnHe[j]) {
+                        buttonsList.get(i).setEnabled(false);
+                        buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                        flagPressBtnHe[j] = false;
+                    }//if
+                }////if-else
+            }//for
+        }//if
+    }//checkPressBtn
 
     //запуск начала изучения
     private void startLearnWord() {
@@ -360,28 +232,31 @@ public class ChooseCoupleActivity extends AppCompatActivity {
 
         //перемешать коллекцию переводов для вывода названия кнопок
         Collections.shuffle(listNumForBtn);
+
+        //коллекция порядковых номеров для коллекции заполняемых кнопки
+        List<Integer> numIdListForBtn = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            numIdListForBtn.add(i);
+        }//fori
+
         //устанавливаем нормальный цвет кнопок
-        btnTr1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnTr2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnTr3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnTr4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnTr5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnHe1ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnHe2ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnHe3ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnHe4ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        btnHe5ChCoAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        for (int i = 0; i < 10; i++) {
+            buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        }//for
         //устанавливаем слова на кнопки
-        btnTr1ChCoAc.setText(listWords.get(listNumForBtn.get(0)).getStrRus());
-        btnTr2ChCoAc.setText(listWords.get(listNumForBtn.get(1)).getStrRus());
-        btnTr3ChCoAc.setText(listWords.get(listNumForBtn.get(2)).getStrRus());
-        btnTr4ChCoAc.setText(listWords.get(listNumForBtn.get(3)).getStrRus());
-        btnTr5ChCoAc.setText(listWords.get(listNumForBtn.get(4)).getStrRus());
-        btnHe1ChCoAc.setText(listWords.get(listNumForBtn.get(0)).getStrHeb());
-        btnHe2ChCoAc.setText(listWords.get(listNumForBtn.get(1)).getStrHeb());
-        btnHe3ChCoAc.setText(listWords.get(listNumForBtn.get(2)).getStrHeb());
-        btnHe4ChCoAc.setText(listWords.get(listNumForBtn.get(3)).getStrHeb());
-        btnHe5ChCoAc.setText(listWords.get(listNumForBtn.get(4)).getStrHeb());
+        //перемешать коллекцию
+        Collections.shuffle(numIdListForBtn);
+        int j;
+        for (int i = 0; i < 10; i++) {
+            if(i==5) Collections.shuffle(numIdListForBtn);
+            if(i<=4){
+                j=i;
+                buttonsList.get(i).setText(listWords.get(listNumForBtn.get(numIdListForBtn.get(j))).getStrRus());
+            }else{
+                j = i-5;
+                buttonsList.get(i).setText(listWords.get(listNumForBtn.get(numIdListForBtn.get(j))).getStrHeb());
+            }
+        }//for
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения
