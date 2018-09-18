@@ -33,13 +33,11 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
-            "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
-            "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
-            "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-            "INNER JOIN transcription ON transcription.id = hebrew.transcription_id";
-    //запрос для спиннера
-    String spinnerQuery = "SELECT option FROM meaning";
+    String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,18 +103,18 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         // получаем данные из БД в виде курсора
         // согласовуем с выбранной позицией спиннера
         if(meaning.equals("ALL")) {
-            mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
-                    "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
-                    "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
-                    "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-                    "INNER JOIN transcription ON transcription.id = hebrew.transcription_id";
+            mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+                    "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+                    "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
         }else {
-            mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
-                    "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
-                    "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
-                    "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-                    "INNER JOIN transcription ON transcription.id = hebrew.transcription_id " +
-                    "WHERE meaning.option = \"" + meaning + "\"";
+            mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+                    "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+                    "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "WHERE meanings.option = \"" + meaning + "\"";
         }
 
         // создаем адаптер, передаем в него курсор
@@ -130,7 +128,9 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     private void buildSpinner() {
         //заполнить spListMeaningVDAc данные для отображения в Spinner
         spListMeaningVDAc.add("ALL");
-        spListMeaningVDAc.addAll(dbUtilities.fillList(spinnerQuery));
+        //запрос для спиннера
+        String query = "SELECT meanings.option FROM meanings;";
+        spListMeaningVDAc.addAll(dbUtilities.fillList(query));
 
         //создание адаптера для спинера
         spAdapterMeaning = new ArrayAdapter<String>(

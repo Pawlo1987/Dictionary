@@ -107,8 +107,8 @@ public class AddNewWordActivity extends AppCompatActivity {
             //проверяем на повторение попарно двух столбцов
             //слово по русски и слово на иврите
             //получаем курсор данных из БД
-            String query = "SELECT russian.word, hebrew.word FROM russian " +
-                    "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id";
+            String query = "SELECT russians.word_ru, hebrew.word_he FROM russians " +
+                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
             int n = cursor.getCount();
             for (int i = 0; i < n; i++) {
@@ -121,11 +121,11 @@ public class AddNewWordActivity extends AppCompatActivity {
             }//for
         }//if-else
 
-        //если все нормально записываем новое слово
+        //если нет пустых строк и повторяющихся слов записываем новое слово
         if(!fl) {
             //проверяем на повторение транскипцию
             //получаем курсор данных из БД
-            String query = "SELECT transcription.id, transcription.word FROM transcription";
+            String query = "SELECT transcriptions.id, transcriptions.word_tr FROM transcriptions";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
             int n = cursor.getCount();
             for (int i = 0; i < n; i++) {
@@ -136,45 +136,27 @@ public class AddNewWordActivity extends AppCompatActivity {
                 }
             }//for
             if(transcId == 0) {
-                ContentValues cv = new ContentValues();
-                cv.put("word", transc);
-                //добваить данные через объект ContentValues(cv), в таблицу
-                dbUtilities.insertInto(cv, "transcription");
+                //записываем новое слово в таблицу transcriptions
+                dbUtilities.insertIntoTranscriptions(transc);
                 transcId = n+1;
             }//if(transcId == 0)
 
             //определяем id из таблицы meaning
             //получаем курсор данных из БД
-            query = "SELECT meaning.id FROM meaning WHERE meaning.option = \"" + meaning+ "\"";
+            query = "SELECT meanings.id FROM meanings WHERE meanings.option = \"" + meaning+ "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             cursor.moveToPosition(0);
             meaningId = Integer.parseInt(cursor.getString(0));
 
             //записываем новое слово в таблицу hebrew
-            ContentValues cv = new ContentValues();
+            dbUtilities.insertIntoHebrew(heWord, transcId, heGender, meaningId);
 
-            cv.put("word", heWord);
-            cv.put("transcription_id", transcId);
-            cv.put("gender", heGender);
-            cv.put("quantity", quantity);
-            cv.put("meaning_id", meaningId);
-            //добваить данные через объект ContentValues(cv), в таблицу
-            dbUtilities.insertInto(cv, "hebrew");
-
-            query = "SELECT hebrew.id FROM hebrew";
-            cursor = dbUtilities.getDb().rawQuery(query, null);
-            n = cursor.getCount();
+            //получаем количество записей в таблице
+            n = dbUtilities.getCountTable("hebrew");
 
             //записываем новое слово в таблицу russian
-            cv = new ContentValues();
+            dbUtilities.insertIntoRussians(ruWord, n, ruGender, quantity, meaningId);
 
-            cv.put("word", ruWord);
-            cv.put("hebrew_id", n);
-            cv.put("gender", ruGender);
-            cv.put("quantity", quantity);
-            cv.put("meaning_id", meaningId);
-            //добваить данные через объект ContentValues(cv), в таблицу
-            dbUtilities.insertInto(cv, "russian");
             Toast.makeText(context, "New word additionally!", Toast.LENGTH_SHORT).show();
             finish();
         }//if(!fl)

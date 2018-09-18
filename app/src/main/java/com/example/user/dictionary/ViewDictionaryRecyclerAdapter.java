@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.view.View.GONE;
 
@@ -79,8 +80,8 @@ public class ViewDictionaryRecyclerAdapter  extends
             holder.tvMeaningVDRA.setText(meaning);
             holder.tvQuantityVDRA.setText(quantity);
         }else {
-            //setVisibility(GONE) отключаем ненужные элементы для просмотра
-            holder.cvMainVDRA.setVisibility(GONE);
+            //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
+            holder.cvMainVDRA.setVisibility(View.GONE);
         }//if-else
 
     } // onBindViewHolder
@@ -151,8 +152,8 @@ public class ViewDictionaryRecyclerAdapter  extends
                     }else{
                         //подготавливаем информацию для удаления
                         //получаем idHebrew
-                        String query = "SELECT hebrew_id FROM russian " +
-                                "WHERE russian.id = \"" + idRussian + "\"";
+                        String query = "SELECT hebrew_id FROM russians " +
+                                "WHERE russians.id = \"" + idRussian + "\"";
                         cursor = dbUtilities.getDb().rawQuery(query, null);
                         cursor.moveToPosition(0);
                         idHebrew = cursor.getString(0);
@@ -164,13 +165,14 @@ public class ViewDictionaryRecyclerAdapter  extends
                         idTranscription = cursor.getString(0);
 
                         //удаляем поочереди таблицы
-                        dbUtilities.removeColumnById(idRussian, "russian");
+                        dbUtilities.removeColumnById(idRussian, "russians");
                         dbUtilities.removeColumnById(idHebrew, "hebrew");
-                        dbUtilities.removeColumnById(idTranscription, "transcription");
+                        dbUtilities.removeColumnById(idTranscription, "transcriptions");
 
                         //обновляем данные для Adapter
                         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
                         notifyDataSetChanged();
+                        Toast.makeText(context, "Data removed!", Toast.LENGTH_SHORT).show();
                     }//if-else
                 }//onClick
             });

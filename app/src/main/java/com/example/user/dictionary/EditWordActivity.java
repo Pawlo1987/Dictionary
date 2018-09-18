@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EditWordActivity extends AppCompatActivity {
-    private String idRussian, idHebrew, idTranscription;
+    private String idRussian, idHebrew;
     private EditText edRussianEWAc;        //строка с русским словом
     private EditText edHebrewEWAc;         //строка с ивритовским словом
     private EditText edTranscriptionEWAc;  //строка с транскрпцией
@@ -59,12 +59,12 @@ public class EditWordActivity extends AppCompatActivity {
                         Arrays.asList("adjective", "noun", "verb", "binders")));
 
         //подготовка данных для редактирования
-        String mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
-                "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
-                "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
-                "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-                "INNER JOIN transcription ON transcription.id = hebrew.transcription_id " +
-                "WHERE russian.id = " + idRussian;
+        String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+                "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+                "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+                "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+                "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                "WHERE russians.id = " + idRussian;
         Cursor cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         cursor.moveToPosition(0);
 
@@ -137,11 +137,11 @@ public class EditWordActivity extends AppCompatActivity {
             fl = true;
         }
 
-        //если все нормально записываем новое слово
+        //если нет пустых строк и повторяющихся слов записываем новое слово
         if(!fl) {
             //проверяем на повторение транскипцию
             //получаем курсор данных из БД
-            String query = "SELECT transcription.id, transcription.word FROM transcription";
+            String query = "SELECT transcriptions.id, transcriptions.word_tr FROM transcriptions";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
             int n = cursor.getCount();
             for (int i = 0; i < n; i++) {
@@ -152,46 +152,32 @@ public class EditWordActivity extends AppCompatActivity {
                 }
             }//for
             if(transcId == -1) {
-                ContentValues cv = new ContentValues();
-                cv.put("word", transc);
-                //добваить данные через объект ContentValues(cv), в таблицу
-                dbUtilities.insertInto(cv, "transcription");
+                //записываем новое слово в таблицу transcriptions
+                dbUtilities.insertIntoTranscriptions(transc);
                 transcId = n+1;
             }//if(transcId == 0)
 
             //определяем id из таблицы meaning
             //получаем курсор данных из БД
-            query = "SELECT meaning.id FROM meaning WHERE meaning.option = \"" + meaning+ "\"";
+            query = "SELECT meanings.id FROM meanings WHERE meanings.option = \"" + meaning+ "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             cursor.moveToPosition(0);
             meaningId = Integer.parseInt(cursor.getString(0));
 
             //находим значение hebrew_id
-            query = "SELECT russian.hebrew_id FROM russian WHERE russian.id = \"" + idRussian+ "\"";
+            query = "SELECT russians.hebrew_id FROM russians WHERE russians.id = \"" + idRussian+ "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             cursor.moveToPosition(0);
             idHebrew = cursor.getString(0);
 
-            //обновляем запись слова в таблице hebrew
-            ContentValues cv = new ContentValues();
-            cv.put("word", heWord);
-            cv.put("transcription_id", transcId);
-            cv.put("gender", heGender);
-            cv.put("quantity", quantity);
-            cv.put("meaning_id", meaningId);
+            //обновляем запись в таблице hebrew по id записи
+            int successfulUpdate = dbUtilities.updTableHebrew(idHebrew, heWord, transcId,
+                    heGender, meaningId);
 
-            // обновляем по id через объект ContentValues(cv), в таблицу
-            int successfulUpdate = dbUtilities.updTable("hebrew", cv, idHebrew);
-
-            cv = new ContentValues();
-            cv.put("word", ruWord);
-            cv.put("hebrew_id", idHebrew);
-            cv.put("gender", ruGender);
-            cv.put("quantity", quantity);
-            cv.put("meaning_id", meaningId);
-
-            // обновляем по id через объект ContentValues(cv), в таблицу
-            successfulUpdate = successfulUpdate + dbUtilities.updTable("russian", cv, idRussian);
+            //обновляем запись в таблице russians по id записи
+            successfulUpdate = successfulUpdate +
+                    dbUtilities.updTableRussians(idRussian, ruWord, idHebrew,
+                            ruGender, quantity, meaningId);
 
             if(successfulUpdate == 2) Toast.makeText(context, "Data updated!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, ViewDictionaryActivity.class);
