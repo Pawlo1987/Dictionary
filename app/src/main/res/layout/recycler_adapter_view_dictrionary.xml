@@ -48,105 +48,81 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvRUWordVDRA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="21sp" />
-
-                    <TextView
-                        android:id="@+id/tvGenderRUVDRA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvHEWordVDRA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="21sp" />
-
-                    <TextView
-                        android:id="@+id/tvGenderHEVDRA"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tvTransVDRA"
+                            android:id="@+id/tvWordVDRA"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="TextView"
                             android:textAlignment="center"
-                            android:textColor="@color/cardview_dark_background"
-                            android:textSize="18sp" />
-                    </LinearLayout>
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="21sp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tvTranscVDRA"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="TextView"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/tvMeaningVDRA"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:text="TextView"
                             android:textAlignment="center"
                             android:textColor="@color/cardview_dark_background"
                             android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/tvQuantityVDRA"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            android:textColor="@color/cardview_dark_background"
-                            android:textSize="18sp" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvGenderVDRA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="TextView"
+                                android:textAlignment="center"
+                                android:textColor="@color/cardview_dark_background"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:id="@+id/tvQuantityVDRA"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="TextView"
+                                android:textAlignment="center"
+                                android:textColor="@color/cardview_dark_background"
+                                android:textSize="18sp" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/llTranslationsVDRA"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>

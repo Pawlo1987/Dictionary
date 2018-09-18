@@ -4,10 +4,10 @@
     <string name="btnAddNewWord">Add new word</string>
     <string name="btnViewDictionary">View dictionary</string>
     <string name="btnLearnWords">Learn Words</string>
-    <string name="edHintRussianANWAc">Word</string>
-    <string name="edHintHebrewANWAc">Translation</string>
-    <string name="edHintRussianEWAc">Word</string>
-    <string name="edHintHebrewEWAc">Translation</string>
+    <string name="edHintTranslationANWAc">Translation</string>
+    <string name="edHintHebrewANWAc">Word</string>
+    <string name="edHintRussianEWAc">Translation</string>
+    <string name="edHintHebrewEWAc">Word</string>
     <string name="edHintTranscriptionEWAc">Transcription</string>
     <string name="edHintTranscriptionANWAc">Transcription</string>
     <string name="tvHeadANWAc">New word</string>
@@ -34,4 +34,5 @@
     <string name="btnSelectWordsLWAc">SelectWords</string>
     <string name="btnRandomWordsLWAc">RandomWords</string>
     <string name="go">GO</string>
+    <string name="btnAddNewTranslations">add new</string>
 </resources>

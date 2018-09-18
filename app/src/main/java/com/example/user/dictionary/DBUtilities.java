@@ -30,27 +30,33 @@ public class DBUtilities {
         db.insert(table, null,  cv);
     }//insertInto
 
-    //добавить строку в таблицу russians
-    public void insertIntoRussians(String ruWord, int n, String ruGender,
-                                   String quantity, int meaningId){
+    //добавить строку в таблицу russian
+    public void insertIntoRussians(String ruWord){
         ContentValues cv = new ContentValues();
         cv.put("word_ru", ruWord);
-        cv.put("hebrew_id", n);
-        cv.put("gender_ru", ruGender);
-        cv.put("quantity", quantity);
-        cv.put("meaning_id", meaningId);
         //добваить данные через объект ContentValues(cv), в таблицу
-        insertInto(cv, "russians");
+        insertInto(cv, "russian");
     }//insertIntoRussians
 
+    //добавить строку в таблицу translations
+    public void insertIntoTranslations(int hebrewId, int russianId){
+        ContentValues cv = new ContentValues();
+        cv.put("hebrew_id", hebrewId);
+        cv.put("russian_id", russianId);
+        //добваить данные через объект ContentValues(cv), в таблицу
+        insertInto(cv, "translations");
+    }//insertIntoTranslations
+
     //добавить строку в таблицу hebrew
-    public void insertIntoHebrew(String heWord, int transcId, String heGender,
-                                 int meaningId){
+    public void insertIntoHebrew(String heWord, int transcId,
+                                 int meaningId, int genderId,
+                                 int quantityId){
         ContentValues cv = new ContentValues();
         cv.put("word_he", heWord);
         cv.put("transcription_id", transcId);
-        cv.put("gender_he", heGender);
         cv.put("meaning_id", meaningId);
+        cv.put("gender_id", genderId);
+        cv.put("quantity_id", quantityId);
         //добваить данные через объект ContentValues(cv), в таблицу
         insertInto(cv, "hebrew");
     }//insertIntoHebrew
@@ -101,27 +107,32 @@ public class DBUtilities {
         return updCount;
     }
 
-    //обновить запись в таблице russians по id записи
-    public int updTableRussians(String id, String ruWord, String idHebrew,
-                                String ruGender, String quantity, int meaningId){
+    //обновить запись в таблице transcriptions по id записи
+    public int updTableTranscriptions(String id, String transcWord){
+        ContentValues cv = new ContentValues();
+        cv.put("word_tr", transcWord);
+        return db.update("transcriptions", cv, "id = ?",
+                new String[] { id });
+    }//updTableTranscriptions
+
+    //обновить запись в таблице russian по id записи
+    public int updTableRussians(String id, String ruWord){
         ContentValues cv = new ContentValues();
         cv.put("word_ru", ruWord);
-        cv.put("hebrew_id", idHebrew);
-        cv.put("gender_ru", ruGender);
-        cv.put("quantity", quantity);
-        cv.put("meaning_id", meaningId);
-        return db.update("russians", cv, "id = ?",
+        return db.update("russian", cv, "id = ?",
                 new String[] { id });
     }//updTableRussians
 
     //обновить запись в таблице hebrew по id записи
     public int updTableHebrew(String id, String heWord, int transcId,
-                                String heGender, int meaningId){
+                              int meaningId, int genderId,
+                              int quantityId){
         ContentValues cv = new ContentValues();
         cv.put("word_he", heWord);
         cv.put("transcription_id", transcId);
-        cv.put("gender_he", heGender);
         cv.put("meaning_id", meaningId);
+        cv.put("gender_id", genderId);
+        cv.put("quantity_id", quantityId);
         return db.update("hebrew", cv, "id = ?",
                 new String[] { id });
     }//updTableHebrew

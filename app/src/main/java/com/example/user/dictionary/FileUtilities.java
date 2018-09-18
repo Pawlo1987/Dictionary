@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 //класс-утилита для работы с файлами
 
@@ -140,29 +142,27 @@ public class FileUtilities {
             // пишем данные
 
             //получаем курсор с данными для формирования файла
-            String query = "SELECT russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
-                    "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
-                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
-                    "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
-                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+            String query = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                    "meanings.option, gender.option, quantity.option FROM hebrew " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
             bw.append("word");
             bw.append('\t');
 
-            bw.append("translation");
-            bw.append('\t');
-
             bw.append("transcription");
             bw.append('\t');
 
-            bw.append("gender_w");
+            bw.append("translation");
             bw.append('\t');
 
-            bw.append("gender_t");
+            bw.append("meaning");
             bw.append('\t');
 
-            bw.append("option");
+            bw.append("gender");
             bw.append('\t');
 
             bw.append("quantity");
@@ -171,14 +171,28 @@ public class FileUtilities {
             bw.append('\n');
 
             if (cursor.moveToFirst()) {
-                do {
-                    bw.append(cursor.getString(0));
-                    bw.append('\t');
-
+                    do {
+                    ////////////////////получаем перевод данного слова//////////
+                    //получаем перевод
+                    String queryTr = "SELECT russian.word_ru FROM translations " +
+                            "INNER JOIN russian ON russian.id = translations.russian_id " +
+                            "WHERE translations.hebrew_id = \"" + cursor.getString(0) + "\"";
+                    Cursor cursorTr = dbUtilities.getDb().rawQuery(queryTr, null);
+                    List<String> listTranslations = new ArrayList<>();
+                    cursorTr.moveToFirst();
+                    do{
+                        listTranslations.add(cursorTr.getString(0));
+                    } while (cursorTr.moveToNext());
+                       int l = listTranslations.size();
+                       int j = 0;
+                    ///////////////////////////////////////////////////////////////
                     bw.append(cursor.getString(1));
                     bw.append('\t');
 
                     bw.append(cursor.getString(2));
+                    bw.append('\t');
+                    //перевод
+                    bw.append(listTranslations.get(j));
                     bw.append('\t');
 
                     bw.append(cursor.getString(3));
@@ -190,11 +204,20 @@ public class FileUtilities {
                     bw.append(cursor.getString(5));
                     bw.append('\t');
 
-                    bw.append(cursor.getString(6));
-                    bw.append('\t');
-
                     bw.append('\n');
 
+                    while(l>1){
+                        j++;
+                        bw.append('\t');
+                        bw.append('\t');
+                        bw.append(listTranslations.get(j));
+                        bw.append('\t');
+                        bw.append('\t');
+                        bw.append('\t');
+                        bw.append('\t');
+                        bw.append('\n');
+                        l--;
+                    }//if(l>1)
                 } while (cursor.moveToNext());
             }
             if (cursor != null && !cursor.isClosed()) {

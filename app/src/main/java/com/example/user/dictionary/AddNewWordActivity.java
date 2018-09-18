@@ -8,22 +8,35 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class AddNewWordActivity extends AppCompatActivity {
-    private EditText edRussianANWAc;        //строка с русским словом
     private EditText edHebrewANWAc;         //строка с ивритовским словом
     private EditText edTranscriptionANWAc;  //строка с транскрпцией
-    private Spinner spGenderRusANWAc;       //сппинер для рода в русском
-    private Spinner spGenderHebANWAc;       //сппинер для рода в иврите
+    private Spinner spGenderANWAc;       //сппинер для рода в иврите
     private Spinner spQuantityANWAc;        //сппинер множест. или единств. число
     private Spinner spMeaningANWAc;         //сппинер значения слова в предложении
+    private List<String> translations;      //переводы к данному слову
+    private LinearLayout llTranslationsANWAc; //LinearLayout для переводов
+    //TextView для вывода количества заказанных переводов
+    private TextView tvTranslationsCountANWAc;
+    //коллекция EditText для переводов
+    List<EditText> listETTranslations;
+
+    //количество переводов
+    private int countTranslations = 0;
+
     DBUtilities dbUtilities;
     Context context;
     ActionBar actionBar;                //стрелка НАЗАД
@@ -41,19 +54,20 @@ public class AddNewWordActivity extends AppCompatActivity {
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
-        edRussianANWAc = findViewById(R.id.edRussianANWAc);
-        edHebrewANWAc = findViewById(R.id.edHebrewANWAc);
+        edHebrewANWAc = findViewById(R.id.edWordANWAc);
         edTranscriptionANWAc = findViewById(R.id.edTranscriptionANWAc);
-        spGenderRusANWAc = findViewById(R.id.spGenderRusANWAc);
-        spGenderHebANWAc = findViewById(R.id.spGenderHebANWAc);
+        spGenderANWAc = findViewById(R.id.spGenderANWAc);
         spQuantityANWAc = findViewById(R.id.spQuantityANWAc);
         spMeaningANWAc = findViewById(R.id.spMeaningANWAc);
+        translations = new ArrayList<>();
+        tvTranslationsCountANWAc = findViewById(R.id.tvTranslationsCountANWAc);
+        llTranslationsANWAc = findViewById(R.id.llTranslationsANWAc);
+        listETTranslations = new ArrayList<>();
+        // создаем EditText, пишем hint и добавляем в LinearLayout
+        countTranslationsLayoutBuilding();
 
-        //строим спиннер для рода в русском
-        spGenderRusANWAc.setAdapter(
-                buildSpinnerAdapter(Arrays.asList("male", "female")));
         //строим спиннер для рода в иврите
-        spGenderHebANWAc.setAdapter(
+        spGenderANWAc.setAdapter(
                 buildSpinnerAdapter(Arrays.asList("male", "female")));
         //строим спиннер для множ. и ед. числа
         spQuantityANWAc.setAdapter(
@@ -62,6 +76,32 @@ public class AddNewWordActivity extends AppCompatActivity {
         spMeaningANWAc.setAdapter(
                 buildSpinnerAdapter(
                         Arrays.asList("adjective", "noun", "verb", "binders")));
+        spMeaningANWAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //если выбран verb перестраиваем все spinner ы
+                // добавляем пункт infinitive
+                if(position == 2){
+                    //строим спиннер для рода в иврите
+                    spGenderANWAc.setAdapter(
+                            buildSpinnerAdapter(Arrays.asList("male", "female", "infinitive")));
+                    //строим спиннер для множ. и ед. числа
+                    spQuantityANWAc.setAdapter(
+                            buildSpinnerAdapter(Arrays.asList("one", "many", "infinitive")));
+                }else{
+                    //строим спиннер для рода в иврите
+                    spGenderANWAc.setAdapter(
+                            buildSpinnerAdapter(Arrays.asList("male", "female")));
+                    //строим спиннер для множ. и ед. числа
+                    spQuantityANWAc.setAdapter(
+                            buildSpinnerAdapter(Arrays.asList("one", "many")));
+                }//if(position == 3)
+            }//onItemSelected
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }//onNothingSelected
+        });
     }//onCreate
 
     @Override
@@ -93,6 +133,11 @@ public class AddNewWordActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btnPlTrANWAc:
+                // создаем EditText, пишем hint и добавляем в LinearLayout
+                countTranslationsLayoutBuilding();
+                break;
+
             case R.id.btnOkANWAc:
                 addNewWordToDB();
                 break;
@@ -104,66 +149,141 @@ public class AddNewWordActivity extends AppCompatActivity {
         }//switch
     }//onClick
 
+    //процедура постороения layout для строк переводов
+    private void countTranslationsLayoutBuilding() {
+        countTranslations++;
+        tvTranslationsCountANWAc.setText(String.valueOf(countTranslations));
+        // создаем EditText, пишем hint и добавляем в LinearLayout
+        EditText newEditText = new EditText(this);
+        newEditText.setHint("Translation " + countTranslations);
+        llTranslationsANWAc.addView(newEditText);
+        listETTranslations.add(newEditText);
+    }//countTranslationsLayoutBuilding
+
     private void addNewWordToDB() {
-        boolean fl = false;
-        //id из таблицы transcription
+        //флаг проверки пустых строк
+        boolean flEmptyString = false;
+        //флаг проверки пустых строк translations
+        boolean flEmptyStringTranslations = false;
+        //id из таблицы russian, transcriprion, gender, meaning, quntity
         //для записи в другие таблицы
+        List<Integer> listRussianId = new ArrayList<>();
         int transcId = 0;
-        int hebrewId = 0;
-        //id из таблицы meaning
-        //для записи в другие таблицы
+        int genderId = 0;
         int meaningId = 0;
-        String ruWord = edRussianANWAc.getText().toString();
-        String ruGender = spGenderRusANWAc.getSelectedItem().toString();
+        int quantityId = 0;
+        int hebrewId = 0;
+
+
+        String ruWord;
         String heWord = edHebrewANWAc.getText().toString();
-        String heGender = spGenderHebANWAc.getSelectedItem().toString();
+        String gender = spGenderANWAc.getSelectedItem().toString();
         String transc = edTranscriptionANWAc.getText().toString();
         String meaning = spMeaningANWAc.getSelectedItem().toString();
         String quantity = spQuantityANWAc.getSelectedItem().toString();
 
+        //проверяем на пустые строки переводы
+        //если есть хотя бы одина не пустая строка
+        //это удовлетворяет наши условия
+        int l = countTranslations;
+        for (int i = 0; i < l; i++) {
+            //берем значение из коллекции
+            //используем предварительно функцию trim чтоб убрать лишние пробелы
+            ruWord = listETTranslations.get(i).getText().toString().trim();
+            //если строка не пустая устанавливаем флаг
+            //flEmptyStringTranslations = true
+            //и выходим из цикла
+            if(!ruWord.equals("")) {
+                flEmptyStringTranslations = true;
+                break;
+            }//if(!ruWord.equals(""))
+        }//for (int i = 0; i < l; i++)
         //проверяем пустые строки
-        if ((ruWord.equals("")) || (heWord.equals("")) || (transc.equals(""))) {
-            Toast.makeText(context, "Found empty lines!", Toast.LENGTH_SHORT).show();
-            fl = true;
+        if ((!flEmptyStringTranslations) || (heWord.equals("")) || (transc.equals(""))) {
+            if(!flEmptyStringTranslations)
+                //если пустые строки включая переводы
+                Toast.makeText(context, "Empty lines, you need one Translation!", Toast.LENGTH_SHORT).show();
+            else
+                //если пустые строки но переводы есть заполненые
+                Toast.makeText(context, "Empty lines!", Toast.LENGTH_SHORT).show();
+            flEmptyString = true;
         }else{
-            //проверяем на повторение попарно двух столбцов
-            //слово по русски и слово на иврите
+            //проверяем на повторение ивритовского слова
             //получаем курсор данных из БД
-            String query = "SELECT russians.word_ru, hebrew.word_he FROM russians " +
-                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id";
+            String query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            int n = cursor.getCount();
-            for (int i = 0; i < n; i++) {
-                cursor.moveToPosition(i);
-                if ((ruWord.equals(cursor.getString(0))) && (heWord.equals(cursor.getString(1)))) {
-                    Toast.makeText(context, "Found a match! Correct!", Toast.LENGTH_SHORT).show();
-                    fl = true;
-                    break;
-                }
+            //если найденно повторение
+            if(cursor.getCount() > 0){
+                Toast.makeText(context, "Found a match! Correct hebrew word!", Toast.LENGTH_SHORT).show();
+                flEmptyString = true;
             }//for
         }//if-else
 
         //если нет пустых строк и повторяющихся слов записываем новое слово
-        if(!fl) {
+        if(!flEmptyString) {
+            String query;
+            Cursor cursor;
+
+            ///////////////////////работа с русским словом//////////////////////////
+            //проверяем на повторение русское слово в БД
+            //получаем курсор данных из БД
+            for (int i = 0; i < l; i++) {
+                //берем значение из коллекции
+                //используем предварительно функцию trim чтоб убрать лишние пробелы
+                ruWord = listETTranslations.get(i).getText().toString().trim();
+                //если строка пустая берем следующу итерацию
+                //если не пустая обрабатываем
+                if(ruWord.equals("")) continue;
+                else ruWord = listETTranslations.get(i).getText().toString();
+
+                query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+
+                //если слово новое и повторений не найденно
+                //т.е. в курсоре пусто
+                if (cursor.getCount() == 0) {
+                    //записываем новое слово в таблицу russian
+                    dbUtilities.insertIntoRussians(ruWord);
+                    //получаем id последней записи russian
+                    query = "SELECT russian.id FROM russian WHERE russian.word_ru = \"" + ruWord + "\"";
+                    cursor = dbUtilities.getDb().rawQuery(query, null);
+                }//if-else
+
+                //записываем id записи в таблице russian
+                //для дальнейшей работы
+                cursor.moveToPosition(0);
+                listRussianId.add(Integer.parseInt(cursor.getString(0)));
+            }//for (int i = 0; i < l; i++)
+
+            ///////////////////////работа с транскрипцией//////////////////////////
             //проверяем на повторение транскипцию
             //получаем курсор данных из БД
-            String query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
-            Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            if(cursor.getCount() > 0){
-                cursor.moveToPosition(0);
-                Log.d("ididid", "tr_id"+cursor.getString(0));
-                transcId = Integer.parseInt(cursor.getString(0));
-            }else{
+            query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
+            cursor = dbUtilities.getDb().rawQuery(query, null);
+
+            //если слово новое и повторений не найденно
+            //т.е. в курсоре пусто
+            if(cursor.getCount() == 0){
                 //записываем новое слово в таблицу transcriptions
                 dbUtilities.insertIntoTranscriptions(transc);
                 //получаем id последней записи transcriptions
                 query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
                 cursor = dbUtilities.getDb().rawQuery(query, null);
-                cursor.moveToPosition(0);
-                Log.d("ididid", "tr_id"+cursor.getString(0));
-                transcId = Integer.parseInt(cursor.getString(0));
             }//if-else
+            //записываем id записи в таблице transcriptions
+            //для дальнейшей работы
+            cursor.moveToPosition(0);
+            transcId = Integer.parseInt(cursor.getString(0));
 
+            ///////////////////////работа с гендерным признаком////////////////////
+            //определяем id из таблицы gender
+            //получаем курсор данных из БД
+            query = "SELECT gender.id FROM gender WHERE gender.option = \"" + gender + "\"";
+            cursor = dbUtilities.getDb().rawQuery(query, null);
+            cursor.moveToPosition(0);
+            genderId = Integer.parseInt(cursor.getString(0));
+
+            ///////////////////////работа с признаком части речи////////////////////
             //определяем id из таблицы meaning
             //получаем курсор данных из БД
             query = "SELECT meanings.id FROM meanings WHERE meanings.option = \"" + meaning+ "\"";
@@ -171,21 +291,32 @@ public class AddNewWordActivity extends AppCompatActivity {
             cursor.moveToPosition(0);
             meaningId = Integer.parseInt(cursor.getString(0));
 
-            //записываем новое слово в таблицу hebrew
-            dbUtilities.insertIntoHebrew(heWord, transcId, heGender, meaningId);
+            ///////////////////////работа с количественным признаком///////////////
+            //определяем id из таблицы quantity
+            //получаем курсор данных из БД
+            query = "SELECT quantity.id FROM quantity WHERE quantity.option = \"" + quantity + "\"";
+            cursor = dbUtilities.getDb().rawQuery(query, null);
+            cursor.moveToPosition(0);
+            quantityId = Integer.parseInt(cursor.getString(0));
 
+            ///////////////////////работа с ивритовским словом////////////////////
+            //записываем новое слово в таблицу hebrew
+            dbUtilities.insertIntoHebrew(heWord, transcId, meaningId, genderId, quantityId);
             //получаем id последней записи hebrew
             query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             cursor.moveToPosition(0);
-            Log.d("ididid", "he_id"+cursor.getString(0));
             hebrewId = Integer.parseInt(cursor.getString(0));
 
-            //записываем новое слово в таблицу russian
-            dbUtilities.insertIntoRussians(ruWord, hebrewId, ruGender, quantity, meaningId);
-
+            ///////////////////////работа с таблицей translations////////////
+            //получаем кол-во строк для записи
+            l = listRussianId.size();
+            for (int i = 0; i < l; i++) {
+                //записываем новую строку в таблицу translations
+                dbUtilities.insertIntoTranslations(hebrewId, listRussianId.get(i));
+            }//for (int i = 0; i < l; i++)
             Toast.makeText(context, "New word additionally!", Toast.LENGTH_SHORT).show();
             finish();
-        }//if(!fl)
+        }//if(!flEmptyString)
     }//addNewWordToDB
 }//AddNewWordActivity

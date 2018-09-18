@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.user.dictionary.DBUtilities;
 import com.example.user.dictionary.FileUtilities;
 import com.example.user.dictionary.R;
+import com.example.user.dictionary.Utils;
 import com.example.user.dictionary.Word;
 
 import java.util.ArrayList;
@@ -60,11 +61,12 @@ public class WriteInHebrewFragment extends Fragment {
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
-            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
-            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
-            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+            "meanings.option, gender.option, quantity.option FROM hebrew " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -194,9 +196,21 @@ public class WriteInHebrewFragment extends Fragment {
             );
 
             //получаем данные из курсора для фильтрации
-            word.setIdWord(cursor.getString(0));     //id слова
-            word.setStrRus(cursor.getString(1));     //слово на русском
-            word.setStrHeb(cursor.getString(2));     //слово на иврите
+            String idHebrew = cursor.getString(0);
+            word.setIdWord(idHebrew);     //id слова
+            word.setStrHeb(cursor.getString(1));     //слово на иврите
+            word.setStrTrans(cursor.getString(2));   //транскрпция слова на иврите
+
+            //получаем перевод
+            String queryTr = "SELECT russian.word_ru FROM translations " +
+                    "INNER JOIN russian ON russian.id = translations.russian_id " +
+                    "WHERE translations.hebrew_id = \"" + idHebrew + "\"";
+            Cursor cursorTr = dbUtilities.getDb().rawQuery(queryTr, null);
+            if(cursorTr.getCount()-1 > 1)
+                cursorTr.moveToPosition(Utils.getRandom(0, cursorTr.getCount()-1));
+            else
+                cursorTr.moveToPosition(0);
+            word.setStrRus(cursorTr.getString(0));     //слово на русском
 
             //добавляем новое слово в коллекцию
             listWords.add(word);

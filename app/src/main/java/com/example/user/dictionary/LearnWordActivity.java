@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class LearnWordActivity extends AppCompatActivity {
     List<String> listIdLearnWords; // коллекция id слов для изучения
     int method = 1;
     int loops = 1;
-    int wordsCount = 10;
+    int wordsCount = 8;
     ActionBar actionBar;                //стрелка НАЗАД
     String[] methodName = {
             "Mix",
@@ -49,11 +50,12 @@ public class LearnWordActivity extends AppCompatActivity {
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
-            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
-            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
-            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+            "meanings.option, gender.option, quantity.option FROM hebrew " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,20 +171,25 @@ public class LearnWordActivity extends AppCompatActivity {
 
     //выбор процедуры при рандомном подборе слов для изучения
     private void randomWords() {
-        String nextInter;
-        listIdLearnWords.clear();
+        //проверка достаточно ли у вас слов в словоре для изучения
+        if(countCursor<wordsCount){
+            Toast.makeText(this,"You need add more words to DB!",Toast.LENGTH_SHORT).show();
+        }else {
+            String nextInter;
+            listIdLearnWords.clear();
 
-        for (int i = 0; i < wordsCount; i++) {
-            //проверка повторяющегося варианта
-            while (true) {
-                nextInter = String.valueOf(Utils.getRandom(0, countCursor));
-                if (!listIdLearnWords.contains(nextInter)) break;
-            }//while
-            listIdLearnWords.add(nextInter);
-        }//for
-        //перемешать коллекцию выбранных слов
-        Collections.shuffle(listIdLearnWords);
-        startMethod();
+            for (int i = 0; i < wordsCount; i++) {
+                //проверка повторяющегося варианта
+                while (true) {
+                    nextInter = String.valueOf(Utils.getRandom(0, countCursor));
+                    if (!listIdLearnWords.contains(nextInter)) break;
+                }//while
+                listIdLearnWords.add(nextInter);
+            }//for
+            //перемешать коллекцию выбранных слов
+            Collections.shuffle(listIdLearnWords);
+            startMethod();
+        } //if(countCursor<wordsCount)
     }//randomWords
 
     //запуск активности любого метода изучения слов

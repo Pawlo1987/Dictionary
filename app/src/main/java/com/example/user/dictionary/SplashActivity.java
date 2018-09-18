@@ -16,25 +16,31 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        RlMainSpAc = (RelativeLayout)findViewById(R.id.RlMainSpAc);
-        RlMainSpAc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                countDownTimer.cancel();
-                startMainActivity();
-            }
-        });
-        //Создаем таймер обратного отсчета на 10 секунд с шагом отсчета
-        //в 1 секунду (задаем значения в миллисекундах):
-        countDownTimer = new CountDownTimer(3000, 1000) {
 
-            //Здесь можно выполнить какието дейстивия через кажду секунду
-            //до конца счета таймера
-            public void onTick(long millisUntilFinished) { }
-            //Задаем действия после завершения отсчета (запускаем главную активность)
-            public void onFinish(){ startMainActivity(); }
-        };
-        countDownTimer.start();
+
+        startMainActivity();
+
+
+
+//        RlMainSpAc = (RelativeLayout)findViewById(R.id.RlMainSpAc);
+//        RlMainSpAc.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                countDownTimer.cancel();
+//                startMainActivity();
+//            }
+//        });
+//        //Создаем таймер обратного отсчета на 10 секунд с шагом отсчета
+//        //в 1 секунду (задаем значения в миллисекундах):
+//        countDownTimer = new CountDownTimer(3000, 1000) {
+//
+//            //Здесь можно выполнить какието дейстивия через кажду секунду
+//            //до конца счета таймера
+//            public void onTick(long millisUntilFinished) { }
+//            //Задаем действия после завершения отсчета (запускаем главную активность)
+//            public void onFinish(){ startMainActivity(); }
+//        };
+//        countDownTimer.start();
     }//onCreate
 
     private void startMainActivity() {
