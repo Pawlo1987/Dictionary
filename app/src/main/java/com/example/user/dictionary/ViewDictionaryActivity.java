@@ -7,13 +7,24 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.ViewDebug;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewDictionaryActivity extends AppCompatActivity {
 
     EditText etSearchWordVDAc;
+    Spinner spMeaningVDAc;
+    int spPos;                      //позиция спинера
+    private ArrayAdapter<String> spAdapterMeaning;  //Адаптер для спинера
+    List<String> spListMeaningVDAc;
     String filter = "";
     DBUtilities dbUtilities;
     Context context;
@@ -22,16 +33,18 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     ViewDictionaryRecyclerAdapter viewDictionaryRecyclerAdapter;
     // поля для доступа к записям БД
     Cursor cursor;                // прочитанные данные
-    //основной запрос
-    // получаем данные из БД в виде курсора
+
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
+    //основной запрос
     String mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
             "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
             "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
             "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-            "INNER JOIN transcription ON transcription.id = hebrew.transcription_id;";
+            "INNER JOIN transcription ON transcription.id = hebrew.transcription_id";
+    //запрос для спиннера
+    String spinnerQuery = "SELECT option FROM meaning";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +52,37 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_dictionary);
 
         context = getBaseContext();
-        etSearchWordVDAc = findViewById(R.id.etSearchWordVDAc);
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
+        spListMeaningVDAc = new ArrayList<>();
+        spMeaningVDAc = findViewById(R.id.spMeaningVDAc);
+        buildSpinner();
+        etSearchWordVDAc = findViewById(R.id.etSearchWordVDAc);
         rvWordsVDAc = findViewById(R.id.rvWordsVDAc);
         //Строим RecyclerView
         buildUserRecyclerView(
-                //spCitySePaAc.getItemAtPosition(spPos).toString(),
+                spMeaningVDAc.getItemAtPosition(spPos).toString(),
                 filter
         );
+
+        //Слушатель для позиции спинера и фильтрации RecyclerView по изменению позиции
+        spMeaningVDAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spPos = position;
+
+                //Строим RecyclerView
+                buildUserRecyclerView(
+                        spMeaningVDAc.getItemAtPosition(spPos).toString(),
+                        filter
+                );
+            }//onItemSelected
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }//onNothingSelected
+        });
 
         // установка слушателя изменения текста в EditText для бинарного поиска
         // и фильтрации RecyclerView по изменению текста в EditText
@@ -60,7 +95,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
                 //Строим RecyclerView
                 buildUserRecyclerView(
-                        //spCitySePaAc.getItemAtPosition(spPos).toString(),
+                        spMeaningVDAc.getItemAtPosition(spPos).toString(),
                         filter
                 );
             }//onTextChanged
@@ -71,8 +106,23 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     }//onCreate
 
     //Строим RecyclerView
-    private void buildUserRecyclerView(String filter) {
-
+    private void buildUserRecyclerView(String meaning, String filter) {
+        // получаем данные из БД в виде курсора
+        // согласовуем с выбранной позицией спиннера
+        if(meaning.equals("ALL")) {
+            mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
+                    "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
+                    "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
+                    "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
+                    "INNER JOIN transcription ON transcription.id = hebrew.transcription_id";
+        }else {
+            mainQuery = "SELECT russian.id, russian.word, hebrew.word, transcription.word, " +
+                    "russian.gender, hebrew.gender, meaning.option, russian.quantity FROM russian " +
+                    "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
+                    "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
+                    "INNER JOIN transcription ON transcription.id = hebrew.transcription_id " +
+                    "WHERE meaning.option = \"" + meaning + "\"";
+        }
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
 
         // создаем адаптер, передаем в него курсор
@@ -82,24 +132,23 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         rvWordsVDAc.setAdapter(viewDictionaryRecyclerAdapter);
     }//buildUserRecyclerView
 
-//    //строим Spinner City
-//    private void buildCitySpinner() {
-//        //заполнить spListCity данные для отображения в Spinner
-//        spListCity = dbUtilities.getStrListTableFromDB("cities", "name");
-//
-//        spListCity.add("ВСЕ ГОРОДА");
-//
-//        //создание адаптера для спинера
-//        spAdapterCity = new ArrayAdapter<String>(
-//                this,
-//                android.R.layout.simple_spinner_item,
-//                spListCity
-//        );
-//
-//        // назначение адапетра для списка
-//        spAdapterCity.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        spCitySePaAc.setAdapter(spAdapterCity);
-//    }//buildCitySpinner
+    //строим Spinner
+    private void buildSpinner() {
+        //заполнить spListMeaningVDAc данные для отображения в Spinner
+        spListMeaningVDAc.add("ALL");
+        spListMeaningVDAc.addAll(dbUtilities.fillList(spinnerQuery));
+
+        //создание адаптера для спинера
+        spAdapterMeaning = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                spListMeaningVDAc
+        );
+
+        // назначение адапетра для списка
+        spAdapterMeaning.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spMeaningVDAc.setAdapter(spAdapterMeaning);
+    }//buildCitySpinner
 
 }//ViewDictionaryActivity
