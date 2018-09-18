@@ -11,6 +11,7 @@
     <string name="edHintTranscriptionEWAc">Transcription</string>
     <string name="edHintTranscriptionANWAc">Transcription</string>
     <string name="tvHeadANWAc">New word</string>
+    <string name="tvTitleChCoAc">Choose a couple</string>
     <string name="btnOkANWAc">OK</string>
     <string name="btnCancelANWAc">Cancel</string>
     <string name="tvHeadEWAc">Edit word</string>

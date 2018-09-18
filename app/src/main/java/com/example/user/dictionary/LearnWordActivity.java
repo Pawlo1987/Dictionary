@@ -83,28 +83,28 @@ public class LearnWordActivity extends AppCompatActivity {
                 break;
 
             case R.id.btnPlWC:
-                if(wordsCount < countCursor){
+                if (wordsCount < countCursor) {
                     wordsCount++;
                     tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
                 }
                 break;
 
             case R.id.btnMiWC:
-                if(wordsCount > 8){
+                if (wordsCount > 8) {
                     wordsCount--;
                     tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
                 }
                 break;
 
             case R.id.btnPlMet:
-                if(method < 3){
+                if (method < 3) {
                     method++;
                     tvMethodLWAc.setText(String.valueOf(method));
                 }
                 break;
 
             case R.id.btnMiMet:
-                if(method > 1){
+                if (method > 1) {
                     method--;
                     tvMethodLWAc.setText(String.valueOf(method));
                 }
@@ -115,7 +115,7 @@ public class LearnWordActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
             //обработчик actionBar (стрелка сверху слева)
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
@@ -127,6 +127,10 @@ public class LearnWordActivity extends AppCompatActivity {
 
     private void selectWords() {
         Intent intent = new Intent(this, SelectLearnWordActivity.class);
+        intent.putExtra(
+                "method",
+                method
+        );
         startActivity(intent);
     }//selectWords
 
@@ -137,24 +141,49 @@ public class LearnWordActivity extends AppCompatActivity {
 
         for (int i = 0; i < wordsCount; i++) {
             //проверка повторяющегося варианта
-            while(true) {
+            while (true) {
                 nextInter = String.valueOf(Utils.getRandom(0, countCursor));
-                if(!listIdLearnWords.contains(nextInter)) break;
+                if (!listIdLearnWords.contains(nextInter)) break;
             }//while
             listIdLearnWords.add(nextInter);
         }//for
         //перемешать коллекцию выбранных слов
         Collections.shuffle(listIdLearnWords);
-        Intent intent = new Intent(this, ChooseTranslationActivity.class);
-        intent.putStringArrayListExtra(
-                "idList",
-                (ArrayList<String>) listIdLearnWords
-        );
-        intent.putExtra(
-                "wordsCount",
-                wordsCount
-        );
-        startActivity(intent);
+        //выбираем метод изучения слов
+        if (method == 1) {
+            Intent intent = new Intent(this, ChooseTranslationActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listIdLearnWords
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    wordsCount
+            );
+            startActivity(intent);
+        } else if (method == 2) {
+            Intent intent = new Intent(this, ChooseHebWordActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listIdLearnWords
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    wordsCount
+            );
+            startActivity(intent);
+        } else if (method == 3) {
+            Intent intent = new Intent(this, ChooseCoupleActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listIdLearnWords
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    wordsCount
+            );
+            startActivity(intent);
+        }//if-else-if
     }//randomWords
 
 }//LearnWordActivity

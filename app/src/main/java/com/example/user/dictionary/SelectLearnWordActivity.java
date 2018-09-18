@@ -39,6 +39,7 @@ public class SelectLearnWordActivity extends AppCompatActivity {
             "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
             "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +73,11 @@ public class SelectLearnWordActivity extends AppCompatActivity {
                 buildUserRecyclerView();
             }//onTextChanged
 
-            public void afterTextChanged(Editable s) { }
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
         });
     }//onCreate
 
@@ -95,7 +99,7 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btnOkSLWAc:
                 //проверка - чтоб отмеченных слов для изучения было минимум 8
-                if(listCursorNum.size() >= 8)
+                if (listCursorNum.size() >= 8)
                     startLearnSelectWords();
                 else
                     Toast.makeText(context, "You need 8 word minimum", Toast.LENGTH_SHORT).show();
@@ -107,16 +111,42 @@ public class SelectLearnWordActivity extends AppCompatActivity {
     private void startLearnSelectWords() {
         //перемешать коллекцию выбранных слов
         Collections.shuffle(listCursorNum);
-        Intent intent = new Intent(this, ChooseTranslationActivity.class);
-        intent.putStringArrayListExtra(
-                "idList",
-                (ArrayList<String>) listCursorNum
-        );
-        intent.putExtra(
-                "wordsCount",
-                listCursorNum.size()
-        );
-        startActivity(intent);
+        int method = getIntent().getIntExtra("method", 0);
+        //выбираем метод изучения слов
+        if (method == 1) {
+            Intent intent = new Intent(this, ChooseTranslationActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listCursorNum
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    listCursorNum.size()
+            );
+            startActivity(intent);
+        } else if (method == 2) {
+            Intent intent = new Intent(this, ChooseHebWordActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listCursorNum
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    listCursorNum.size()
+            );
+            startActivity(intent);
+        } else if (method == 3) {
+            Intent intent = new Intent(this, ChooseCoupleActivity.class);
+            intent.putStringArrayListExtra(
+                    "idList",
+                    (ArrayList<String>) listCursorNum
+            );
+            intent.putExtra(
+                    "wordsCount",
+                    listCursorNum.size()
+            );
+            startActivity(intent);
+        }//if-else-if
     }//startLearnSelectWords
 
     //Строим RecyclerView

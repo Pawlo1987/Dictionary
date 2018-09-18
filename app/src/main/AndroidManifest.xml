@@ -33,7 +33,9 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".LearnWordActivity" />
         <activity android:name=".ChooseTranslationActivity" />
-        <activity android:name=".SelectLearnWordActivity"></activity>
+        <activity android:name=".SelectLearnWordActivity" />
+        <activity android:name=".ChooseHebWordActivity" />
+        <activity android:name=".ChooseCoupleActivity"></activity>
     </application>
 
 </manifest>
