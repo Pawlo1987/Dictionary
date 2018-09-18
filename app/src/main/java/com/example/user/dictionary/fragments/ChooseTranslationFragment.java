@@ -15,10 +15,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.user.dictionary.BackgroundMethodActivity;
 import com.example.user.dictionary.DBUtilities;
 import com.example.user.dictionary.FileUtilities;
-import com.example.user.dictionary.Interface.MixMethodInterface;
 import com.example.user.dictionary.R;
 import com.example.user.dictionary.Utils;
 import com.example.user.dictionary.Word;
@@ -327,10 +325,6 @@ public class ChooseTranslationFragment extends Fragment{
             word.setStrRus(cursor.getString(1));     //слово на русском
             word.setStrHeb(cursor.getString(2));     //слово на иврите
             word.setStrTrans(cursor.getString(3));   //транскрпция слова на иврите
-//            word.setGenRus(cursor.getString(4));     //род слова в русском
-//            word.setGenHeb(cursor.getString(5));     //род слова в иврите
-//            word.setMeaning(cursor.getString(6));    //значение слова в предложении
-//            word.setQuantity(cursor.getString(7));   //множественное или едиственное слово
 
             //добавляем новое слово в коллекцию
             listWords.add(word);

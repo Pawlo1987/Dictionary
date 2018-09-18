@@ -1,6 +1,5 @@
 package com.example.user.dictionary;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;

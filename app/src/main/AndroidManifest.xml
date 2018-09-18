@@ -28,9 +28,6 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
         <activity android:name=".LearnWordActivity" />
         <activity android:name=".SelectLearnWordActivity" />
         <activity android:name=".BackgroundMethodActivity"></activity>
