@@ -28,9 +28,18 @@ public class MainActivity extends AppCompatActivity {
                 viewDictionary();
                 break;
 
+            case R.id.btnLearnWords:
+                learnWords();
+                break;
+
         }//switch
 
     }//onClick
+
+    private void learnWords() {
+        Intent intent = new Intent(this, LearnWordActivity.class);
+        startActivity(intent);
+    }
 
     private void addNewWord() {
         Intent intent = new Intent(this, AddNewWordActivity.class);

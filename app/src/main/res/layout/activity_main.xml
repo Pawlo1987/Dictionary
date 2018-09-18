@@ -32,11 +32,19 @@
         android:text="@string/btnAddNewWord" />
 
     <Button
-        android:id="@+id/btnViewDictionary"
+    android:id="@+id/btnViewDictionary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:onClick="onClick"
+    android:text="@string/btnViewDictionary" />
+
+    <Button
+        android:id="@+id/btnLearnWords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:onClick="onClick"
-        android:text="@string/btnViewDictionary" />
+        android:text="@string/btnLearnWords" />
 
 </LinearLayout>

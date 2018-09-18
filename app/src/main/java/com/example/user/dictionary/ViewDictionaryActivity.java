@@ -22,8 +22,6 @@ import java.util.List;
 
 public class ViewDictionaryActivity extends AppCompatActivity {
     FileUtilities FileUtilities;
-    File sourceFile;
-    File destFile;
     EditText etSearchWordVDAc;
     Spinner spMeaningVDAc;
     int spPos;                      //позиция спинера
