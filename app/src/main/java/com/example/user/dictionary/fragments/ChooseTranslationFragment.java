@@ -236,7 +236,7 @@ public class ChooseTranslationFragment extends Fragment{
                             }//for
                             startLearnWord();//запускаем заново изучение
                         }else getActivity().finish();
-                    }else btnActivity.callOnClick();
+                    }else btnActivity.callOnClick(); //возвращение в активность BackgroundMethodActivity
                 } else {
                     interForMixMethod++;
                     //переход к следующему слову или выход из режима изучения

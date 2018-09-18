@@ -342,7 +342,7 @@ public class ChooseCoupleFragment extends Fragment {
                             startLearnWord();//запускаем заново изучение
                         } else getActivity().finish();
                     }//if (temp + 5 == listCursorNumFromActivity.size())
-                    else btnActivity.callOnClick();
+                    else btnActivity.callOnClick(); //возвращение в активность BackgroundMethodActivity
                 } else {
                     //если в коллекции еще остались слова продолжаем
                     //иначе возврат в предыдущую активность

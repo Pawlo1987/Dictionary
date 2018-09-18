@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.user.dictionary.Fragments.ChooseCoupleFragment;
 import com.example.user.dictionary.Fragments.ChooseHebrewWordFragment;
 import com.example.user.dictionary.Fragments.ChooseTranslationFragment;
+import com.example.user.dictionary.Fragments.StudyPreviewFragment;
 import com.example.user.dictionary.Fragments.WriteInHebrewFragment;
 import com.example.user.dictionary.Fragments.WriteInTranslationFragment;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class BackgroundMethodActivity extends AppCompatActivity {
     Context context;
+    StudyPreviewFragment studyPreviewFragment;
     ChooseTranslationFragment chooseTranslationFragment;
     ChooseHebrewWordFragment chooseHebrewWordFragment;
     ChooseCoupleFragment chooseCoupleFragment;
@@ -31,6 +33,8 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     List<String> list5WordsOnScreen; // коллекция 5 слов для изучения
     List<Integer> listMethods;
     Button btnActivity;
+    TextView tvFirstLoopBaMeAc; //TextView для определения первого цикла
+    TextView tvPreviewFlagBaMeAc; //TextView для опеределени предпросмотра
     TextView tvMixMethodPos;//TextView для глобальной позиция для mixMethod
     TextView tvLoopsBaMeAc;//TextView для количества кругов изучаемого набора слов
     TextView tvIterMethodBaMeAc;//TextView для итерации номеров методов в коллекции выбранных методов
@@ -51,17 +55,21 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         tvMixMethodPos = findViewById(R.id.tvMixMethodPos);
         tvLoopsBaMeAc = findViewById(R.id.tvLoopsBaMeAc);
         tvIterMethodBaMeAc = findViewById(R.id.tvIterMethodBaMeAc);
+        tvPreviewFlagBaMeAc = findViewById(R.id.tvPreviewFlagBaMeAc);
+        tvFirstLoopBaMeAc = findViewById(R.id.tvPreviewFlagBaMeAc);
 
         listCursorNum = new ArrayList<>();
         listMethods = new ArrayList<>();
         list5WordsOnScreen = new ArrayList<>();
         wordsCount = getIntent().getIntExtra("wordsCount", 0);
         listCursorNum.addAll(getIntent().getStringArrayListExtra("idList"));
+        studyPreviewFragment = new StudyPreviewFragment();
         chooseTranslationFragment = new ChooseTranslationFragment();
         chooseHebrewWordFragment = new ChooseHebrewWordFragment();
         chooseCoupleFragment = new ChooseCoupleFragment();
         writeInTranslationFragment = new WriteInTranslationFragment();
         writeInHebrewFragment = new WriteInHebrewFragment();
+        tvPreviewFlagBaMeAc.setText("0");
         Bundle args = new Bundle();    // объект для передачи параметров в диалог
         args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
         args.putInt("wordsCount", wordsCount);
@@ -71,14 +79,9 @@ public class BackgroundMethodActivity extends AppCompatActivity {
 
         //переменная method переданная из активности LearnWordActivity
         listMethods.addAll(getIntent().getIntegerArrayListExtra("listMethods"));
-
-        //непосредстенное начало работы фрагмента
-        goFragment(
-                args,
-                //если количество методов > 1,
-                // то выбираем mix method, иначе выбраный метод
-                listMethods.size()>1?6:listMethods.get(0)
-        );
+        fTrans = getFragmentManager().beginTransaction();
+        studyPreviewFragment.setArguments(args);
+        fTrans.replace(R.id.frameLayoutBaMeAc, studyPreviewFragment).commit();
     }//onCreate
 
     //начало работы фрагмента
@@ -116,69 +119,88 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     }//goFragment
 
     public void onClick(View view) {
-        mixMethodPos = Integer.parseInt(tvMixMethodPos.getText().toString());
-
-        //выбираем метод для запуска порции из 5 слов максимум
-        //считываем итерацию с textView для работы с методами
-        wasMethod = Integer.parseInt(tvIterMethodBaMeAc.getText().toString());
-        //получам следующий метод из коллекции
-        int nowMethod = listMethods.get(wasMethod);
-        //корректируем textView для итераций
-        if(wasMethod == 0){
-            tvIterMethodBaMeAc.setText(String.valueOf(listMethods.size()-1));
-        }else{
-            wasMethod--;
-            tvIterMethodBaMeAc.setText(String.valueOf(wasMethod));
-        }//if(wasMethod == 0)
-
-        wordsCount = listCursorNum.size() - mixMethodPos;
-
-        //если закнчились слова для изучения
-        if (wordsCount == 0){
-            //считываем заказаное число повторений коллекции слов
-            int loops = Integer.parseInt(
-                    findViewById(R.id.tvLoopsBaMeAc).toString()
+        if(tvPreviewFlagBaMeAc.getText().toString().equals("0")){
+            //устанавливаем флаг предпросмотра в 1
+            //значит предпросмотр закончен переходим к изучению
+            tvPreviewFlagBaMeAc.setText("1");
+            //включаем прогресс бар
+            pbBaMeAc.setVisibility(View.VISIBLE);
+            Bundle args = new Bundle();    // объект для передачи параметров в диалог
+            args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
+            args.putInt("wordsCount", wordsCount);
+            args.putBoolean("isMixMethod", false);
+            //непосредстенное начало работы фрагмента
+            goFragment(
+                    args,
+                    //если количество методов > 1,
+                    // то выбираем mix method, иначе выбраный метод
+                    listMethods.size()>1?6:listMethods.get(0)
             );
-            //проверяем считанное значение
-            if(loops>1) {
-                //сбрасываем счетчик для глобальной позиции MixMethodPos
-                tvMixMethodPos.setText(String.valueOf("0"));
-                loops--;
-                TextView tvLoopsBaMeAc = findViewById(R.id.tvLoopsBaMeAc);
-                tvLoopsBaMeAc.setText(String.valueOf(loops));
-            }else finish();
-        }
+        }else {
+            mixMethodPos = Integer.parseInt(tvMixMethodPos.getText().toString());
 
-        Bundle args = new Bundle();    // объект для передачи параметров в диалог
-        args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
-        args.putInt("wordsCount", wordsCount);
-        args.putBoolean("isMixMethod", true);
+            //выбираем метод для запуска порции из 5 слов максимум
+            //считываем итерацию с textView для работы с методами
+            wasMethod = Integer.parseInt(tvIterMethodBaMeAc.getText().toString());
+            //получам следующий метод из коллекции
+            int nowMethod = listMethods.get(wasMethod);
+            //корректируем textView для итераций
+            if (wasMethod == 0) {
+                tvIterMethodBaMeAc.setText(String.valueOf(listMethods.size() - 1));
+            } else {
+                wasMethod--;
+                tvIterMethodBaMeAc.setText(String.valueOf(wasMethod));
+            }//if(wasMethod == 0)
 
-        fTrans = getFragmentManager().beginTransaction();
-        //выбираем метод изучения слов
-        switch (nowMethod) {
-            case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
-                chooseTranslationFragment.setArguments(args);
-                fTrans.replace(R.id.frameLayoutBaMeAc, chooseTranslationFragment);
-                break;
-            case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
-                chooseHebrewWordFragment.setArguments(args);
-                fTrans.replace(R.id.frameLayoutBaMeAc, chooseHebrewWordFragment);
-                break;
-            case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
-                chooseCoupleFragment.setArguments(args);
-                fTrans.replace(R.id.frameLayoutBaMeAc, chooseCoupleFragment);
-                break;
-            case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
-                writeInTranslationFragment.setArguments(args);
-                fTrans.replace(R.id.frameLayoutBaMeAc, writeInTranslationFragment);
-                break;
-            case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
-                writeInHebrewFragment.setArguments(args);
-                fTrans.replace(R.id.frameLayoutBaMeAc, writeInHebrewFragment);
-                break;
-        }//switch
-        fTrans.commit();
+            wordsCount = listCursorNum.size() - mixMethodPos;
+
+            //если закнчились слова для изучения
+            if (wordsCount == 0) {
+                //считываем заказаное число повторений коллекции слов
+                int loops = Integer.parseInt(
+                        findViewById(R.id.tvLoopsBaMeAc).toString()
+                );
+                //проверяем считанное значение
+                if (loops > 1) {
+                    //сбрасываем счетчик для глобальной позиции MixMethodPos
+                    tvMixMethodPos.setText(String.valueOf("0"));
+                    loops--;
+                    TextView tvLoopsBaMeAc = findViewById(R.id.tvLoopsBaMeAc);
+                    tvLoopsBaMeAc.setText(String.valueOf(loops));
+                } else finish();
+            }
+
+            Bundle args = new Bundle();    // объект для передачи параметров в диалог
+            args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
+            args.putInt("wordsCount", wordsCount);
+            args.putBoolean("isMixMethod", true);
+
+            fTrans = getFragmentManager().beginTransaction();
+            //выбираем метод изучения слов
+            switch (nowMethod) {
+                case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
+                    chooseTranslationFragment.setArguments(args);
+                    fTrans.replace(R.id.frameLayoutBaMeAc, chooseTranslationFragment);
+                    break;
+                case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
+                    chooseHebrewWordFragment.setArguments(args);
+                    fTrans.replace(R.id.frameLayoutBaMeAc, chooseHebrewWordFragment);
+                    break;
+                case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
+                    chooseCoupleFragment.setArguments(args);
+                    fTrans.replace(R.id.frameLayoutBaMeAc, chooseCoupleFragment);
+                    break;
+                case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
+                    writeInTranslationFragment.setArguments(args);
+                    fTrans.replace(R.id.frameLayoutBaMeAc, writeInTranslationFragment);
+                    break;
+                case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
+                    writeInHebrewFragment.setArguments(args);
+                    fTrans.replace(R.id.frameLayoutBaMeAc, writeInHebrewFragment);
+                    break;
+            }//switch
+            fTrans.commit();
+        }// if(tvPreviewFlagBaMeAc.getText().toString().equals("0"))
     }//onClick
 
     //работа mixMethod

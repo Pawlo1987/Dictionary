@@ -34,6 +34,7 @@
     <string name="btnSelectWordsLWAc">SelectWords</string>
     <string name="btnRandomWordsLWAc">RandomWords</string>
     <string name="go">GO</string>
+    <string name="btnGoStPrFr">GO</string>
     <string name="btnAddNewTranslations">add</string>
     <string name="btnAddSemanticANWAc">add</string>
     <string name="item_authorization">Authorization</string>
@@ -56,4 +57,8 @@
     <string name="btnAddSemanticEWAc">add</string>
     <string name="btnEditSemanticEWAc">edit</string>
     <string name="item_select_semantic_group">Select semantic group</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tvTitleStPrFr">Preview words</string>
 </resources>

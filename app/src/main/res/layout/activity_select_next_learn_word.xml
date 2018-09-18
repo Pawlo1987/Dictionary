@@ -9,33 +9,43 @@ android:descendantFocusability="beforeDescendants"
 android:focusableInTouchMode="true"
 tools:context=".SelectNextLearnWordActivity">
 
-<android.support.design.widget.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <android.support.design.widget.TextInputEditText
-        android:id="@+id/etSelectNextLearnWordSNLWAc"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:hint="search...." />
-</android.support.design.widget.TextInputLayout>
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etSelectNextLearnWordSNLWAc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="search...." />
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSelectNextLearnWordSNLWAc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        app:layoutManager="LinearLayoutManager" />
+        app:layoutManager="LinearLayoutManager">
 
-<Button
-    android:id="@+id/btnOkSNLWAc"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="15dp"
-    android:layout_marginLeft="50dp"
-    android:layout_marginRight="50dp"
-    android:layout_weight="4"
-    android:onClick="onClick"
-    android:text="@string/go" />
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnOkSNLWAc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:onClick="onClick"
+            android:text="@string/go" />
+    </LinearLayout>
+
 </LinearLayout>
