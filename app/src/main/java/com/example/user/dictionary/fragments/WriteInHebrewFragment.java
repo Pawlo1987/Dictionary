@@ -40,7 +40,6 @@ public class WriteInHebrewFragment extends Fragment {
     List<Word> listWords; // коллекция слов для изучения
     TextView tvWordWrInHeFr;
     EditText etTransWrInHeFr;
-    Button btnCheckWrInHeFr;
     Button btnNextWrInHeFr;
     //переменная необходимая для итераци слов если фрагмент вызван из mixMethod
     int interForMixMethod;
@@ -83,28 +82,22 @@ public class WriteInHebrewFragment extends Fragment {
         swHelpWrInHeFr = resultView.findViewById(R.id.swHelpWrInHeFr);
         tvWordWrInHeFr = resultView.findViewById(R.id.tvWordWrInHeFr);
         etTransWrInHeFr = resultView.findViewById(R.id.etTransWrInHeFr);
-        btnCheckWrInHeFr = resultView.findViewById(R.id.btnCheckWrInHeFr);
         btnNextWrInHeFr = resultView.findViewById(R.id.btnNextWrInHeFr);
 
         btnActivity = getActivity().findViewById(R.id.btnActivity);
         pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
 
-        btnCheckWrInHeFr.setOnClickListener(new View.OnClickListener() {
+
+        btnNextWrInHeFr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pressBtnTest(0);
             }
         });
-        btnNextWrInHeFr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pressBtnTest(1);
-            }
-        });
         swHelpWrInHeFr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pressBtnTest(2);
+                pressBtnTest(1);
             }
         });
 
@@ -126,16 +119,13 @@ public class WriteInHebrewFragment extends Fragment {
     private void pressBtnTest(int k) {
         switch (k) {
             case 0:
-                if (listWords.get(selectPos).getStrHeb().equals(etTransWrInHeFr.getText().toString())) {
+                if (listWords.get(selectPos).getStrHeb().equals(etTransWrInHeFr.getText().toString().trim())) {
                     translationOK();
                 } else {
                     Toast.makeText(context, "wrong translation!", Toast.LENGTH_SHORT).show();
                 }//if-else
                 break;
             case 1:
-                nextWord();
-                break;
-            case 2:
                 helpSwitch();
                 break;
         }//switch
@@ -252,7 +242,6 @@ public class WriteInHebrewFragment extends Fragment {
         pbBaMeAc.setProgress(progressTime);
         tvWordWrInHeFr.setText("CORRECT!");
         //отключаем кнопки для исключения случайного нажатия
-        btnCheckWrInHeFr.setEnabled(false);
         btnNextWrInHeFr.setEnabled(false);
         nextWord();
     }//translationOK
@@ -298,7 +287,6 @@ public class WriteInHebrewFragment extends Fragment {
                             loops--;// уменьшаем количество цыклов изучения выбранной коллекции
                             tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                             //включаем кнопки обратно
-                            btnCheckWrInHeFr.setEnabled(true);
                             btnNextWrInHeFr.setEnabled(true);
                             etTransWrInHeFr.setText("");
                             etTransWrInHeFr.clearFocus();
@@ -312,7 +300,6 @@ public class WriteInHebrewFragment extends Fragment {
                     if (selectPos != listCursorNumFromActivity.size() - 1) {
                         selectPos++;
                         //включаем кнопки обратно
-                        btnCheckWrInHeFr.setEnabled(true);
                         btnNextWrInHeFr.setEnabled(true);
                         etTransWrInHeFr.setText("");
                         etTransWrInHeFr.clearFocus();
@@ -333,7 +320,6 @@ public class WriteInHebrewFragment extends Fragment {
                                 loops--;// уменьшаем количество цыклов изучения выбранной коллекции
                                 tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                                 //включаем кнопки обратно
-                                btnCheckWrInHeFr.setEnabled(true);
                                 btnNextWrInHeFr.setEnabled(true);
                                 etTransWrInHeFr.setText("");
                                 etTransWrInHeFr.clearFocus();

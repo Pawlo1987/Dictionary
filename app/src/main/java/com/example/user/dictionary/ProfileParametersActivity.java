@@ -74,10 +74,11 @@ public class ProfileParametersActivity extends AppCompatActivity {
         cbChooseCoupleMethodPPAc = findViewById(R.id.cbChooseCoupleMethodPPAc);
         cbWriteRussianMethodPPAc = findViewById(R.id.cbWriteRussianMethodPPAc);
         cbWriteHebrewMethodPPAc = findViewById(R.id.cbWriteHebrewMethodPPAc);
+        //устанавливаем по умолчанию все методы включенны
         cbChooseRussianMethodPPAc.setChecked(true);
         cbChooseHebrewMethodPPAc.setChecked(true);
         cbChooseCoupleMethodPPAc.setChecked(true);
-        cbWriteRussianMethodPPAc.setChecked(true);
+        cbWriteRussianMethodPPAc.setChecked(false);
         cbWriteHebrewMethodPPAc.setChecked(true);
         listMethods = new ArrayList<>();
         FileUtilities = new FileUtilities(this);

@@ -41,7 +41,6 @@ public class WriteInTranslationFragment extends Fragment {
     TextView tvWordWrInTrFr;
     EditText etTransWrInTrFr;
     Button btnCheckWrInTrFr;
-    Button btnNextWrInTrFr;
     //переменная необходимая для итераци слов если фрагмент вызван из mixMethod
     int interForMixMethod = 0;
     int selectPos;  //выбранная позиция
@@ -84,7 +83,6 @@ public class WriteInTranslationFragment extends Fragment {
         tvWordWrInTrFr = resultView.findViewById(R.id.tvWordWrInTrFr);
         etTransWrInTrFr = resultView.findViewById(R.id.etTransWrInTrFr);
         btnCheckWrInTrFr = resultView.findViewById(R.id.btnCheckWrInTrFr);
-        btnNextWrInTrFr = resultView.findViewById(R.id.btnNextWrInTrFr);
 
         btnActivity = getActivity().findViewById(R.id.btnActivity);
         pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
@@ -95,16 +93,10 @@ public class WriteInTranslationFragment extends Fragment {
                 pressBtnTest(0);
             }
         });
-        btnNextWrInTrFr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pressBtnTest(1);
-            }
-        });
         swHelpWrInTrFr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pressBtnTest(2);
+                pressBtnTest(1);
             }
         });
 
@@ -133,9 +125,6 @@ public class WriteInTranslationFragment extends Fragment {
                 }//if-else
                 break;
             case 1:
-                nextWord();
-                break;
-            case 2:
                 helpSwitch();
                 break;
         }//switch
@@ -253,7 +242,6 @@ public class WriteInTranslationFragment extends Fragment {
         tvWordWrInTrFr.setText("CORRECT!");
         //отключаем кнопки для исключения случайного нажатия
         btnCheckWrInTrFr.setEnabled(false);
-        btnNextWrInTrFr.setEnabled(false);
         nextWord();
     }//translationOK
 
@@ -297,7 +285,6 @@ public class WriteInTranslationFragment extends Fragment {
                             tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                             //включаем кнопки обратно
                             btnCheckWrInTrFr.setEnabled(true);
-                            btnNextWrInTrFr.setEnabled(true);
                             etTransWrInTrFr.setText("");
                             etTransWrInTrFr.clearFocus();
                             startLearnWord();//запускаем заново изучение
@@ -311,7 +298,6 @@ public class WriteInTranslationFragment extends Fragment {
                         selectPos++;
                         //включаем кнопки обратно
                         btnCheckWrInTrFr.setEnabled(true);
-                        btnNextWrInTrFr.setEnabled(true);
                         etTransWrInTrFr.setText("");
                         etTransWrInTrFr.clearFocus();
                         startLearnWord();
@@ -332,7 +318,6 @@ public class WriteInTranslationFragment extends Fragment {
                                 tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                                 //включаем кнопки обратно
                                 btnCheckWrInTrFr.setEnabled(true);
-                                btnNextWrInTrFr.setEnabled(true);
                                 etTransWrInTrFr.setText("");
                                 etTransWrInTrFr.clearFocus();
                                 startLearnWord();//запускаем заново изучение
