@@ -14,7 +14,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnAddNewWord:
+                addNewWord();
+                break;
+
+            case R.id.btnViewDictionary:
+                viewDictionary();
+                break;
+
+//            case R.id.btnExitMaAc:
+//                finish();
+//                break;
+        }//switch
+
+    }//onClick
+
+    private void addNewWord() {
         Intent intent = new Intent(this, AddNewWordActivity.class);
         startActivity(intent);
     }
-}
+
+    private void viewDictionary() {
+        Intent intent = new Intent(this, ViewDictionaryActivity.class);
+        startActivity(intent);
+    }
+
+} //MainActivity
