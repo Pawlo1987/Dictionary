@@ -281,10 +281,27 @@ public class WriteInHebrewFragment extends Fragment {
                     tvMixMethodPos.setText(String.valueOf(temp + 5));
                     //если количество слов для изучения кратно 5
                     //необходимо такая проверка
-                    if (temp + 5 == listCursorNumFromActivity.size())
-                        getActivity().finish();
-                    else
-                        btnActivity.callOnClick();
+                    if (temp + 5 == listCursorNumFromActivity.size()){
+                        //считываем заказаное число повторений коллекции слов
+                        TextView tvLoopsBaMeAc = getActivity().findViewById(R.id.tvLoopsBaMeAc);
+                        int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
+                        //проверяем считанное значение
+                        if(loops>1) {
+                            //сбрасываем все необходимые счетчики
+                            interForMixMethod = 0; //итерация MixMethod
+                            selectPos = 0; //selectPos текущая позиция в коллекции изучаемых слов
+                            //сбрасываем счетчик для глобальной позиции MixMethodPos
+                            tvMixMethodPos.setText(String.valueOf("0"));
+                            loops--;// уменьшаем количество цыклов изучения выбранной коллекции
+                            tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
+                            //включаем кнопки обратно
+                            btnCheckWrInHeFr.setEnabled(true);
+                            btnNextWrInHeFr.setEnabled(true);
+                            etTransWrInHeFr.setText("");
+                            etTransWrInHeFr.clearFocus();
+                            startLearnWord();//запускаем заново изучение
+                        }else getActivity().finish();
+                    }else btnActivity.callOnClick();
                 } else {
                     interForMixMethod++;
                     //переход к следующему слову или выход из режима изучения
@@ -299,7 +316,25 @@ public class WriteInHebrewFragment extends Fragment {
                         startLearnWord();
                     } else {
                         //если закнчились слова для изучения
-                        getActivity().finish();
+                        //считываем заказаное число повторений коллекции слов
+                        TextView tvLoopsBaMeAc = getActivity().findViewById(R.id.tvLoopsBaMeAc);
+                        int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
+                        //проверяем считанное значение
+                        if(loops>1) {
+                            //сбрасываем все необходимые счетчики
+                            interForMixMethod = 0; //итерация MixMethod
+                            selectPos = 0; //selectPos текущая позиция в коллекции изучаемых слов
+                            //сбрасываем счетчик для глобальной позиции MixMethodPos
+                            tvMixMethodPos.setText(String.valueOf("0"));
+                            loops--;// уменьшаем количество цыклов изучения выбранной коллекции
+                            tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
+                            //включаем кнопки обратно
+                            btnCheckWrInHeFr.setEnabled(true);
+                            btnNextWrInHeFr.setEnabled(true);
+                            etTransWrInHeFr.setText("");
+                            etTransWrInHeFr.clearFocus();
+                            startLearnWord();//запускаем заново изучение
+                        }else getActivity().finish();
                     }//if-else
                 }//if(isMixMethod&&(interForMixMethod==4))
             }//onFinish

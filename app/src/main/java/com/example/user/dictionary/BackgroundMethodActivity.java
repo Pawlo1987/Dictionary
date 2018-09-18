@@ -31,12 +31,12 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     List<String> list5WordsOnScreen; // коллекция 5 слов для изучения
     Button btnActivity;
     TextView tvMixMethodPos;//TextView для глобальной позиция для mixMethod
+    TextView tvLoopsBaMeAc;//TextView для количества кругов изучаемого набора слов
     int mixMethodPos;//глобальной позиция для mixMethod
     int wasMethod = 0;//переменная для определения какий метод вызывался последний в mixMethod
 
     int wordsCount;
     int progressTime;
-    int progressIter;
     ProgressBar pbBaMeAc;
 
     @Override
@@ -47,6 +47,7 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         pbBaMeAc = findViewById(R.id.pbBaMeAc);
         btnActivity = findViewById(R.id.btnActivity);
         tvMixMethodPos = findViewById(R.id.tvMixMethodPos);
+        tvLoopsBaMeAc = findViewById(R.id.tvLoopsBaMeAc);
 
         listCursorNum = new ArrayList<>();
         list5WordsOnScreen = new ArrayList<>();
@@ -61,10 +62,15 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
         args.putInt("wordsCount", wordsCount);
         args.putBoolean("isMixMethod", false);
+        tvLoopsBaMeAc.setText(String.valueOf(getIntent().getIntExtra("loops", 0)));
         progressTime = 0;
 
         //непосредстенное начало работы фрагмента
-        goFragment(args, getIntent().getIntExtra("method", 0));
+        goFragment(
+                args,
+                //переменная method переданная из активности LearnWordActivity
+                getIntent().getIntExtra("method", 0)
+        );
     }//onCreate
 
     //начало работы фрагмента
@@ -111,7 +117,20 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         wordsCount = listCursorNum.size() - mixMethodPos;
 
         //если закнчились слова для изучения
-        if (wordsCount == 0) finish();
+        if (wordsCount == 0){
+            //считываем заказаное число повторений коллекции слов
+            int loops = Integer.parseInt(
+                    findViewById(R.id.tvLoopsBaMeAc).toString()
+            );
+            //проверяем считанное значение
+            if(loops>1) {
+                //сбрасываем счетчик для глобальной позиции MixMethodPos
+                tvMixMethodPos.setText(String.valueOf("0"));
+                loops--;
+                TextView tvLoopsBaMeAc = findViewById(R.id.tvLoopsBaMeAc);
+                tvLoopsBaMeAc.setText(String.valueOf(loops));
+            }else finish();
+        }
 
         Bundle args = new Bundle();    // объект для передачи параметров в диалог
         args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);

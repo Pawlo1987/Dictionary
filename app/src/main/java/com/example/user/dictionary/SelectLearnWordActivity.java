@@ -113,6 +113,7 @@ public class SelectLearnWordActivity extends AppCompatActivity {
     //запуск активности любого метода изучения слов
     private void startAnyMethod() {
         int method = getIntent().getIntExtra("method", 0);
+        int loops = getIntent().getIntExtra("loops", 0);
 
         Intent intent = new Intent(this, BackgroundMethodActivity.class);
         intent.putStringArrayListExtra(
@@ -126,6 +127,10 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         intent.putExtra(
                 "method",
                 method
+        );
+        intent.putExtra(
+                "loops",
+                loops
         );
         startActivity(intent);
     }//startAnyMethod

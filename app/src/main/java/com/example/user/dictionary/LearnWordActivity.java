@@ -22,12 +22,16 @@ public class LearnWordActivity extends AppCompatActivity {
     FileUtilities FileUtilities;
     TextView tvWordsCountForRandomLWAc;
     TextView tvMethodLWAc;
+    TextView tvLoopsLWAc;
     Button btnPlWC;
     Button btnMiWC;
     Button btnPlMet;
     Button btnMiMet;
+    Button btnPlLo;
+    Button btnMiLo;
     List<String> listIdLearnWords; // коллекция id слов для изучения
     int method = 1;
+    int loops = 1;
     int wordsCount = 10;
     ActionBar actionBar;                //стрелка НАЗАД
     String[] methodName = {
@@ -63,10 +67,13 @@ public class LearnWordActivity extends AppCompatActivity {
 
         tvWordsCountForRandomLWAc = findViewById(R.id.tvWordsCountForRandomLWAc);
         tvMethodLWAc = findViewById(R.id.tvMethodLWAc);
+        tvLoopsLWAc = findViewById(R.id.tvLoopsLWAc);
         btnPlWC = findViewById(R.id.btnPlWC);
         btnMiWC = findViewById(R.id.btnMiWC);
         btnPlMet = findViewById(R.id.btnPlMet);
         btnMiMet = findViewById(R.id.btnMiMet);
+        btnPlLo = findViewById(R.id.btnPlLo);
+        btnMiLo = findViewById(R.id.btnMiLo);
         FileUtilities = new FileUtilities(this);
 
         context = getBaseContext();
@@ -75,6 +82,7 @@ public class LearnWordActivity extends AppCompatActivity {
         listIdLearnWords = new ArrayList<>();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         tvMethodLWAc.setText(methodName[method-1]);
+        tvLoopsLWAc.setText(String.valueOf(loops));
         tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
         countCursor = cursor.getCount();
     }//onCreate
@@ -116,6 +124,20 @@ public class LearnWordActivity extends AppCompatActivity {
                     tvMethodLWAc.setText(methodName[method-1]);
                 }
                 break;
+
+            case R.id.btnPlLo:
+                if (loops < 10) {
+                    loops++;
+                    tvLoopsLWAc.setText(String.valueOf(loops));
+                }
+                break;
+
+            case R.id.btnMiLo:
+                if (loops > 1) {
+                    loops--;
+                    tvLoopsLWAc.setText(String.valueOf(loops));
+                }
+                break;
         }//switch
     }//onClick
 
@@ -137,6 +159,10 @@ public class LearnWordActivity extends AppCompatActivity {
         intent.putExtra(
                 "method",
                 method
+        );
+        intent.putExtra(
+                "loops",
+                loops
         );
         startActivity(intent);
     }//selectWords
@@ -169,6 +195,10 @@ public class LearnWordActivity extends AppCompatActivity {
         intent.putExtra(
                 "method",
                 method
+        );
+        intent.putExtra(
+                "loops",
+                loops
         );
         intent.putExtra(
                 "wordsCount",

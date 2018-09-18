@@ -54,8 +54,8 @@ public class ChooseCoupleFragment extends Fragment {
     List<String> wordHe; //коллекция слов для проверки нажатых клавиш
     String selectWordTr; //слово нажатой клавишы
     String selectWordHe; //слово нажатой клавишы
-    Boolean[] flagPressBtnTr = {false,false,false,false,false}; //массив флагов нажатых кнопок
-    Boolean[] flagPressBtnHe = {false,false,false,false,false}; //массив флагов нажатых кнопок
+    Boolean[] flagPressBtnTr = {false, false, false, false, false}; //массив флагов нажатых кнопок
+    Boolean[] flagPressBtnHe = {false, false, false, false, false}; //массив флагов нажатых кнопок
     boolean flagAnyBtnPressTr = false; //проверка нажата какая-нибудь кнопка
     boolean flagAnyBtnPressHe = false; //проверка нажата какая-нибудь кнопка
     int countRemainingWords; //счетчик оставшихся неотгаданых слов
@@ -82,10 +82,10 @@ public class ChooseCoupleFragment extends Fragment {
         dbUtilities.open();
         wordTr = new ArrayList<>();
         wordHe = new ArrayList<>();
-        list5WordsOnScreen  = new ArrayList<>();
+        list5WordsOnScreen = new ArrayList<>();
         buttonsList = new ArrayList<>();
-        listWords  = new ArrayList<>();
-        listCursorNumFromActivity  = new ArrayList<>();
+        listWords = new ArrayList<>();
+        listCursorNumFromActivity = new ArrayList<>();
         isMixMethod = getArguments().getBoolean("isMixMethod");
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
     }//onCreate
@@ -94,7 +94,7 @@ public class ChooseCoupleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View resultView = inflater.inflate(R.layout.fragment_choose_couple,  container, false);
+        View resultView = inflater.inflate(R.layout.fragment_choose_couple, container, false);
         btnTr1ChCoFr = resultView.findViewById(R.id.btnTr1ChCoFr);
         btnTr2ChCoFr = resultView.findViewById(R.id.btnTr2ChCoFr);
         btnTr3ChCoFr = resultView.findViewById(R.id.btnTr3ChCoFr);
@@ -185,10 +185,10 @@ public class ChooseCoupleFragment extends Fragment {
 
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         //оставшееся количество слов
-        if(isMixMethod) {
+        if (isMixMethod) {
             wordsCount = listCursorNumFromActivity.size() -
                     Integer.parseInt(tvMixMethodPos.getText().toString());
-        }else wordsCount = listCursorNumFromActivity.size();
+        } else wordsCount = listCursorNumFromActivity.size();
         progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
         createWordList();
@@ -233,7 +233,7 @@ public class ChooseCoupleFragment extends Fragment {
 
     //проверяем нажатие кнопок
     private void pressBtnTest(int i) {
-        if(i<=4) {
+        if (i <= 4) {
             //проверяем флаг и выполняем действие в layout и правим массив флагов
             if (!flagAnyBtnPressTr) {
                 flagPressBtnTr[i] = true;
@@ -250,19 +250,19 @@ public class ChooseCoupleFragment extends Fragment {
                     buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
                 }
             }//if-else
-        }else{
-            int j = i-5;
+        } else {
+            int j = i - 5;
             //проверяем флаг и выполняем действие в layout и правим массив флагов
-            if(!flagAnyBtnPressHe) {
+            if (!flagAnyBtnPressHe) {
                 flagPressBtnHe[j] = true;
                 flagAnyBtnPressHe = true;
                 selectWordHe = buttonsList.get(i).getText().toString();
                 buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonPress));
                 //проверяем флаг нажатия кнопок в соседнем столбце
                 //если "да" проверяем совпадение перевода и слова
-                if(flagAnyBtnPressTr) checkPressBtn();
-            }else{
-                if(flagPressBtnHe[j]) {
+                if (flagAnyBtnPressTr) checkPressBtn();
+            } else {
+                if (flagPressBtnHe[j]) {
                     flagPressBtnHe[j] = false;
                     flagAnyBtnPressHe = false;
                     buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
@@ -281,9 +281,9 @@ public class ChooseCoupleFragment extends Fragment {
 
         //и проверяем совподает ли слово на кнопке со словом в коллекции
         // ивритовских слов и паралельно русских слов
-        String strHe  = wordHe.get(indexTr);
-        String strTr  = wordTr.get(indexHe);
-        if((selectWordHe.equals(strHe))||(selectWordTr.equals(strTr))){
+        String strHe = wordHe.get(indexTr);
+        String strTr = wordTr.get(indexHe);
+        if ((selectWordHe.equals(strHe)) || (selectWordTr.equals(strTr))) {
             //снимаем флаги нажатых клавиш
             flagAnyBtnPressHe = false;
             flagAnyBtnPressTr = false;
@@ -293,15 +293,15 @@ public class ChooseCoupleFragment extends Fragment {
             // убираем с экрана элементы которые совпали
             //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
             for (int i = 0; i < 10; i++) {
-                if(i<=4) {
-                    if(flagPressBtnTr[i]) {
+                if (i <= 4) {
+                    if (flagPressBtnTr[i]) {
                         buttonsList.get(i).setEnabled(false);
                         buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                         flagPressBtnTr[i] = false;
                     }//if
-                }else{
-                    int j = i-5;
-                    if(flagPressBtnHe[j]) {
+                } else {
+                    int j = i - 5;
+                    if (flagPressBtnHe[j]) {
                         buttonsList.get(i).setEnabled(false);
                         buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
                         flagPressBtnHe[j] = false;
@@ -311,8 +311,8 @@ public class ChooseCoupleFragment extends Fragment {
 
             //проверка сколько слов осталось угадать
             //если все угаданы формируем экран заново
-            if(countRemainingWords > 0) countRemainingWords--;
-            else{
+            if (countRemainingWords > 0) countRemainingWords--;
+            else {
                 int n = list5WordsOnScreen.size();
                 //удаляем из коллекции listWords отгаданые слова
                 for (int i = 0; i < n; i++) {
@@ -325,13 +325,31 @@ public class ChooseCoupleFragment extends Fragment {
                     //вызываем onClick активности для продажения работы mixMethod
                     //устанавливаем глобальную переменую tvMixMethodPos
                     int temp = Integer.parseInt(tvMixMethodPos.getText().toString());
-                    tvMixMethodPos.setText(String.valueOf(temp+5));
+                    tvMixMethodPos.setText(String.valueOf(temp + 5));
                     //если количество слов для изучения кратно 5
                     //необходимо такая проверка
-                    if(temp+5 == listCursorNumFromActivity.size())
-                        getActivity().finish();
-                    else
-                        btnActivity.callOnClick();
+                    if (temp + 5 == listCursorNumFromActivity.size()){
+                        //считываем заказаное число повторений коллекции слов
+                        TextView tvLoopsBaMeAc = getActivity().findViewById(R.id.tvLoopsBaMeAc);
+                        int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
+                        //проверяем считанное значение
+                        if (loops > 1) {
+                            createWordList();//заполняем заново WordList
+                            //оставшееся количество слов
+                            if (isMixMethod) {
+                                wordsCount = listCursorNumFromActivity.size() -
+                                        Integer.parseInt(tvMixMethodPos.getText().toString());
+                            } else wordsCount = listCursorNumFromActivity.size();
+                            //сбрасываем счетчик для глобальной позиции MixMethodPos
+                            tvMixMethodPos.setText(String.valueOf("0"));
+                            loops--;// уменьшаем количество цыклов изучения выбранной коллекции
+                            tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
+                            //очищяем временую коллекцию для следующей порции слов
+                            list5WordsOnScreen.clear();
+                            startLearnWord();//запускаем заново изучение
+                        } else getActivity().finish();
+                    }//if (temp + 5 == listCursorNumFromActivity.size())
+                    else btnActivity.callOnClick();
                 } else {
                     //если в коллекции еще остались слова продолжаем
                     //иначе возврат в предыдущую активность
@@ -340,7 +358,25 @@ public class ChooseCoupleFragment extends Fragment {
                         list5WordsOnScreen.clear();
                         startLearnWord();
                     } else {
-                        getActivity().finish();
+                        //считываем заказаное число повторений коллекции слов
+                        TextView tvLoopsBaMeAc = getActivity().findViewById(R.id.tvLoopsBaMeAc);
+                        int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
+                        //проверяем считанное значение
+                        if (loops > 1) {
+                            createWordList();//заполняем заново WordList
+                            //оставшееся количество слов
+                            if (isMixMethod) {
+                                wordsCount = listCursorNumFromActivity.size() -
+                                        Integer.parseInt(tvMixMethodPos.getText().toString());
+                            } else wordsCount = listCursorNumFromActivity.size();
+                            //сбрасываем счетчик для глобальной позиции MixMethodPos
+                            tvMixMethodPos.setText(String.valueOf("0"));
+                            loops--;// уменьшаем количество цыклов изучения выбранной коллекции
+                            tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
+                            //очищяем временую коллекцию для следующей порции слов
+                            list5WordsOnScreen.clear();
+                            startLearnWord();//запускаем заново изучение
+                        } else getActivity().finish();
                     }//if-else
                 }
             }//if-else
@@ -367,17 +403,17 @@ public class ChooseCoupleFragment extends Fragment {
         // iFirstStopEn=n; iSecondStopEn=n;
         //если слов менше пяти
         //устанавливаем iFirstStopEn=n-1; iSecondStopEn=n-1;
-        if(n >= 5) {
-            n=5;
-            iFirstStopEn=n;
-            iSecondStopEn=n;
+        if (n >= 5) {
+            n = 5;
+            iFirstStopEn = n;
+            iSecondStopEn = n;
             //устанавливаем счетчик оставшихся значений
-            countRemainingWords = n-1;
-        }else{
+            countRemainingWords = n - 1;
+        } else {
             //устанавливаем счетчик оставшихся значений
-            countRemainingWords = n-1;
-            iFirstStopEn=n-1;
-            iSecondStopEn=n+4;
+            countRemainingWords = n - 1;
+            iFirstStopEn = n - 1;
+            iSecondStopEn = n + 4;
         }//if-else
         for (int i = 0; i < n; i++) {
             //заполняем временую коллекцию id слов для вывода на экран
@@ -391,7 +427,7 @@ public class ChooseCoupleFragment extends Fragment {
         //перемешать коллекцию
         Collections.shuffle(listIdNumForBtn);
 
-        int j=0; //итерационная переменная для коллекции list5WordsOnScreen
+        int j = 0; //итерационная переменная для коллекции list5WordsOnScreen
         for (int i = 0; i < 10; i++) {
             //если i==5, первым делом перемешаем
             //коллекцию порядковых номеров,
@@ -399,14 +435,14 @@ public class ChooseCoupleFragment extends Fragment {
             //от порядка слов во втором столбике.
             //перемешиваем пару раз чтоб эффективнее
             //и обнуляем j порядковый номер коллекции list5WordsOnScreen
-            if(i==n) {
+            if (i == n) {
                 Collections.shuffle(listIdNumForBtn);
                 Collections.shuffle(listIdNumForBtn);
-                j=0;
+                j = 0;
             }//if
             //выключаем активность кнопок если итерация
             // попадает в условия
-            if((((i<5)&&(iFirstStopEn<i))||(iSecondStopEn<i))&&(iSecondStopEn!=iFirstStopEn)){
+            if ((((i < 5) && (iFirstStopEn < i)) || (iSecondStopEn < i)) && (iSecondStopEn != iFirstStopEn)) {
                 buttonsList.get(i).setText("");
                 continue;
             }//if
@@ -418,14 +454,14 @@ public class ChooseCoupleFragment extends Fragment {
             buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
             //i:0-4 устанавливаем слова в первом столбике
             //i:5-9 устанавливаем слова во втором столбике
-            if(i<=4){
+            if (i <= 4) {
                 buttonsList.get(i).setText(list5WordsOnScreen.get(listIdNumForBtn.get(j)).getStrRus());
-            }else{
+            } else {
                 buttonsList.get(i).setText(list5WordsOnScreen.get(listIdNumForBtn.get(j)).getStrHeb());
             }//if-else
             j++;
         }//for
-        if(isMixMethod) {
+        if (isMixMethod) {
             //делаем кнопки которые не учавствуют в изучении слов
             // неактивные и другого цвета
             for (int i = 0; i < 10; i++) {
@@ -435,7 +471,7 @@ public class ChooseCoupleFragment extends Fragment {
                 }//if
             }//for
         }
-        if(wordsCount>5) interForMixMethod = 4;
+        if (wordsCount > 5) interForMixMethod = 4;
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения
@@ -443,7 +479,7 @@ public class ChooseCoupleFragment extends Fragment {
         Word word = new Word();
         int firstNumber = 0;
         //если метод запущен из MixMethod
-        if(isMixMethod)
+        if (isMixMethod)
             firstNumber = Integer.parseInt(tvMixMethodPos.getText().toString());
         int n = listCursorNumFromActivity.size();
         for (int i = firstNumber; i < n; i++) {
