@@ -1,11 +1,12 @@
 package com.example.user.dictionary;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class ViewDictionaryRecyclerAdapter  extends
         final CardView cvMainVDRA;
         final Button btnEditVDRA, btnDellVDRA;
 
-        ViewHolder(View view) {
+        ViewHolder(final View view) {
             super(view);
             btnDellVDRA = view.findViewById(R.id.btnDellVDRA);
             btnEditVDRA = view. findViewById(R.id.btnEditVDRA);
@@ -115,9 +116,7 @@ public class ViewDictionaryRecyclerAdapter  extends
                     cursor.moveToPosition(getAdapterPosition());
                     //id из таблицы russian
                     idRussian = cursor.getString(0);
-                    Intent intent = new Intent(context, EditWordActivity.class);
-                    intent.putExtra("id", idRussian);
-                    context.startActivity(intent);
+                    alertDialogTwoButton(view.getContext(), "Edit", idRussian);
                 }
             });
             btnDellVDRA.setOnClickListener(new View.OnClickListener() {
@@ -126,31 +125,65 @@ public class ViewDictionaryRecyclerAdapter  extends
                     cursor.moveToPosition(getAdapterPosition());
                     //id из таблицы russian
                     idRussian = cursor.getString(0);
-                    //подготавливаем информацию для удаления
-                    //получаем idHebrew
-                    String query = "SELECT hebrew_id FROM russian " +
-                            "WHERE russian.id = \"" + idRussian + "\"";
-                    cursor = dbUtilities.getDb().rawQuery(query, null);
-                    cursor.moveToPosition(0);
-                    idHebrew = cursor.getString(0);
-                    //получаем idTranscription
-                    query = "SELECT transcription_id FROM hebrew " +
-                            "WHERE hebrew.id = \"" + String.valueOf(idHebrew) + "\"";
-                    cursor = dbUtilities.getDb().rawQuery(query, null);
-                    cursor.moveToPosition(0);
-                    idTranscription = cursor.getString(0);
-
-                    //удаляем поочереди таблицы
-                    dbUtilities.removeColumnById(idRussian, "russian");
-                    dbUtilities.removeColumnById(idHebrew, "hebrew");
-                    dbUtilities.removeColumnById(idTranscription, "transcription");
-
-                    //обновляем данные для Adapter
-                    cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
-                    notifyDataSetChanged();
+                    alertDialogTwoButton(view.getContext(), "Delete", idRussian);
                 }// onClick
             });// btnDellVDRA.setOnClickListener
+
         } // ViewHolder
+
+        //AlertDialog с двумя кнопками
+        private void alertDialogTwoButton(final Context context, final String message, final String idRussian) {
+            AlertDialog.Builder ad;
+            String button1String = "OK";
+            String button2String = "Cancel";
+
+            ad = new AlertDialog.Builder(context);
+            ad.setTitle("Warning");  // заголовок
+            ad.setMessage(message + ". Are you sure?"); // сообщение
+            ad.setIcon(R.drawable.icon_question);
+            ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int arg1) {
+                    //проверка какая функция вызвала AlertDialog
+                    if (message.equals("Edit")){
+                        Intent intent = new Intent(context, EditWordActivity.class);
+                        intent.putExtra("id", idRussian);
+                        context.startActivity(intent);
+                    }else{
+                        //подготавливаем информацию для удаления
+                        //получаем idHebrew
+                        String query = "SELECT hebrew_id FROM russian " +
+                                "WHERE russian.id = \"" + idRussian + "\"";
+                        cursor = dbUtilities.getDb().rawQuery(query, null);
+                        cursor.moveToPosition(0);
+                        idHebrew = cursor.getString(0);
+                        //получаем idTranscription
+                        query = "SELECT transcription_id FROM hebrew " +
+                                "WHERE hebrew.id = \"" + String.valueOf(idHebrew) + "\"";
+                        cursor = dbUtilities.getDb().rawQuery(query, null);
+                        cursor.moveToPosition(0);
+                        idTranscription = cursor.getString(0);
+
+                        //удаляем поочереди таблицы
+                        dbUtilities.removeColumnById(idRussian, "russian");
+                        dbUtilities.removeColumnById(idHebrew, "hebrew");
+                        dbUtilities.removeColumnById(idTranscription, "transcription");
+
+                        //обновляем данные для Adapter
+                        cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+                        notifyDataSetChanged();
+                    }//if-else
+                }//onClick
+            });
+            ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int arg1) {}
+            });
+            ad.setCancelable(true);
+            ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                public void onCancel(DialogInterface dialog) {}
+            });
+            ad.show();
+        }//alertDialogTwoButton
+
     }//class ViewHolder
 
 }//ViewDictionaryRecyclerAdapter

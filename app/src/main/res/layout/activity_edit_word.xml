@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="род слова на русском?" />
+            android:text="GenderRU" />
 
         <Spinner
             android:id="@+id/spGenderRusEWAc"
@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="род слова на иврите" />
+            android:text="GenderHE" />
 
         <Spinner
             android:id="@+id/spGenderHebEWAc"
@@ -131,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="един. или множ." />
+            android:text="Quantity" />
 
         <Spinner
             android:id="@+id/spQuantityEWAc"
@@ -153,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Значение в предложении?" />
+            android:text="Sentence meaning" />
 
         <Spinner
             android:id="@+id/spMeaningEWAc"

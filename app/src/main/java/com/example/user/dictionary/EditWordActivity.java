@@ -133,7 +133,7 @@ public class EditWordActivity extends AppCompatActivity {
 
         //проверяем пустые строки
         if ((ruWord.equals("")) || (heWord.equals("")) || (transc.equals(""))) {
-            Toast.makeText(context, "Есть незаполненные строки!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Found empty lines!", Toast.LENGTH_SHORT).show();
             fl = true;
         }
 
@@ -193,7 +193,7 @@ public class EditWordActivity extends AppCompatActivity {
             // обновляем по id через объект ContentValues(cv), в таблицу
             successfulUpdate = successfulUpdate + dbUtilities.updTable("russian", cv, idRussian);
 
-            if(successfulUpdate == 2) Toast.makeText(context, "Данные успешно обновленны!", Toast.LENGTH_SHORT).show();
+            if(successfulUpdate == 2) Toast.makeText(context, "Data updated!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(context, ViewDictionaryActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

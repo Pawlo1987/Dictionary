@@ -37,7 +37,7 @@
                     android:id="@+id/btnDellVDRA"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="dell" />
+                    android:text="@string/btnDellVDRA" />
 
             </LinearLayout>
 
@@ -162,7 +162,7 @@
                     android:id="@+id/btnEditVDRA"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="edit" />
+                    android:text="@string/btnEditVDRA" />
             </LinearLayout>
 
         </LinearLayout>

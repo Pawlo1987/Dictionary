@@ -101,7 +101,7 @@ public class AddNewWordActivity extends AppCompatActivity {
 
         //проверяем пустые строки
         if ((ruWord.equals("")) || (heWord.equals("")) || (transc.equals(""))) {
-            Toast.makeText(context, "Есть незаполненные строки!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Found empty lines!", Toast.LENGTH_SHORT).show();
             fl = true;
         }else{
             //проверяем на повторение попарно двух столбцов
@@ -114,7 +114,7 @@ public class AddNewWordActivity extends AppCompatActivity {
             for (int i = 0; i < n; i++) {
                 cursor.moveToPosition(i);
                 if ((ruWord.equals(cursor.getString(0))) && (heWord.equals(cursor.getString(1)))) {
-                    Toast.makeText(context, "Найденно совпадение! Подкорректируйте!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Found a match! Correct!", Toast.LENGTH_SHORT).show();
                     fl = true;
                     break;
                 }
@@ -175,7 +175,7 @@ public class AddNewWordActivity extends AppCompatActivity {
             cv.put("meaning_id", meaningId);
             //добваить данные через объект ContentValues(cv), в таблицу
             dbUtilities.insertInto(cv, "russian");
-            Toast.makeText(context, "Новое слово внесенно", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "New word additionally!", Toast.LENGTH_SHORT).show();
             finish();
         }//if(!fl)
     }//addNewWordToDB
