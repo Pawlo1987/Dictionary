@@ -272,16 +272,23 @@ public class EditWordActivity extends AppCompatActivity {
                 Toast.makeText(context, "Empty lines!", Toast.LENGTH_SHORT).show();
             flEmptyString = true;
         } else {
-            //проверяем на повторение ивритовского слова
+            //проверяем на повторение ивритовского слова вместе с транскрипцией
             //должно быть одно повторение
             //получаем курсор данных из БД
-            String query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
+            String query = "SELECT hebrew.id FROM hebrew " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "WHERE hebrew.word_he = \"" + heWord + "\" AND transcriptions.word_tr = \"" + transc + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            //если найденно повторение
-            if (cursor.getCount() > 1) {
-                Toast.makeText(context, "Found a match! Correct hebrew word!", Toast.LENGTH_SHORT).show();
-                flEmptyString = true;
-            }//for
+
+            //если найденны совподения
+            if(cursor.getCount()>0) {
+                cursor.moveToPosition(0);
+                //если найденно idHebrew не равнное данному
+                if (!cursor.getString(0).equals(idHebrew)) {
+                    Toast.makeText(context, "Found a match! Correct hebrew word or transcription!", Toast.LENGTH_SHORT).show();
+                    flEmptyString = true;
+                }//for
+            }//if(cursor.getCount()>0)
         }//if-else
 
         //если нет пустых строк и повторяющихся слов перезаписываем слово

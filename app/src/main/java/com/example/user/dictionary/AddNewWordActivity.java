@@ -208,13 +208,15 @@ public class AddNewWordActivity extends AppCompatActivity {
                 Toast.makeText(context, "Empty lines!", Toast.LENGTH_SHORT).show();
             flEmptyString = true;
         }else{
-            //проверяем на повторение ивритовского слова
+            //проверяем на повторение ивритовского слова вместе с транскрипцией
             //получаем курсор данных из БД
-            String query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
+            String query = "SELECT hebrew.id FROM hebrew " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "WHERE hebrew.word_he = \"" + heWord + "\" AND transcriptions.word_tr = \"" + transc + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
             //если найденно повторение
             if(cursor.getCount() > 0){
-                Toast.makeText(context, "Found a match! Correct hebrew word!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Found a match! Correct hebrew word or transcription!", Toast.LENGTH_SHORT).show();
                 flEmptyString = true;
             }//for
         }//if-else
