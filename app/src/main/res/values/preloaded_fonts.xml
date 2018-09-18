@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/aldrich</item>
         <item>@font/cinzel_decorative_bold</item>
+        <item>@font/codystar_light</item>
+        <item>@font/diplomata</item>
         <item>@font/homemade_apple</item>
         <item>@font/unkempt</item>
     </array>
