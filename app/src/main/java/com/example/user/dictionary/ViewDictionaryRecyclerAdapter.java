@@ -2,11 +2,15 @@ package com.example.user.dictionary;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static android.view.View.GONE;
 
 public class ViewDictionaryRecyclerAdapter  extends
         RecyclerView.Adapter<ViewDictionaryRecyclerAdapter.ViewHolder>{
@@ -15,14 +19,18 @@ public class ViewDictionaryRecyclerAdapter  extends
     private LayoutInflater inflater;
     private Cursor cursor;
     private Context context;
+    private String filter;
+    private String ruWord, ruGender, heWord, heGender,
+                   trans, meaning, quantity;
 
     //конструктор
-    public ViewDictionaryRecyclerAdapter(Context context, Cursor cursor) {
+    public ViewDictionaryRecyclerAdapter(Context context, Cursor cursor, String filter) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
         this.context = context;
         this.cursor = cursor;
+        this.filter = filter;
     } // ViewDictionaryRecyclerAdapter
 
     //создаем новую разметку(View) путем указания разметки
@@ -38,22 +46,33 @@ public class ViewDictionaryRecyclerAdapter  extends
     public void onBindViewHolder(ViewDictionaryRecyclerAdapter.ViewHolder holder, int position) {
         // переходим в курсоре на текущую позицию
         cursor.moveToPosition(position);
+        //получаем данные из курсора для фильтрации
+        ruWord = cursor.getString(1);   //слово на русском
+        heWord = cursor.getString(2);   //слово на иврите
+        trans = cursor.getString(3);    //транскрпция слова на иврите
 
         // получение данных
-        //слово на русском
-        holder.tvRUWordVDRA.setText(cursor.getString(1));
-        //род слова в русском
-        holder.tvGenderRUVDRA.setText(cursor.getString(4));
-        //слово на иврите
-        holder.tvHEWordVDRA.setText(cursor.getString(2));
-        //род слова в иврите
-        holder.tvGenderHEVDRA.setText(cursor.getString(5));
-        //транскрпция слова на иврите
-        holder.tvTransVDRA.setText(cursor.getString(3));
-        //значение слова в предложении
-        holder.tvMeaningVDRA.setText(cursor.getString(6));
-        //множественное или едиственное слово
-        holder.tvQuantityVDRA.setText(cursor.getString(7));
+        //фильтрация элементов для бинарного поиска
+        if((filter == "")||(ruWord.contains(filter))
+                ||(heWord.contains(filter))||(trans.contains(filter))){
+            //получаем остальные данные из курсора
+            ruGender = cursor.getString(4); //род слова в русском
+            heGender = cursor.getString(5); //род слова в иврите
+            meaning = cursor.getString(6);  //значение слова в предложении
+            quantity = cursor.getString(7); //множественное или едиственное слово
+            //устанавливаем данные в текстовые поля адаптера
+            holder.tvRUWordVDRA.setText(ruWord);
+            holder.tvGenderRUVDRA.setText(ruGender);
+            holder.tvHEWordVDRA.setText(heWord);
+            holder.tvGenderHEVDRA.setText(heGender);
+            holder.tvTransVDRA.setText(trans);
+            holder.tvMeaningVDRA.setText(meaning);
+            holder.tvQuantityVDRA.setText(quantity);
+        }else {
+            //setVisibility(GONE) отключаем ненужные элементы для просмотра
+            holder.cvMainVDRA.setVisibility(GONE);
+        }//if-else
+
     } // onBindViewHolder
 
     //получаем количество элементов объекта(курсора)
@@ -65,9 +84,11 @@ public class ViewDictionaryRecyclerAdapter  extends
     public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvRUWordVDRA, tvGenderRUVDRA, tvHEWordVDRA,
                 tvGenderHEVDRA, tvTransVDRA, tvMeaningVDRA, tvQuantityVDRA;
+        final CardView cvMainVDRA;
 
         ViewHolder(View view) {
             super(view);
+            cvMainVDRA = view.findViewById(R.id.cvMainVDRA);
             tvRUWordVDRA = view.findViewById(R.id.tvRUWordVDRA);
             tvGenderRUVDRA = view.findViewById(R.id.tvGenderRUVDRA);
             tvHEWordVDRA = view.findViewById(R.id.tvHEWordVDRA);

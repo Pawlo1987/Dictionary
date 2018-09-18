@@ -15,15 +15,8 @@ import java.io.OutputStream;
 //-----------Вспомогательный класс для открытия и создания БД----------------------
 public class DBHelper extends SQLiteOpenHelper {
     private static String DB_PATH;                  // полный путь к базе данных
-    private static String DB_NAME = "dictionary_db.db";
+    private static String DB_NAME = "dictionary.db";
     private static final int DB_VERSION = 1;        // версия базы данных
-//    static final String TABLE = "employees"; // название таблицы в бд
-
-//    // названия столбцов
-//    static final String COLUMN_SNAME = "surname";
-//    static final String COLUMN_NAME = "name";
-//    static final String COLUMN_AGE = "age";
-//    static final String COLUMN_SAL = "salary";
 
     private Context myContext;
 
@@ -33,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // получить путь к базе данных
         DB_PATH = context.getFilesDir().getPath() + "/" +DB_NAME;
-    } // DBHelper
+    } // DBLocalHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) { }
@@ -77,5 +70,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public SQLiteDatabase open()throws SQLException {
         return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);
-    }
-}//DBHelper
+    }//open
+}// DBHelper
