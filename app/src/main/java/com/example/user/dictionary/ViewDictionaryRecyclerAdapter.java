@@ -33,7 +33,7 @@ public class ViewDictionaryRecyclerAdapter extends
     DBUtilities dbUtilities;
     private String idHebrew, idTranscription;
     private String ruWord, heWord, gender,
-            trans, meaning, quantity;
+            trans, semantic, meaning, quantity;
     //коллекция содержащая переводы одного слова
     private List<String> listTranslationsOneWord = new ArrayList<>();
     //Объекты фрейморка clipboard framework
@@ -94,13 +94,15 @@ public class ViewDictionaryRecyclerAdapter extends
         }//for (int i = 0; i < l; i++)
 
         //получаем остальные данные из курсора
-        meaning = cursor.getString(3);  //значение слова в предложении
-        gender = cursor.getString(4); //род слова в иврите
-        quantity = cursor.getString(5); //множественное или едиственное слово
+        semantic = cursor.getString(3);  //симантическая группа
+        meaning = cursor.getString(4);  //значение слова в предложении
+        gender = cursor.getString(5); //род слова в иврите
+        quantity = cursor.getString(6); //множественное или едиственное слово
         //устанавливаем данные в текстовые поля адаптера
         holder.tvWordVDRA.setText(heWord);
         holder.tvGenderVDRA.setText(gender);
         holder.tvTransсVDRA.setText(trans);
+        holder.tvSemanticVDRA.setText(semantic);
         holder.tvMeaningVDRA.setText(meaning);
         holder.tvQuantityVDRA.setText(quantity);
     } // onBindViewHolder
@@ -114,7 +116,7 @@ public class ViewDictionaryRecyclerAdapter extends
     //Создаем класс ViewHolder с помощью которого мы получаем ссылку на каждый элемент
     //отдельного пункта списка и подключаем слушателя события нажатия меню
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvWordVDRA, tvTransсVDRA, tvGenderVDRA, tvMeaningVDRA, tvQuantityVDRA;
+        final TextView tvWordVDRA, tvTransсVDRA, tvGenderVDRA, tvSemanticVDRA, tvMeaningVDRA, tvQuantityVDRA;
         final CardView cvMainVDRA;
         final Button btnEditVDRA, btnDellVDRA;
         final LinearLayout llTranslationsVDRA;  //layout для переводов
@@ -128,6 +130,7 @@ public class ViewDictionaryRecyclerAdapter extends
             tvWordVDRA = view.findViewById(R.id.tvWordVDRA);
             tvGenderVDRA = view.findViewById(R.id.tvGenderVDRA);
             tvTransсVDRA = view.findViewById(R.id.tvTranscVDRA);
+            tvSemanticVDRA = view.findViewById(R.id.tvSemanticVDRA);
             tvMeaningVDRA = view.findViewById(R.id.tvMeaningVDRA);
             tvQuantityVDRA = view.findViewById(R.id.tvQuantityVDRA);
             clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);

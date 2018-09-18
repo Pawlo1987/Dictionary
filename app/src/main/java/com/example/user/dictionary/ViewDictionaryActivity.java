@@ -45,12 +45,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-            "meanings.option, gender.option, quantity.option FROM hebrew " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
+    String mainQuery;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -80,6 +75,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
+        mainQuery = dbUtilities.mainQuery;
         spListMeaningVDAc = new ArrayList<>();
         spMeaningVDAc = findViewById(R.id.spMeaningVDAc);
         buildSpinner();
@@ -92,16 +88,12 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
         // согласовуем с выбранной позицией спиннера
         if(meaning.equals("ALL")) {
-            mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                    "meanings.option, gender.option, quantity.option FROM hebrew " +
-                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+            mainQuery = dbUtilities.mainQuery;
         }else {
             mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                    "meanings.option, gender.option, quantity.option FROM hebrew " +
+                    "semantic.name, meanings.option, gender.option, quantity.option FROM hebrew " +
                     "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
                     "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                     "INNER JOIN gender ON gender.id = hebrew.gender_id " +
                     "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
@@ -124,16 +116,12 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
                 // согласовуем с выбранной позицией спиннера
                 if(meaning.equals("ALL")) {
-                    mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                            "meanings.option, gender.option, quantity.option FROM hebrew " +
-                            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+                    mainQuery = dbUtilities.mainQuery;
                 }else {
                     mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                            "meanings.option, gender.option, quantity.option FROM hebrew " +
+                            "semantic.name, meanings.option, gender.option, quantity.option FROM hebrew " +
                             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                            "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
                             "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                             "INNER JOIN gender ON gender.id = hebrew.gender_id " +
                             "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
@@ -161,8 +149,9 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
                 //запрос для бинарного посика
                 mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                        "meanings.option, gender.option, quantity.option FROM hebrew " +
+                        "semantic.name, meanings.option, gender.option, quantity.option FROM hebrew " +
                         "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                        "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
                         "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                         "INNER JOIN gender ON gender.id = hebrew.gender_id " +
                         "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
@@ -216,12 +205,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     private void importDB() {
         FileUtilities.importDB();
 
-        mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                "meanings.option, gender.option, quantity.option FROM hebrew " +
-                "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+        mainQuery = dbUtilities.mainQuery;
 
         //чистим строку для бинарного поиска
         etSearchWordVDAc.setText("");

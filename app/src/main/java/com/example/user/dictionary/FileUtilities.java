@@ -142,12 +142,7 @@ public class FileUtilities {
             // пишем данные
 
             //получаем курсор с данными для формирования файла
-            String query = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                    "meanings.option, gender.option, quantity.option FROM hebrew " +
-                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+            String query = dbUtilities.mainQuery;
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
             bw.append("word");

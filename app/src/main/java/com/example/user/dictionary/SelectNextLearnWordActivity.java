@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -39,12 +40,7 @@ public class SelectNextLearnWordActivity extends AppCompatActivity
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-            "meanings.option, gender.option, quantity.option FROM hebrew " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+    String mainQuery ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +57,7 @@ public class SelectNextLearnWordActivity extends AppCompatActivity
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
+        mainQuery = dbUtilities.mainQuery;
         flAuthorization = getIntent().getBooleanExtra("flAuthorization",false);
         listCursorNum = new ArrayList<>();
         etSelectNextLearnWordSNLWAc = findViewById(R.id.etSelectNextLearnWordSNLWAc);

@@ -14,6 +14,13 @@ public class DBUtilities {
     private DBHelper dbHelper;
     private Context context;
     private SQLiteDatabase db;
+    public String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+            "semantic.name, meanings.option, gender.option, quantity.option FROM hebrew " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+            "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
+            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
 
     //контруктор
     public DBUtilities(Context context) {
@@ -47,6 +54,14 @@ public class DBUtilities {
         insertInto(cv, "translations");
     }//insertIntoTranslations
 
+    //добавить строку в таблицу semantic
+    public void insertIntoSemantic(String name){
+        ContentValues cv = new ContentValues();
+        cv.put("name", name);
+        //добваить данные через объект ContentValues(cv), в таблицу
+        insertInto(cv, "semantic");
+    }//insertIntoSemantic
+
     //добавить строку в таблицу profile
     public void insertIntoProfile(String login, String password, int idWordLastLearn,
                                   int wordCountInLoop, int countLoopsReserved){
@@ -63,13 +78,14 @@ public class DBUtilities {
     //добавить строку в таблицу hebrew
     public void insertIntoHebrew(String heWord, int transcId,
                                  int meaningId, int genderId,
-                                 int quantityId){
+                                 int quantityId, int semanticId){
         ContentValues cv = new ContentValues();
         cv.put("word_he", heWord);
         cv.put("transcription_id", transcId);
         cv.put("meaning_id", meaningId);
         cv.put("gender_id", genderId);
         cv.put("quantity_id", quantityId);
+        cv.put("semantic_id", semanticId);
         //добваить данные через объект ContentValues(cv), в таблицу
         insertInto(cv, "hebrew");
     }//insertIntoHebrew
@@ -120,6 +136,14 @@ public class DBUtilities {
         return updCount;
     }
 
+    //обновить запись в таблице semantic по id записи
+    public int updTableSemantic(String id, String name){
+        ContentValues cv = new ContentValues();
+        cv.put("name", name);
+        return db.update("semantic", cv, "id = ?",
+                new String[] { id });
+    }//updTableTranscriptions
+
     //обновить запись в таблице transcriptions по id записи
     public int updTableTranscriptions(String id, String transcWord){
         ContentValues cv = new ContentValues();
@@ -139,13 +163,14 @@ public class DBUtilities {
     //обновить запись в таблице hebrew по id записи
     public int updTableHebrew(String id, String heWord, int transcId,
                               int meaningId, int genderId,
-                              int quantityId){
+                              int quantityId, int semanticId){
         ContentValues cv = new ContentValues();
         cv.put("word_he", heWord);
         cv.put("transcription_id", transcId);
         cv.put("meaning_id", meaningId);
         cv.put("gender_id", genderId);
         cv.put("quantity_id", quantityId);
+        cv.put("semantic_id", semanticId);
         return db.update("hebrew", cv, "id = ?",
                 new String[] { id });
     }//updTableHebrew

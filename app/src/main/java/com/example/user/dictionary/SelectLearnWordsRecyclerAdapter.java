@@ -18,20 +18,19 @@ public class SelectLearnWordsRecyclerAdapter  extends
     //поля класса SelectLearnWordsRecyclerAdapter
     private LayoutInflater inflater;
     Context context;
+    String semantic;
     private Cursor cursor;
     DBUtilities dbUtilities;
-    private String filter;
     private String translations, word;
     private List<String> listCursorNum;
 
     //конструктор
-    SelectLearnWordsRecyclerAdapter(Context context, String mainQuery,
-                                    String filter, List<String> listCursorNum) {
+    SelectLearnWordsRecyclerAdapter(Context context, String mainQuery, List<String> listCursorNum, String semantic) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
         this.context = context;
-        this.filter = filter;
+        this.semantic = semantic;
         this.listCursorNum = listCursorNum;
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
@@ -62,21 +61,16 @@ public class SelectLearnWordsRecyclerAdapter  extends
         //получаем данные из курсора для фильтрации
         translations = cursorTr.getString(0);     //слово на русском
         word = cursor.getString(1);     //слово на иврите
-        if(listCursorNum.contains(String.valueOf(position)))
-            holder.cbSelectLearnWordsRA.setChecked(true);
 
-        // получение данных
-        //фильтрация элементов для бинарного поиска
-        if((filter.equals(""))||(translations.contains(filter))
-                ||(word.contains(filter))){
+        //визуально отмечаем необходимые ранее чек боксы
+        if((listCursorNum.contains(String.valueOf(position)))
+                || (semantic.equals(cursor.getString(3))))
+            holder.cbSelectLearnWordsRA.setChecked(true);
 
             //устанавливаем данные в текстовые поля адаптера
             holder.tvWordSLWRA.setText(word);
             holder.tvTranslationsSLWRA.setText(translations);
-        }else {
-            //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
-            holder.cvMainSLWRA.setVisibility(View.GONE);
-        }//if-else
+
     } // onBindViewHolder
 
     //получаем количество элементов объекта(курсора)

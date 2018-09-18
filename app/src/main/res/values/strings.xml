@@ -34,7 +34,8 @@
     <string name="btnSelectWordsLWAc">SelectWords</string>
     <string name="btnRandomWordsLWAc">RandomWords</string>
     <string name="go">GO</string>
-    <string name="btnAddNewTranslations">add new</string>
+    <string name="btnAddNewTranslations">add</string>
+    <string name="btnAddSemanticANWAc">add</string>
     <string name="item_authorization">Authorization</string>
     <string name="item_create_profile">Create profile</string>
     <string name="tvTitleCPAc">Create profile</string>
@@ -52,4 +53,7 @@
     <string name="tvWriteHebrewMethod">Write Hebrew</string>
     <string name="btnStartLearnPPAc">Start learn</string>
     <string name="btnSelectNextLearnWordPPAc">Select next learn word</string>
+    <string name="btnAddSemanticEWAc">add</string>
+    <string name="btnEditSemanticEWAc">edit</string>
+    <string name="item_select_semantic_group">Select semantic group</string>
 </resources>

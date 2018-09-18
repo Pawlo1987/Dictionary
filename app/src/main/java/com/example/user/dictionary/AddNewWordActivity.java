@@ -1,16 +1,17 @@
 package com.example.user.dictionary;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -26,8 +27,10 @@ public class AddNewWordActivity extends AppCompatActivity {
     private EditText edTranscriptionANWAc;  //строка с транскрпцией
     private Spinner spGenderANWAc;       //сппинер для рода в иврите
     private Spinner spQuantityANWAc;        //сппинер множест. или единств. число
+    private Spinner spSemanticANWAc;         //сппинер c именнами симантических групп
     private Spinner spMeaningANWAc;         //сппинер значения слова в предложении
     private List<String> listTypesPOS;      //коллекция видов частей речи
+    private List<String> listSemantic;      //коллекиция со списком имен симантических групп
     private LinearLayout llTranslationsANWAc; //LinearLayout для переводов
     //TextView для вывода количества заказанных переводов
     private TextView tvTranslationsCountANWAc;
@@ -58,7 +61,18 @@ public class AddNewWordActivity extends AppCompatActivity {
         edTranscriptionANWAc = findViewById(R.id.edTranscriptionANWAc);
         spGenderANWAc = findViewById(R.id.spGenderANWAc);
         spQuantityANWAc = findViewById(R.id.spQuantityANWAc);
+        spSemanticANWAc = findViewById(R.id.spSemanticANWAc);
         spMeaningANWAc = findViewById(R.id.spMeaningANWAc);
+        //коллекиция со списком имен симантических групп
+        listSemantic = new ArrayList<>();
+        String query = "SELECT semantic.name FROM semantic";
+        Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+        int l = cursor.getCount();
+        for (int i = 0; i < l; i++) {
+            cursor.moveToPosition(i);
+            listSemantic.add(cursor.getString(0));
+        }//for (int i = 0; i < l; i++)
+        //коллекиция со списком значений части речи
         listTypesPOS = new ArrayList<>(
                 Arrays.asList(
                         "adjective",            //имя прилагательное;
@@ -83,6 +97,9 @@ public class AddNewWordActivity extends AppCompatActivity {
         //строим спиннер для множ. и ед. числа
         spQuantityANWAc.setAdapter(
                 buildSpinnerAdapter(Arrays.asList("one", "many")));
+        //строим спиннер с именами симантических групп
+        spSemanticANWAc.setAdapter(
+                buildSpinnerAdapter(listSemantic));
         //строим спиннер для значения в предложении
         spMeaningANWAc.setAdapter(
                 buildSpinnerAdapter(listTypesPOS));
@@ -113,6 +130,50 @@ public class AddNewWordActivity extends AppCompatActivity {
             }//onNothingSelected
         });
     }//onCreate
+
+    //AlertDialog для создания новой семантической группы
+    public void alertDialogEditText() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Add new group!");
+//        alert.setMessage("Create new data!");
+        alert.setIcon(R.drawable.icon_information);
+        final EditText input = new EditText(this);
+//        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText("");
+        alert.setView(input);
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String word = input.getText().toString().trim();
+                //проверка на совпадение
+                String query = "SELECT semantic.id FROM semantic " +
+                        "WHERE semantic.name = \"" + word + "\"";
+                Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+                if(!word.equals("")&&(cursor.getCount()==0)) {
+                    //непосредственно добавляем новое значение в таблицу
+                    dbUtilities.insertIntoSemantic(word);
+                    // Do something with value!
+                }//if(!word.equals(""))
+                //перезаполняем и переустанавливаем спиннер
+                listSemantic.clear();
+                query = "SELECT semantic.name FROM semantic";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                int l = cursor.getCount();
+                for (int i = 0; i < l; i++) {
+                    cursor.moveToPosition(i);
+                    listSemantic.add(cursor.getString(0));
+                }//for (int i = 0; i < l; i++)
+                //строим спиннер с именами симантических групп
+                spSemanticANWAc.setAdapter(
+                        buildSpinnerAdapter(listSemantic));
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }//alertDialogEditText
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -148,6 +209,11 @@ public class AddNewWordActivity extends AppCompatActivity {
                 countTranslationsLayoutBuilding();
                 break;
 
+            case R.id.btnAddSemanticANWAc:
+                // вызываем alertDialog для создания группы
+                alertDialogEditText();
+                break;
+
             case R.id.btnOkANWAc:
                 addNewWordToDB();
                 break;
@@ -180,6 +246,7 @@ public class AddNewWordActivity extends AppCompatActivity {
         List<Integer> listRussianId = new ArrayList<>();
         int transcId = 0;
         int genderId = 0;
+        int semanticId = 0;
         int meaningId = 0;
         int quantityId = 0;
         int hebrewId = 0;
@@ -189,6 +256,7 @@ public class AddNewWordActivity extends AppCompatActivity {
         String heWord = edHebrewANWAc.getText().toString();
         String gender = spGenderANWAc.getSelectedItem().toString();
         String transc = edTranscriptionANWAc.getText().toString();
+        String semantic = spSemanticANWAc.getSelectedItem().toString();
         String meaning = spMeaningANWAc.getSelectedItem().toString();
         String quantity = spQuantityANWAc.getSelectedItem().toString();
 
@@ -295,6 +363,14 @@ public class AddNewWordActivity extends AppCompatActivity {
             cursor.moveToPosition(0);
             genderId = Integer.parseInt(cursor.getString(0));
 
+            ///////////////////////работа с симантической группой////////////////////
+            //определяем id из таблицы semantic
+            //получаем курсор данных из БД
+            query = "SELECT semantic.id FROM semantic WHERE semantic.name = \"" + semantic + "\"";
+            cursor = dbUtilities.getDb().rawQuery(query, null);
+            cursor.moveToPosition(0);
+            semanticId = Integer.parseInt(cursor.getString(0));
+
             ///////////////////////работа с признаком части речи////////////////////
             //определяем id из таблицы meaning
             //получаем курсор данных из БД
@@ -313,7 +389,7 @@ public class AddNewWordActivity extends AppCompatActivity {
 
             ///////////////////////работа с ивритовским словом////////////////////
             //записываем новое слово в таблицу hebrew
-            dbUtilities.insertIntoHebrew(heWord, transcId, meaningId, genderId, quantityId);
+            dbUtilities.insertIntoHebrew(heWord, transcId, meaningId, genderId, quantityId, semanticId);
             //получаем id последней записи
             // c heWord и transcId
             query = "SELECT hebrew.id FROM hebrew " +

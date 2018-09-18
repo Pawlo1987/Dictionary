@@ -50,12 +50,7 @@ public class ProfileParametersActivity extends AppCompatActivity {
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-            "meanings.option, gender.option, quantity.option FROM hebrew " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+    String mainQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +85,7 @@ public class ProfileParametersActivity extends AppCompatActivity {
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
+        mainQuery = dbUtilities.mainQuery;
         idProfile = getIntent().getIntExtra("idProfile", 0);
         listIdLearnWords = new ArrayList<>();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
