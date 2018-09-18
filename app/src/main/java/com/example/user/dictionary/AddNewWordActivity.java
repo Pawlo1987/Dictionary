@@ -3,9 +3,11 @@ package com.example.user.dictionary;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -25,11 +27,17 @@ public class AddNewWordActivity extends AppCompatActivity {
     private Spinner spMeaningANWAc;         //сппинер значения слова в предложении
     DBUtilities dbUtilities;
     Context context;
+    ActionBar actionBar;                //стрелка НАЗАД
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_word);
+
+        //добавляем actionBar (стрелка сверху слева)
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
@@ -56,6 +64,19 @@ public class AddNewWordActivity extends AppCompatActivity {
                 buildSpinnerAdapter(
                         Arrays.asList("adjective", "noun", "verb", "binders")));
     }//onCreate
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            //обработчик actionBar (стрелка сверху слева)
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                onBackPressed();
+                return true;
+        }//switch
+        return super.onOptionsItemSelected(item);
+    }//onOptionsItemSelected
 
     //строим адаптер для Spinner
     private ArrayAdapter<String> buildSpinnerAdapter(List<String> spList) {

@@ -3,7 +3,7 @@ package com.example.user.dictionary;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Parcelable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class LearnWordActivity extends AppCompatActivity {
@@ -30,6 +30,7 @@ public class LearnWordActivity extends AppCompatActivity {
     List<String> listIdLearnWords; // коллекция id слов для изучения
     int method = 1;
     int wordsCount = 10;
+    ActionBar actionBar;                //стрелка НАЗАД
 
     private Cursor cursor;
 
@@ -47,6 +48,12 @@ public class LearnWordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn_word);
+
+        //добавляем actionBar (стрелка сверху слева)
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         tvWordsCountForRandomLWAc = findViewById(R.id.tvWordsCountForRandomLWAc);
         tvMethodLWAc = findViewById(R.id.tvMethodLWAc);
         btnPlWC = findViewById(R.id.btnPlWC);
@@ -102,38 +109,21 @@ public class LearnWordActivity extends AppCompatActivity {
                     tvMethodLWAc.setText(String.valueOf(method));
                 }
                 break;
-
         }//switch
-
     }//onClick
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_learn_words, menu);
-        return true;
-    }//onCreateOptionsMenu
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){
-            case R.id.item_learn_words_count :
-                learnWordsCount();
-                return true;
-            case R.id.item_learn_method:
-                learnMethod();
+            //обработчик actionBar (стрелка сверху слева)
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                onBackPressed();
                 return true;
         }//switch
         return super.onOptionsItemSelected(item);
     }//onOptionsItemSelected
-
-    private void learnMethod() {
-
-    }//learnMethod
-
-    private void learnWordsCount() {
-
-    }//learnWordsCount
 
     private void selectWords() {
         Intent intent = new Intent(this, SelectLearnWordActivity.class);
@@ -153,6 +143,8 @@ public class LearnWordActivity extends AppCompatActivity {
             }//while
             listIdLearnWords.add(nextInter);
         }//for
+        //перемешать коллекцию выбранных слов
+        Collections.shuffle(listIdLearnWords);
         Intent intent = new Intent(this, ChooseTranslationActivity.class);
         intent.putStringArrayListExtra(
                 "idList",

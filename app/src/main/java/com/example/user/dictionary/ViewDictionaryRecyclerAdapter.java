@@ -39,7 +39,7 @@ public class ViewDictionaryRecyclerAdapter  extends
     ClipData clipData;
 
     //конструктор
-    public ViewDictionaryRecyclerAdapter(Context context, String mainQuery, String filter) {
+    ViewDictionaryRecyclerAdapter(Context context, String mainQuery, String filter) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
@@ -72,7 +72,7 @@ public class ViewDictionaryRecyclerAdapter  extends
 
         // получение данных
         //фильтрация элементов для бинарного поиска
-        if((filter == "")||(ruWord.contains(filter))
+        if((filter.equals(""))||(ruWord.contains(filter))
                 ||(heWord.contains(filter))||(trans.contains(filter))){
             //получаем остальные данные из курсора
             ruGender = cursor.getString(4); //род слова в русском
@@ -100,7 +100,7 @@ public class ViewDictionaryRecyclerAdapter  extends
 
     //Создаем класс ViewHolder с помощью которого мы получаем ссылку на каждый элемент
     //отдельного пункта списка и подключаем слушателя события нажатия меню
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tvRUWordVDRA, tvGenderRUVDRA, tvHEWordVDRA,
                 tvGenderHEVDRA, tvTransVDRA, tvMeaningVDRA, tvQuantityVDRA;
         final CardView cvMainVDRA;

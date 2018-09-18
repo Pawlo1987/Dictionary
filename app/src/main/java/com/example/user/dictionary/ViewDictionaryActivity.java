@@ -2,6 +2,7 @@ package com.example.user.dictionary;
 
 import android.content.Context;
 import android.os.Environment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     RecyclerView rvWordsVDAc;
     // адаптер для отображения recyclerView
     ViewDictionaryRecyclerAdapter viewDictionaryRecyclerAdapter;
+    ActionBar actionBar;                //стрелка НАЗАД
 
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
@@ -44,56 +46,17 @@ public class ViewDictionaryActivity extends AppCompatActivity {
             "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_view, menu);
-        return true;
-    }//onCreateOptionsMenu
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch(id){
-            case R.id.item_export_db :
-                exportDB();
-                return true;
-            case R.id.item_import_db:
-                importDB();
-                return true;
-            case R.id.item_export_to_csv:
-                exportDBtoCSV();
-                return true;
-        }//switch
-        return super.onOptionsItemSelected(item);
-    }//onOptionsItemSelected
-
-    //конвертируем в CSV и экпортируем в корень устройства в папку Dictionary
-    private void exportDBtoCSV() {
-        FileUtilities.importToCSVFromDB();
-    }//exportDBtoCSV
-
-    //процедура импорта БД из кореня устройства из папки Dictionary
-    private void importDB() {
-        FileUtilities.importDB();
-
-        //обновляем адаптер
-        //Строим RecyclerView
-        buildUserRecyclerView(
-                spMeaningVDAc.getItemAtPosition(spPos).toString(),
-                filter
-        );
-    }//importDB
-
-    //процедура экспорта БД в корень устройства в папку Dictionary
-    private void exportDB() {
-        FileUtilities.exportDB();
-    }//exportDB
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_dictionary);
+
+        //добавляем actionBar (стрелка сверху слева)
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         FileUtilities = new FileUtilities(this);
 
         context = getBaseContext();
@@ -150,6 +113,58 @@ public class ViewDictionaryActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         });
     }//onCreate
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_view, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.item_export_db :
+                exportDB();
+                return true;
+            case R.id.item_import_db:
+                importDB();
+                return true;
+            case R.id.item_export_to_csv:
+                exportDBtoCSV();
+                return true;
+
+            //обработчик actionBar (стрелка сверху слева)
+            case android.R.id.home:
+                setResult(RESULT_CANCELED);
+                onBackPressed();
+                return true;
+
+        }//switch
+        return super.onOptionsItemSelected(item);
+    }//onOptionsItemSelected
+
+    //конвертируем в CSV и экпортируем в корень устройства в папку Dictionary
+    private void exportDBtoCSV() {
+        FileUtilities.importToCSVFromDB();
+    }//exportDBtoCSV
+
+    //процедура импорта БД из кореня устройства из папки Dictionary
+    private void importDB() {
+        FileUtilities.importDB();
+
+        //обновляем адаптер
+        //Строим RecyclerView
+        buildUserRecyclerView(
+                spMeaningVDAc.getItemAtPosition(spPos).toString(),
+                filter
+        );
+    }//importDB
+
+    //процедура экспорта БД в корень устройства в папку Dictionary
+    private void exportDB() {
+        FileUtilities.exportDB();
+    }//exportDB
 
     //Строим RecyclerView
     private void buildUserRecyclerView(String meaning, String filter) {
