@@ -96,7 +96,7 @@ public class LearnWordActivity extends AppCompatActivity {
                 break;
 
             case R.id.btnPlMet:
-                if (method < 5) {
+                if (method < 6) {
                     method++;
                     tvMethodLWAc.setText(String.valueOf(method));
                 }

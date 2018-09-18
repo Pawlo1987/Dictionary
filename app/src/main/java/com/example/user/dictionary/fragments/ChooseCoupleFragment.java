@@ -1,4 +1,4 @@
-package com.example.user.dictionary.fragments;
+package com.example.user.dictionary.Fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -12,9 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.user.dictionary.BackgroundMethodActivity;
 import com.example.user.dictionary.DBUtilities;
 import com.example.user.dictionary.FileUtilities;
+import com.example.user.dictionary.Interface.MixMethodInterface;
 import com.example.user.dictionary.R;
 import com.example.user.dictionary.Word;
 
@@ -29,9 +32,10 @@ public class ChooseCoupleFragment extends Fragment {
     Context context;
     DBUtilities dbUtilities;
     FileUtilities FileUtilities;
-    List<String> listCursorNum; // коллекция id слов для изучения
     List<Word> listWords; // коллекция слов для изучения
     List<Word> list5WordsOnScreen; // коллекция 5 слов для изучения
+    //переменная необходимая для итераци слов если фрагмент вызван из mixMethod
+    int interForMixMethod = 0;
     Button btnTr1ChCoFr;
     Button btnTr2ChCoFr;
     Button btnTr3ChCoFr;
@@ -57,6 +61,10 @@ public class ChooseCoupleFragment extends Fragment {
     int countRemainingWords; //счетчик оставшихся неотгаданых слов
     ProgressBar pbBaMeAc;
     private Cursor cursor;
+    List<String> listCursorNumFromActivity; // коллекция слов для изучения полученая из Activity
+    TextView tvMixMethodPos;//TextView для глобальной позиция для mixMethod
+    boolean isMixMethod;    //флаг проверки если фрагмент вызван из mixMethod
+    Button btnActivity;
 
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
@@ -76,10 +84,10 @@ public class ChooseCoupleFragment extends Fragment {
         wordHe = new ArrayList<>();
         list5WordsOnScreen  = new ArrayList<>();
         buttonsList = new ArrayList<>();
-        listCursorNum = new ArrayList<>();
         listWords  = new ArrayList<>();
-        listCursorNum.addAll(getArguments().getStringArrayList("idList"));
-        wordsCount = getArguments().getInt("wordsCount",0);
+        listCursorNumFromActivity  = new ArrayList<>();
+        isMixMethod = getArguments().getBoolean("isMixMethod");
+        listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
     }//onCreate
 
     @Override
@@ -109,6 +117,8 @@ public class ChooseCoupleFragment extends Fragment {
         buttonsList.add(btnHe4ChCoFr);
         buttonsList.add(btnHe5ChCoFr);
 
+        btnActivity = getActivity().findViewById(R.id.btnActivity);
+        tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
 
         //обработчик кнопок при изучении
@@ -174,6 +184,11 @@ public class ChooseCoupleFragment extends Fragment {
         });//setOnClickListener
 
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+        //оставшееся количество слов
+        if(isMixMethod) {
+            wordsCount = listCursorNumFromActivity.size() -
+                    Integer.parseInt(tvMixMethodPos.getText().toString());
+        }else wordsCount = listCursorNumFromActivity.size();
         progressIter = 100 / wordsCount;
         progressTime = 0;
         createWordList();
@@ -215,12 +230,6 @@ public class ChooseCoupleFragment extends Fragment {
         FileUtilities = new FileUtilities(context);
         dbUtilities = new DBUtilities(context);
     }//onAttachToContext
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }//onDetach
 
     //проверяем нажатие кнопок
     private void pressBtnTest(int i) {
@@ -308,14 +317,31 @@ public class ChooseCoupleFragment extends Fragment {
                 for (int i = 0; i < n; i++) {
                     listWords.remove(list5WordsOnScreen.get(i));
                 }//for
-
-                //если в коллекции еще остались слова продолжаем
-                //иначе возврат в предыдущую активность
-                if(listWords.size()>0) {
-                    //очищяем временую коллекцию для следующей порции слов
-                    list5WordsOnScreen.clear();
-                    startLearnWord();
-                }else getActivity().finish();
+                //если фрагмент запущени из mixMethod
+                //и количество изученных слов в фрагменте уже 5
+                if (isMixMethod && (interForMixMethod == 4)) {
+                    interForMixMethod = 0;
+                    //вызываем onClick активности для продажения работы mixMethod
+                    //устанавливаем глобальную переменую tvMixMethodPos
+                    int temp = Integer.parseInt(tvMixMethodPos.getText().toString());
+                    tvMixMethodPos.setText(String.valueOf(temp+5));
+                    //если количество слов для изучения кратно 5
+                    //необходимо такая проверка
+                    if(temp+5 == listCursorNumFromActivity.size())
+                        getActivity().finish();
+                    else
+                        btnActivity.callOnClick();
+                } else {
+                    //если в коллекции еще остались слова продолжаем
+                    //иначе возврат в предыдущую активность
+                    if (listWords.size() > 0) {
+                        //очищяем временую коллекцию для следующей порции слов
+                        list5WordsOnScreen.clear();
+                        startLearnWord();
+                    } else {
+                        getActivity().finish();
+                    }//if-else
+                }
             }//if-else
         }//if
     }//checkPressBtn
@@ -398,14 +424,30 @@ public class ChooseCoupleFragment extends Fragment {
             }//if-else
             j++;
         }//for
+        if(isMixMethod) {
+            //делаем кнопки которые не учавствуют в изучении слов
+            // неактивные и другого цвета
+            for (int i = 0; i < 10; i++) {
+                if (buttonsList.get(i).getText().toString().equals("")) {
+                    buttonsList.get(i).setEnabled(false);
+                    buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                }//if
+            }//for
+        }
+        if(wordsCount>5) interForMixMethod = 4;
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения
     private void createWordList() {
         Word word = new Word();
-        for (int i = 0; i < wordsCount; i++) {
+        int firstNumber = 0;
+        //если метод запущен из MixMethod
+        if(isMixMethod)
+            firstNumber = Integer.parseInt(tvMixMethodPos.getText().toString());
+        int n = listCursorNumFromActivity.size();
+        for (int i = firstNumber; i < n; i++) {
             cursor.moveToPosition(
-                    Integer.parseInt(listCursorNum.get(i))
+                    Integer.parseInt(listCursorNumFromActivity.get(i))
             );
 
             //заполняем коллекции слов для проверки нажатых клавиш
@@ -429,4 +471,24 @@ public class ChooseCoupleFragment extends Fragment {
         //перемешаем полученную коллекцию
 //        Collections.shuffle(listWords);
     }//createWordList
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }//onStop
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }//onDestroyView
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }//onDestroyView
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }//onDetach
 }//ChooseCoupleFragment

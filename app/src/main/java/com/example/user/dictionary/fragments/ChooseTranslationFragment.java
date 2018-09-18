@@ -1,4 +1,4 @@
-package com.example.user.dictionary.fragments;
+package com.example.user.dictionary.Fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -15,8 +15,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.user.dictionary.BackgroundMethodActivity;
 import com.example.user.dictionary.DBUtilities;
 import com.example.user.dictionary.FileUtilities;
+import com.example.user.dictionary.Interface.MixMethodInterface;
 import com.example.user.dictionary.R;
 import com.example.user.dictionary.Utils;
 import com.example.user.dictionary.Word;
@@ -32,8 +34,9 @@ import java.util.List;
 public class ChooseTranslationFragment extends Fragment{
     Context context;
     DBUtilities dbUtilities;
+    //переменная необходимая для итераци слов если фрагмент вызван из mixMethod
+    int interForMixMethod = 0;
     com.example.user.dictionary.FileUtilities FileUtilities;
-    List<String> listCursorNum; // коллекция id слов для изучения
     List<Word> listWords; // коллекция слов для изучения
     List<Button> buttonsList;//коллекция кнопок
     TextView tvWordChTrWo;
@@ -46,10 +49,14 @@ public class ChooseTranslationFragment extends Fragment{
     int progressTime = 0;
     int progressIter;
     CountDownTimer countDownTimer;
-    int selectPos = 0;  //выбранная позиция
+    int selectPos;  //выбранная позиция
     int wordsCount = 10;
     private Cursor cursor;
     ProgressBar pbBaMeAc;
+    List<String> listCursorNumFromActivity; // коллекция слов для изучения полученая из Activity
+    TextView tvMixMethodPos;//TextView для глобальной позиция для mixMethod
+    boolean isMixMethod;    //флаг проверки если фрагмент вызван из mixMethod
+    Button btnActivity;
 
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
@@ -66,10 +73,11 @@ public class ChooseTranslationFragment extends Fragment{
         super.onCreate(savedInstanceState);
         dbUtilities.open();
         buttonsList = new ArrayList<>();
-        listCursorNum = new ArrayList<>();
         listWords  = new ArrayList<>();
-        listCursorNum.addAll(getArguments().getStringArrayList("idList"));
-        wordsCount = getArguments().getInt("wordsCount",0);
+        listCursorNumFromActivity  = new ArrayList<>();
+        listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
+        isMixMethod = getArguments().getBoolean("isMixMethod");
+        tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
     }//onCreate
 
     @Override
@@ -91,6 +99,8 @@ public class ChooseTranslationFragment extends Fragment{
         buttonsList.add(btnTr4ChTrWo);
         buttonsList.add(btnTr5ChTrWo);
 
+        btnActivity = getActivity().findViewById(R.id.btnActivity);
+        tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
 
         btnTr1ChTrWo.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +135,13 @@ public class ChooseTranslationFragment extends Fragment{
         });
 
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
-        progressIter = 100 / wordsCount;
+        //устанавливаем текущую позицию для коллекции слов
+        if(isMixMethod) {
+            selectPos = Integer.parseInt(tvMixMethodPos.getText().toString());
+        }else selectPos = 0;
+        //оставшееся количество слов
+        wordsCount = listCursorNumFromActivity.size() - selectPos;
+        if(wordsCount>0) progressIter = 100 / wordsCount;
         progressTime = 0;
         createWordList();
         startLearnWord();
@@ -178,12 +194,6 @@ public class ChooseTranslationFragment extends Fragment{
         dbUtilities = new DBUtilities(context);
     }//onAttachToContext
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-    }//onDetach
-
     //обработка правельно выбранного перевода
     private void btnSelectTrue() {
         //увеличиваем прогресс бар
@@ -202,18 +212,35 @@ public class ChooseTranslationFragment extends Fragment{
             public void onTick(long millisUntilFinished) { }
             //Задаем действия после завершения отсчета (запускаем главную активность)
             public void onFinish(){
-                //включаем кнопки обратно
-                for (int i = 0; i < 5; i++) {
-                    buttonsList.get(i).setEnabled(true);
-                }//for
-                //переход к следующему слову или выход из режима изучения
-                //так как закончились слова
-                if(selectPos < wordsCount-1){
-                    selectPos++;
-                    startLearnWord();
-                }else{
-                    getActivity().finish();
-                }//if-else
+                //если фрагмент запущени из mixMethod
+                //и количество изученных слов в фрагменте уже 5
+                if (isMixMethod && (interForMixMethod == 4)) {
+                    interForMixMethod = 0;
+                    //вызываем onClick активности для продажения работы mixMethod
+                    //устанавливаем глобальную переменую tvMixMethodPos
+                    int temp = Integer.parseInt(tvMixMethodPos.getText().toString());
+                    tvMixMethodPos.setText(String.valueOf(temp+5));
+                    //если количество слов для изучения кратно 5
+                    //необходимо такая проверка
+                    if(temp+5 == listCursorNumFromActivity.size())
+                        getActivity().finish();
+                    else
+                        btnActivity.callOnClick();
+                } else {
+                    interForMixMethod++;
+                    //переход к следующему слову или выход из режима изучения
+                    //так как закончились слова
+                    if (selectPos != listCursorNumFromActivity.size()-1) {
+                        selectPos++;
+                        //включаем кнопки обратно
+                        for (int i = 0; i < 5; i++) {
+                            buttonsList.get(i).setEnabled(true);
+                        }//for
+                        startLearnWord();
+                    } else {
+                        getActivity().finish();
+                    }//if-else
+                }
             }//onFinish
         };//countDownTimer
         //запускам таймер
@@ -227,10 +254,11 @@ public class ChooseTranslationFragment extends Fragment{
         List<Integer> listNumForBtn = new ArrayList<>();
         listNumForBtn.add(selectPos);
         for (int i = 0; i < 4; i++) {
+            int n = listWords.size();
             int k;
             while(true) {
-                k = Utils.getRandom(0, wordsCount-1);
-                if((k>0)&&(k<wordsCount-1)&&(!listNumForBtn.contains(k))) break;
+                k = Utils.getRandom(0, n);
+                if((k>0)&&(k<n)&&(!listNumForBtn.contains(k))) break;
             }//while
             listNumForBtn.add(k);
         }//for
@@ -254,9 +282,10 @@ public class ChooseTranslationFragment extends Fragment{
     //создаем коллекцию объектов слов для изучения
     private void createWordList() {
         Word word = new Word();
-        for (int i = 0; i < wordsCount; i++) {
+        int n = listCursorNumFromActivity.size();
+        for (int i = 0; i < n; i++) {
             cursor.moveToPosition(
-                    Integer.parseInt(listCursorNum.get(i))
+                    Integer.parseInt(listCursorNumFromActivity.get(i))
             );
 
             //получаем данные из курсора для фильтрации
@@ -274,4 +303,24 @@ public class ChooseTranslationFragment extends Fragment{
             word = new Word();
         }//while
     }//createWordList
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }//onStop
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }//onDestroyView
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }//onDestroyView
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }//onDetach
 }//ChooseTranslationFragment

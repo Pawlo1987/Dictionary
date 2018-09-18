@@ -7,7 +7,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:descendantFocusability="beforeDescendants"
 android:focusableInTouchMode="true"
-tools:context=".fragments.WriteInTranslationFragment">
+tools:context=".Fragments.WriteInTranslationFragment">
 
 <TextView
     android:id="@+id/tvTitleWrInTrFr"
