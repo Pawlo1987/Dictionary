@@ -6,22 +6,24 @@
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
     android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context=".EditWordActivity">
 
     <TextView
         android:id="@+id/tvHeadEWAc"
-        android:layout_margin="10dp"
-        android:text="@string/tvHeadEWAc"
         style="@android:style/Widget.DeviceDefault.Light.TextView.SpinnerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/unkempt"
+        android:text="@string/tvHeadEWAc"
         android:textAlignment="center"
         android:textColor="@android:color/background_dark"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -36,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/edHintRussianEWAc"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="18sp" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -53,7 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="GenderRU" />
+            android:text="GenderW"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spGenderRusEWAc"
@@ -75,7 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/edHintHebrewEWAc"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="18sp" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -92,7 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="GenderHE" />
+            android:text="GenderT"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spGenderHebEWAc"
@@ -114,7 +120,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/edHintTranscriptionEWAc"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="18sp" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -131,7 +138,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Quantity" />
+            android:text="Quantity"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spQuantityEWAc"
@@ -153,7 +161,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sentence meaning" />
+            android:text="Sentence meaning"
+            android:textSize="18sp" />
 
         <Spinner
             android:id="@+id/spMeaningEWAc"

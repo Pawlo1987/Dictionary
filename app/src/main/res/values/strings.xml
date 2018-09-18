@@ -2,12 +2,11 @@
     <string name="app_name">Dictionary</string>
     <string name="tvHeadMAc">Dictionary</string>
     <string name="btnAddNewWord">Add new word</string>
-    <string name="btnImportToFileFromDBMA">Import to *.csv</string>
     <string name="btnViewDictionary">View dictionary</string>
-    <string name="edHintRussianANWAc">Russian word</string>
-    <string name="edHintHebrewANWAc">Hebrew word</string>
-    <string name="edHintRussianEWAc">Russian word</string>
-    <string name="edHintHebrewEWAc">Hebrew word</string>
+    <string name="edHintRussianANWAc">Word</string>
+    <string name="edHintHebrewANWAc">Translation</string>
+    <string name="edHintRussianEWAc">Word</string>
+    <string name="edHintHebrewEWAc">Translation</string>
     <string name="edHintTranscriptionEWAc">Transcription</string>
     <string name="edHintTranscriptionANWAc">Transcription</string>
     <string name="tvHeadANWAc">New word</string>
@@ -19,4 +18,7 @@
     <string name="btnDellVDRA">Kill</string>
     <string name="btnEditVDRA">Edit</string>
     <string name="edHintSearchWordVDAc">Serching...</string>
+    <string name="item_export_db">Export DB</string>
+    <string name="item_import_db">Import DB</string>
+    <string name="item_export_to_csv">Export *.CSV</string>
 </resources>

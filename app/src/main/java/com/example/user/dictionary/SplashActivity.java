@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-//стартовая анимация
+//стартовая анимацияч
 public class SplashActivity extends AppCompatActivity {
     CountDownTimer countDownTimer;
     RelativeLayout RlMainSpAc;

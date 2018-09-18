@@ -16,7 +16,7 @@ import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 
-
+//класс-утилита для работы с файлами
 public class FileUtilities {
     DBUtilities dbUtilities;
     Context context;
@@ -46,6 +46,7 @@ public class FileUtilities {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
             destination.transferFrom(source, 0, source.size());
+            Toast.makeText(context, "*.db File Copy!", Toast.LENGTH_SHORT).show();
         }
         finally {
             if(source != null) {
@@ -54,8 +55,8 @@ public class FileUtilities {
             if(destination != null) {
                 destination.close();
             }
-        }
-    }
+        }//try-finally
+    }//copyFile
 
     //Файл в вормате CSV
     //переносим данные из БазыДанных в Файл
@@ -90,19 +91,19 @@ public class FileUtilities {
                     "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
-            bw.append("word_ru");
+            bw.append("word");
             bw.append('\t');
 
-            bw.append("word_he");
+            bw.append("translation");
             bw.append('\t');
 
-            bw.append("word_tr");
+            bw.append("transcription");
             bw.append('\t');
 
-            bw.append("gender_ru");
+            bw.append("gender_w");
             bw.append('\t');
 
-            bw.append("gender_he");
+            bw.append("gender_t");
             bw.append('\t');
 
             bw.append("option");
@@ -149,7 +150,7 @@ public class FileUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(context, "File created!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "*.CSV File created!", Toast.LENGTH_SHORT).show();
     }//importToFileFromDB
 
     //переносим данные из Файл в БазуДанных
