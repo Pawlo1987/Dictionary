@@ -29,16 +29,18 @@ public class SelectLearnWordActivity extends AppCompatActivity {
     // адаптер для отображения recyclerView
     SelectLearnWordsRecyclerAdapter selectLearnWordsRecyclerAdapter;
     ActionBar actionBar;                //стрелка НАЗАД
+    boolean flAuthorization;
 
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
     // SELECT таблица.столбец FROM таблица
     //основной запрос
-    String mainQuery = "SELECT russians.id, russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
-            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
-            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
-            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
-            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+    String mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+            "meanings.option, gender.option, quantity.option FROM hebrew " +
+            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         context = getBaseContext();
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
+        flAuthorization = getIntent().getBooleanExtra("flAuthorization",false);
         listCursorNum = new ArrayList<>();
         etSelectLearnWordsSLWAc = findViewById(R.id.etSelectLearnWordsSLWAc);
         etSelectLearnWordsSLWAc.isFocused();
@@ -112,7 +115,6 @@ public class SelectLearnWordActivity extends AppCompatActivity {
 
     //запуск активности любого метода изучения слов
     private void startAnyMethod() {
-        int method = getIntent().getIntExtra("method", 0);
         int loops = getIntent().getIntExtra("loops", 0);
 
         Intent intent = new Intent(this, BackgroundMethodActivity.class);
@@ -124,9 +126,8 @@ public class SelectLearnWordActivity extends AppCompatActivity {
                 "wordsCount",
                 listCursorNum.size()
         );
-        intent.putExtra(
-                "method",
-                method
+        intent.putIntegerArrayListExtra(
+                "listMethods", getIntent().getIntegerArrayListExtra("listMethods")
         );
         intent.putExtra(
                 "loops",

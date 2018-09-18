@@ -47,6 +47,19 @@ public class DBUtilities {
         insertInto(cv, "translations");
     }//insertIntoTranslations
 
+    //добавить строку в таблицу profile
+    public void insertIntoProfile(String login, String password, int idWordLastLearn,
+                                  int wordCountInLoop, int countLoopsReserved){
+        ContentValues cv = new ContentValues();
+        cv.put("login", login);
+        cv.put("password", password);
+        cv.put("id_word_last_learn", idWordLastLearn);
+        cv.put("word_count_in_loop", wordCountInLoop);
+        cv.put("count_loops_reserved", countLoopsReserved);
+        //добваить данные через объект ContentValues(cv), в таблицу
+        insertInto(cv, "profile");
+    }//insertIntoProfile
+
     //добавить строку в таблицу hebrew
     public void insertIntoHebrew(String heWord, int transcId,
                                  int meaningId, int genderId,
@@ -136,6 +149,17 @@ public class DBUtilities {
         return db.update("hebrew", cv, "id = ?",
                 new String[] { id });
     }//updTableHebrew
+
+    //обновить запись в таблице profile по id записи
+    public int updTableProfile(String id, int idWordLastLearn,
+                               int wordCountInLoop, int countLoopsReserved){
+        ContentValues cv = new ContentValues();
+        cv.put("id_word_last_learn", idWordLastLearn);
+        cv.put("word_count_in_loop", wordCountInLoop);
+        cv.put("count_loops_reserved", countLoopsReserved);
+        return db.update("profile", cv, "id = ?",
+                new String[] { id });
+    }//updTableProfile
 
     public SQLiteDatabase getDb() {
         return db;

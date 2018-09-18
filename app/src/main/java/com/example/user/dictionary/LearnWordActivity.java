@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,27 +24,21 @@ public class LearnWordActivity extends AppCompatActivity {
     DBUtilities dbUtilities;
     FileUtilities FileUtilities;
     TextView tvWordsCountForRandomLWAc;
-    TextView tvMethodLWAc;
     TextView tvLoopsLWAc;
     Button btnPlWC;
     Button btnMiWC;
-    Button btnPlMet;
-    Button btnMiMet;
     Button btnPlLo;
     Button btnMiLo;
+    CheckBox cbChooseRussianMethod;
+    CheckBox cbChooseHebrewMethod;
+    CheckBox cbChooseCoupleMethod;
+    CheckBox cbWriteRussianMethod;
+    CheckBox cbWriteHebrewMethod;
     List<String> listIdLearnWords; // коллекция id слов для изучения
-    int method = 1;
+    List<Integer> listMethods; //коллекция выбранных методов
     int loops = 1;
     int wordsCount = 8;
     ActionBar actionBar;                //стрелка НАЗАД
-    String[] methodName = {
-            "Mix",
-            "Choose Russian",
-            "Choose Hebrew",
-            "Choose Couple",
-            "Write Russian",
-            "Write Hebrew"
-    };
 
     private Cursor cursor;
 
@@ -55,7 +51,7 @@ public class LearnWordActivity extends AppCompatActivity {
             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
             "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
             "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +64,17 @@ public class LearnWordActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         tvWordsCountForRandomLWAc = findViewById(R.id.tvWordsCountForRandomLWAc);
-        tvMethodLWAc = findViewById(R.id.tvMethodLWAc);
         tvLoopsLWAc = findViewById(R.id.tvLoopsLWAc);
         btnPlWC = findViewById(R.id.btnPlWC);
         btnMiWC = findViewById(R.id.btnMiWC);
-        btnPlMet = findViewById(R.id.btnPlMet);
-        btnMiMet = findViewById(R.id.btnMiMet);
         btnPlLo = findViewById(R.id.btnPlLo);
         btnMiLo = findViewById(R.id.btnMiLo);
+        cbChooseRussianMethod = findViewById(R.id.cbChooseRussianMethod);
+        cbChooseHebrewMethod = findViewById(R.id.cbChooseHebrewMethod);
+        cbChooseCoupleMethod = findViewById(R.id.cbChooseCoupleMethod);
+        cbWriteRussianMethod = findViewById(R.id.cbWriteRussianMethod);
+        cbWriteHebrewMethod = findViewById(R.id.cbWriteHebrewMethod);
+        listMethods = new ArrayList<>();
         FileUtilities = new FileUtilities(this);
 
         context = getBaseContext();
@@ -83,7 +82,6 @@ public class LearnWordActivity extends AppCompatActivity {
         dbUtilities.open();
         listIdLearnWords = new ArrayList<>();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
-        tvMethodLWAc.setText(methodName[method-1]);
         tvLoopsLWAc.setText(String.valueOf(loops));
         tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
         countCursor = cursor.getCount();
@@ -113,20 +111,6 @@ public class LearnWordActivity extends AppCompatActivity {
                 }
                 break;
 
-            case R.id.btnPlMet:
-                if (method < 6) {
-                    method++;
-                    tvMethodLWAc.setText(methodName[method-1]);
-                }
-                break;
-
-            case R.id.btnMiMet:
-                if (method > 1) {
-                    method--;
-                    tvMethodLWAc.setText(methodName[method-1]);
-                }
-                break;
-
             case R.id.btnPlLo:
                 if (loops < 10) {
                     loops++;
@@ -147,6 +131,13 @@ public class LearnWordActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.item_authorization :
+                authorization();
+                return true;
+            case R.id.item_create_profile:
+                createProfile();
+                return true;
+
             //обработчик actionBar (стрелка сверху слева)
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
@@ -156,40 +147,83 @@ public class LearnWordActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }//onOptionsItemSelected
 
-    private void selectWords() {
-        Intent intent = new Intent(this, SelectLearnWordActivity.class);
-        intent.putExtra(
-                "method",
-                method
-        );
-        intent.putExtra(
-                "loops",
-                loops
-        );
+    //создание нового профиля
+    private void createProfile() {
+        Intent intent = new Intent(this, CreateProfileActivity.class);
         startActivity(intent);
+    }//createProfile
+
+    //авторизация профиля
+    private void authorization() {
+        Intent intent = new Intent(this, AuthorizationProfileActivity.class);
+        startActivity(intent);
+    }//authorization
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_learn_word, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    private void selectWords() {
+        listMethods.clear();
+        if(cbChooseRussianMethod.isChecked())   listMethods.add(1);
+        if(cbChooseHebrewMethod.isChecked())    listMethods.add(2);
+        if(cbChooseCoupleMethod.isChecked())    listMethods.add(3);
+        if(cbWriteRussianMethod.isChecked())    listMethods.add(4);
+        if(cbWriteHebrewMethod.isChecked())     listMethods.add(5);
+        //проверка на случай невыбранного метода
+        if(listMethods.size()>0) {
+            Intent intent = new Intent(this, SelectLearnWordActivity.class);
+            intent.putIntegerArrayListExtra(
+                    "listMethods", (ArrayList<Integer>) listMethods
+            );
+            intent.putExtra(
+                    "loops",
+                    loops
+            );
+            intent.putExtra(
+                    "flAuthorization",
+                    false
+            );
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
+        }//if(listMethods.size()>0)
     }//selectWords
 
     //выбор процедуры при рандомном подборе слов для изучения
     private void randomWords() {
-        //проверка достаточно ли у вас слов в словоре для изучения
-        if(countCursor<wordsCount){
-            Toast.makeText(this,"You need add more words to DB!",Toast.LENGTH_SHORT).show();
-        }else {
-            String nextInter;
-            listIdLearnWords.clear();
+        listMethods.clear();
+        if(cbChooseRussianMethod.isChecked())   listMethods.add(1);
+        if(cbChooseHebrewMethod.isChecked())    listMethods.add(2);
+        if(cbChooseCoupleMethod.isChecked())    listMethods.add(3);
+        if(cbWriteRussianMethod.isChecked())    listMethods.add(4);
+        if(cbWriteHebrewMethod.isChecked())     listMethods.add(5);
+        //проверка на случай невыбранного метода
+        if(listMethods.size()>0) {
+            //проверка достаточно ли у вас слов в словоре для изучения
+            if (countCursor < wordsCount) {
+                Toast.makeText(this, "You need add more words to DB!", Toast.LENGTH_SHORT).show();
+            } else {
+                String nextInter;
+                listIdLearnWords.clear();
 
-            for (int i = 0; i < wordsCount; i++) {
-                //проверка повторяющегося варианта
-                while (true) {
-                    nextInter = String.valueOf(Utils.getRandom(0, countCursor));
-                    if (!listIdLearnWords.contains(nextInter)) break;
-                }//while
-                listIdLearnWords.add(nextInter);
-            }//for
-            //перемешать коллекцию выбранных слов
-            Collections.shuffle(listIdLearnWords);
-            startMethod();
-        } //if(countCursor<wordsCount)
+                for (int i = 0; i < wordsCount; i++) {
+                    //проверка повторяющегося варианта
+                    while (true) {
+                        nextInter = String.valueOf(Utils.getRandom(0, countCursor));
+                        if (!listIdLearnWords.contains(nextInter)) break;
+                    }//while
+                    listIdLearnWords.add(nextInter);
+                }//for
+                //перемешать коллекцию выбранных слов
+                Collections.shuffle(listIdLearnWords);
+                startMethod();
+            } //if(countCursor<wordsCount)
+        }else{
+            Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
+        }//if(listMethods.size()>0)
     }//randomWords
 
     //запуск активности любого метода изучения слов
@@ -199,9 +233,8 @@ public class LearnWordActivity extends AppCompatActivity {
                 "idList",
                 (ArrayList<String>) listIdLearnWords
         );
-        intent.putExtra(
-                "method",
-                method
+        intent.putIntegerArrayListExtra(
+                "listMethods", (ArrayList<Integer>) listMethods
         );
         intent.putExtra(
                 "loops",

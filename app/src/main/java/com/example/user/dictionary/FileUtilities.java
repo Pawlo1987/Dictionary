@@ -147,7 +147,7 @@ public class FileUtilities {
                     "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
                     "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                     "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
+                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
             bw.append("word");

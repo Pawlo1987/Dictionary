@@ -33,7 +33,7 @@
                 android:layout_weight="3" />
 
             <TextView
-                android:id="@+id/tvRUWordSLWRA"
+                android:id="@+id/tvWordSLWRA"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -43,7 +43,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/tvHEWordSLWRA"
+                android:id="@+id/tvTranslationsSLWRA"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"

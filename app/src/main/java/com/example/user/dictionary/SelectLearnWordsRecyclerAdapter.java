@@ -22,7 +22,7 @@ public class SelectLearnWordsRecyclerAdapter  extends
     DBUtilities dbUtilities;
     private String filter;
     private String idRussian;
-    private String ruWord, heWord;
+    private String translations, word;
     private List<String> listCursorNum;
 
     //конструктор
@@ -53,20 +53,27 @@ public class SelectLearnWordsRecyclerAdapter  extends
         // переходим в курсоре на текущую позицию
         cursor.moveToPosition(position);
 
+        //получаем перевод
+        String queryTr = "SELECT russian.word_ru FROM translations " +
+                "INNER JOIN russian ON russian.id = translations.russian_id " +
+                "WHERE translations.hebrew_id = \"" + cursor.getString(0) + "\"";
+        Cursor cursorTr = dbUtilities.getDb().rawQuery(queryTr, null);
+        cursorTr.moveToFirst();
+
         //получаем данные из курсора для фильтрации
-        ruWord = cursor.getString(1);     //слово на русском
-        heWord = cursor.getString(2);     //слово на иврите
+        translations = cursorTr.getString(0);     //слово на русском
+        word = cursor.getString(1);     //слово на иврите
         if(listCursorNum.contains(String.valueOf(position)))
             holder.cbSelectLearnWordsRA.setChecked(true);
 
         // получение данных
         //фильтрация элементов для бинарного поиска
-        if((filter.equals(""))||(ruWord.contains(filter))
-                ||(heWord.contains(filter))){
+        if((filter.equals(""))||(translations.contains(filter))
+                ||(word.contains(filter))){
 
             //устанавливаем данные в текстовые поля адаптера
-            holder.tvRUWordSLWRA.setText(ruWord);
-            holder.tvHEWordSLWRA.setText(heWord);
+            holder.tvWordSLWRA.setText(word);
+            holder.tvTranslationsSLWRA.setText(translations);
         }else {
             //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
             holder.cvMainSLWRA.setVisibility(View.GONE);
@@ -80,7 +87,7 @@ public class SelectLearnWordsRecyclerAdapter  extends
     //Создаем класс ViewHolder с помощью которого мы получаем ссылку на каждый элемент
     //отдельного пункта списка и подключаем слушателя события нажатия меню
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvRUWordSLWRA, tvHEWordSLWRA;
+        final TextView tvWordSLWRA, tvTranslationsSLWRA;
         final CardView cvMainSLWRA;
         final CheckBox cbSelectLearnWordsRA;
 
@@ -88,8 +95,8 @@ public class SelectLearnWordsRecyclerAdapter  extends
             super(view);
             cbSelectLearnWordsRA = view.findViewById(R.id.cbSelectLearnWordsRA);
             cvMainSLWRA = view.findViewById(R.id.cvMainSLWRA);
-            tvRUWordSLWRA = view.findViewById(R.id.tvRUWordSLWRA);
-            tvHEWordSLWRA = view.findViewById(R.id.tvHEWordSLWRA);
+            tvWordSLWRA = view.findViewById(R.id.tvWordSLWRA);
+            tvTranslationsSLWRA = view.findViewById(R.id.tvTranslationsSLWRA);
 
             cbSelectLearnWordsRA.setOnClickListener(new View.OnClickListener() {
                 @Override

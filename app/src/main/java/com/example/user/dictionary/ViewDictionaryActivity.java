@@ -3,8 +3,8 @@ package com.example.user.dictionary;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -20,9 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +36,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     DBUtilities dbUtilities;
     Context context;
     RecyclerView rvWordsVDAc;
+    TextView tvWordsCountVDAc;
     // адаптер для отображения recyclerView
     ViewDictionaryRecyclerAdapter viewDictionaryRecyclerAdapter;
     ActionBar actionBar;                //стрелка НАЗАД
@@ -84,6 +84,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         spMeaningVDAc = findViewById(R.id.spMeaningVDAc);
         buildSpinner();
         etSearchWordVDAc = findViewById(R.id.etSearchWordVDAc);
+        tvWordsCountVDAc = findViewById(R.id.tvWordsCountVDAc);
         etSearchWordVDAc.isFocused();
         rvWordsVDAc = findViewById(R.id.rvWordsVDAc);
         //Строим RecyclerView
@@ -134,7 +135,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_view, menu);
+        getMenuInflater().inflate(R.menu.menu_view_dictionary, menu);
         return true;
     }//onCreateOptionsMenu
 
@@ -194,7 +195,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
                     "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
                     "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                     "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
+                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
         }else {
             mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
                     "meanings.option, gender.option, quantity.option FROM hebrew " +
@@ -202,8 +203,12 @@ public class ViewDictionaryActivity extends AppCompatActivity {
                     "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
                     "INNER JOIN gender ON gender.id = hebrew.gender_id " +
                     "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
-                    "WHERE meanings.option = \"" + meaning + "\"";
+                    "WHERE meanings.option = \"" + meaning + "\" ORDER BY hebrew.word_he";
         }//if(meaning.equals("ALL"))
+
+        Cursor cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+        //количество слов в БД
+        tvWordsCountVDAc.setText(String.valueOf(cursor.getCount()));
 
         // создаем адаптер, передаем в него курсор
         viewDictionaryRecyclerAdapter

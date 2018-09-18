@@ -315,7 +315,7 @@ public class AddNewWordActivity extends AppCompatActivity {
                 //записываем новую строку в таблицу translations
                 dbUtilities.insertIntoTranslations(hebrewId, listRussianId.get(i));
             }//for (int i = 0; i < l; i++)
-            Toast.makeText(context, "New word additionally!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "New word added!", Toast.LENGTH_SHORT).show();
             finish();
         }//if(!flEmptyString)
     }//addNewWordToDB

@@ -35,4 +35,21 @@
     <string name="btnRandomWordsLWAc">RandomWords</string>
     <string name="go">GO</string>
     <string name="btnAddNewTranslations">add new</string>
+    <string name="item_authorization">Authorization</string>
+    <string name="item_create_profile">Create profile</string>
+    <string name="tvTitleCPAc">Create profile</string>
+    <string name="btnOkCreateCPAc">Create</string>
+    <string name="hintEdCreateLoginProfileCPAc">Login</string>
+    <string name="hintedCreatePasswordProfileCPAc">Password</string>
+    <string name="tvTitleAPAc">Authorization</string>
+    <string name="etLoginAPAc">Login</string>
+    <string name="etPasswordAPAc">Password</string>
+    <string name="btnOkSignInAPAC">Ok</string>
+    <string name="tvChooseRussianMethod">Choose Russian</string>
+    <string name="tvChooseHebrewMethod">Choose Hebrew</string>
+    <string name="tvChooseCoupleMethod">Choose Couple</string>
+    <string name="tvWriteRussianMethod">Write Russian</string>
+    <string name="tvWriteHebrewMethod">Write Hebrew</string>
+    <string name="btnStartLearnPPAc">Start learn</string>
+    <string name="btnSelectNextLearnWordPPAc">Select next learn word</string>
 </resources>

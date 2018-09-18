@@ -74,7 +74,7 @@ public class ChooseCoupleFragment extends Fragment {
             "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
             "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
             "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id;";
+            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -334,14 +334,11 @@ public class ChooseCoupleFragment extends Fragment {
                         int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
                         //проверяем считанное значение
                         if (loops > 1) {
-                            createWordList();//заполняем заново WordList
                             //оставшееся количество слов
-                            if (isMixMethod) {
-                                wordsCount = listCursorNumFromActivity.size() -
-                                        Integer.parseInt(tvMixMethodPos.getText().toString());
-                            } else wordsCount = listCursorNumFromActivity.size();
+                            wordsCount = listCursorNumFromActivity.size();
                             //сбрасываем счетчик для глобальной позиции MixMethodPos
                             tvMixMethodPos.setText(String.valueOf("0"));
+                            createWordList();//заполняем заново WordList
                             loops--;// уменьшаем количество цыклов изучения выбранной коллекции
                             tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                             //очищяем временую коллекцию для следующей порции слов
@@ -363,14 +360,11 @@ public class ChooseCoupleFragment extends Fragment {
                         int loops = Integer.parseInt(tvLoopsBaMeAc.getText().toString());
                         //проверяем считанное значение
                         if (loops > 1) {
-                            createWordList();//заполняем заново WordList
                             //оставшееся количество слов
-                            if (isMixMethod) {
-                                wordsCount = listCursorNumFromActivity.size() -
-                                        Integer.parseInt(tvMixMethodPos.getText().toString());
-                            } else wordsCount = listCursorNumFromActivity.size();
+                            wordsCount = listCursorNumFromActivity.size();
                             //сбрасываем счетчик для глобальной позиции MixMethodPos
                             tvMixMethodPos.setText(String.valueOf("0"));
+                            createWordList();//заполняем заново WordList
                             loops--;// уменьшаем количество цыклов изучения выбранной коллекции
                             tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                             //очищяем временую коллекцию для следующей порции слов
@@ -476,6 +470,7 @@ public class ChooseCoupleFragment extends Fragment {
 
     //создаем коллекцию объектов слов для изучения
     private void createWordList() {
+        listWords.clear();
         Word word = new Word();
         int firstNumber = 0;
         //если метод запущен из MixMethod
