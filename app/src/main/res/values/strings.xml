@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Dictionary</string>
+    <string name="tvHeadMAc">Словарь для Ульпана</string>
+    <string name="btnAddNewWord">Добавить новое слово</string>
+    <string name="btnViewDictionary">Просмотр словаря</string>
+    <string name="tvHeadANWAc">Создаем новое слово</string>
+    <string name="edHintRussianANWAc">Слово на русском</string>
+    <string name="edHintHebrewANWAc">Слово на иврите</string>
+    <string name="edHintTranscriptionANWAc">Транскрипция</string>
+    <string name="btnConfirmANWAc">Добавить</string>
+    <string name="btnCancelANWAc">Отмена</string>
+</resources>
