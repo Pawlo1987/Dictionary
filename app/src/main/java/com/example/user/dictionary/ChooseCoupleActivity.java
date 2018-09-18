@@ -223,13 +223,19 @@ public class ChooseCoupleActivity extends AppCompatActivity {
             //если все угаданы формируем экран заново
             if(countRemainingWords > 0) countRemainingWords--;
             else{
+                int n = list5WordsOnScreen.size();
                 //удаляем из коллекции listWords отгаданые слова
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < n; i++) {
                     listWords.remove(list5WordsOnScreen.get(i));
                 }//for
-                //очищяем временую коллекцию для следующей порции слов
-                list5WordsOnScreen.clear();
-                startLearnWord();
+
+                //если в коллекции еще остались слова продолжаем
+                //иначе возврат в предыдущую активность
+                if(listWords.size()>0) {
+                    //очищяем временую коллекцию для следующей порции слов
+                    list5WordsOnScreen.clear();
+                    startLearnWord();
+                }else finish();
             }//if-else
         }//if
     }//checkPressBtn
@@ -237,9 +243,8 @@ public class ChooseCoupleActivity extends AppCompatActivity {
     //запуск начала изучения
     //формирование экранна со словами для изучения
     private void startLearnWord() {
-        //устанавливаем счетчик оставшихся значений
-        countRemainingWords = 4;
-
+        int iFirstStopEn; //первая итерация после которой кнопки должны быть не активны
+        int iSecondStopEn;//вторая итерация после которой кнопки должны быть не активны
         //5 id-ков из коллекции значений коллекция listWords
         // для установки в название кнопок
         List<Integer> listIdNumForBtn = new ArrayList<>();
@@ -248,7 +253,25 @@ public class ChooseCoupleActivity extends AppCompatActivity {
         //в коллекции listWords для изучения
         //и устанавлеваем их id в коллекцию listIdNumForBtn
         int n = listWords.size();
-        if(n >= 5) n=5; else n--;
+
+        //если слов больше пяти
+        //устанавливаем n=5 т.к. кнопки будут заполнены все
+        // заведомо устанавливаем ложную информацию
+        // iFirstStopEn=n; iSecondStopEn=n;
+        //если слов менше пяти
+        //устанавливаем iFirstStopEn=n-1; iSecondStopEn=n-1;
+        if(n >= 5) {
+            n=5;
+            iFirstStopEn=n;
+            iSecondStopEn=n;
+            //устанавливаем счетчик оставшихся значений
+            countRemainingWords = n-1;
+        }else{
+            //устанавливаем счетчик оставшихся значений
+            countRemainingWords = n-1;
+            iFirstStopEn=n-1;
+            iSecondStopEn=n+4;
+        }//if-else
         for (int i = 0; i < n; i++) {
             //заполняем временую коллекцию id слов для вывода на экран
             listIdNumForBtn.add(i);
@@ -257,39 +280,43 @@ public class ChooseCoupleActivity extends AppCompatActivity {
             list5WordsOnScreen.add(listWords.get(i));
         }//for
 
-        //устанавливаем нормальный цвет кнопок
-        for (int i = 0; i < 10; i++) {
-            buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        }//for
-
         //устанавливаем слова на кнопки
         //перемешать коллекцию
         Collections.shuffle(listIdNumForBtn);
 
-        int j;
+        int j=0; //итерационная переменная для коллекции list5WordsOnScreen
         for (int i = 0; i < 10; i++) {
-            //делаем кнопки активными,
-            // так как они становятся неактивные
-            // после первого отгаданого окна
-            buttonsList.get(i).setEnabled(true);
             //если i==5, первым делом перемешаем
             //коллекцию порядковых номеров,
             //чтоб порядок слов в первом столбике отличались
             //от порядка слов во втором столбике.
             //перемешиваем пару раз чтоб эффективнее
-            if(i==5) {
+            //и обнуляем j порядковый номер коллекции list5WordsOnScreen
+            if(i==n) {
                 Collections.shuffle(listIdNumForBtn);
                 Collections.shuffle(listIdNumForBtn);
-            }
+                j=0;
+            }//if
+            //выключаем активность кнопок если итерация
+            // попадает в условия
+            if((((i<5)&&(iFirstStopEn<i))||(iSecondStopEn<i))&&(iSecondStopEn!=iFirstStopEn)){
+                buttonsList.get(i).setText("");
+                continue;
+            }//if
+            //делаем кнопки активными,
+            // так как они становятся неактивные
+            // после первого отгаданого окна
+            buttonsList.get(i).setEnabled(true);
+            //устанавливаем нормальный цвет кнопок
+            buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
             //i:0-4 устанавливаем слова в первом столбике
             //i:5-9 устанавливаем слова во втором столбике
             if(i<=4){
-                j=i;
                 buttonsList.get(i).setText(list5WordsOnScreen.get(listIdNumForBtn.get(j)).getStrRus());
             }else{
-                j = i-5;
                 buttonsList.get(i).setText(list5WordsOnScreen.get(listIdNumForBtn.get(j)).getStrHeb());
             }//if-else
+            j++;
         }//for
     }//startLearnWord
 
