@@ -63,10 +63,9 @@ public class LearnWordActivity extends AppCompatActivity {
     //выбор процедуры при рандомном подборе слов для изучения
     private void randomWords() {
         String nextInter;
+        listIdLearnWords.clear();
         int countCursor = cursor.getCount();
 
-        // переходим в курсоре на текущую позицию
-//        cursor.moveToPosition(position);
         for (int i = 0; i < 20; i++) {
             //проверка повторяющегося варианта
             while(true) {

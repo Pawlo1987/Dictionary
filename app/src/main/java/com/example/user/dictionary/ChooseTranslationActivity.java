@@ -1,6 +1,8 @@
 package com.example.user.dictionary;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ChooseTranslationActivity extends AppCompatActivity {
@@ -23,6 +26,7 @@ public class ChooseTranslationActivity extends AppCompatActivity {
     Button btnTr3ChTrAc;
     Button btnTr4ChTrAc;
     Button btnTr5ChTrAc;
+    int selectPos = 0;  //выбранная позиция
 
     private Cursor cursor;
 
@@ -56,37 +60,93 @@ public class ChooseTranslationActivity extends AppCompatActivity {
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         listIdLearnWords.addAll(getIntent().getStringArrayListExtra("idList"));
         createWordList();
-//        for (int i = 0; i < 20; i++) {
-            startLearnWord(Utils.getRandom(0, 19));
-//        }
+        startLearnWord();
     }//onCreate
 
+    //обработчик кнопок при изучении
     public void onClick(View view) {
+        String selectWord;
         switch (view.getId()) {
             case R.id.btnTr1ChTrAc:
-            case R.id.btnTr2ChTrAc:
-            case R.id.btnTr3ChTrAc:
-            case R.id.btnTr4ChTrAc:
-            case R.id.btnTr5ChTrAc:
-                btnSelect();
+                selectWord = btnTr1ChTrAc.getText().toString();
+                if(!listWords.get(selectPos).getStrRus().toString().equals(selectWord)){
+                    btnTr1ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                }else {
+                    btnTr1ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnSelectTrue();
+                }//if-else
                 break;
-
+            case R.id.btnTr2ChTrAc:
+                selectWord = btnTr2ChTrAc.getText().toString();
+                if(!listWords.get(selectPos).getStrRus().toString().equals(selectWord)){
+                    btnTr2ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                }else {
+                    btnTr2ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnSelectTrue();
+                }//if-else
+                break;
+            case R.id.btnTr3ChTrAc:
+                selectWord = btnTr3ChTrAc.getText().toString();
+                if(!listWords.get(selectPos).getStrRus().toString().equals(selectWord)){
+                    btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                }else {
+                    btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnSelectTrue();
+                }//if-else
+                break;
+            case R.id.btnTr4ChTrAc:
+                selectWord = btnTr4ChTrAc.getText().toString();
+                if(!listWords.get(selectPos).getStrRus().toString().equals(selectWord)){
+                    btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                }else {
+                    btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnSelectTrue();
+                }//if-else
+                break;
+            case R.id.btnTr5ChTrAc:
+                selectWord = btnTr5ChTrAc.getText().toString();
+                if(!listWords.get(selectPos).getStrRus().toString().equals(selectWord)){
+                    btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+                }else {
+                    btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    btnSelectTrue();
+                }//if-else
+                break;
         }//switch
-
     }//onClick
 
-    private void btnSelect() {
-    }
+    //обработка правельно выбранного перевода
+    private void btnSelectTrue() {
+        if(selectPos < 19){
+            selectPos++;
+            startLearnWord();
+        }else{
+            finish();
+        }//if-else
+    }//btnSelect
 
     //запуск начала изучения
-    private void startLearnWord(int selectPos) {
+    private void startLearnWord() {
         tvWordChTrAc.setText(listWords.get(selectPos).getStrHeb().toString());
         List<Integer> listNumForBtn = new ArrayList<>();
         listNumForBtn.add(selectPos);
         for (int i = 0; i < 4; i++) {
-            int k = Utils.getRandom(0, 19);
-            listNumForBtn.add(k!=selectPos?k:k+1);
-        }
+            int k;
+            while(true) {
+                k = Utils.getRandom(0, 19);
+                if((k>0)&&(k<19)&&(!listNumForBtn.contains(k))) break;
+            }//while
+            listNumForBtn.add(k);
+        }//for
+
+        //перемешать коллекцию переводов для вывода названия кнопок
+        Collections.shuffle(listNumForBtn);
+        //устанавливаем нормальный цвет кнопок
+        btnTr1ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        btnTr2ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
+        btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
         btnTr1ChTrAc.setText(listWords.get(listNumForBtn.get(0)).getStrRus().toString());
         btnTr2ChTrAc.setText(listWords.get(listNumForBtn.get(1)).getStrRus().toString());
         btnTr3ChTrAc.setText(listWords.get(listNumForBtn.get(2)).getStrRus().toString());
