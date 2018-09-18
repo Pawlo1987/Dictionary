@@ -14,11 +14,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.dictionary.Interface.DataFromRecyclerToActivityInterface;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SelectNextLearnWordActivity extends AppCompatActivity {
+public class SelectNextLearnWordActivity extends AppCompatActivity
+        implements DataFromRecyclerToActivityInterface{
     FileUtilities FileUtilities;
     EditText etSelectNextLearnWordSNLWAc;
     String filter = "";
@@ -102,46 +105,20 @@ public class SelectNextLearnWordActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnOkSNLWAc:
-                //проверка - чтоб отмеченных слов для изучения было минимум 8
-                int i = selectIdHebrew;
-                if (listCursorNum.size() >= 8){
-//                    //перемешать коллекцию выбранных слов
-//                    Collections.shuffle(listCursorNum);
-//                    startAnyMethod();
-finish();
-                }
+                //возврат параметров в ProfileParametersActivity
+                Intent intent = new Intent();
+                intent.putExtra("selectNextIdHebrew", selectIdHebrew);
+                setResult(RESULT_OK, intent);
+                finish();
         }//switch
     }//onClick
-
-    //запуск активности любого метода изучения слов
-    private void startAnyMethod() {
-        int loops = getIntent().getIntExtra("loops", 0);
-
-        Intent intent = new Intent(this, BackgroundMethodActivity.class);
-        intent.putStringArrayListExtra(
-                "idList",
-                (ArrayList<String>) listCursorNum
-        );
-        intent.putExtra(
-                "wordsCount",
-                listCursorNum.size()
-        );
-        intent.putIntegerArrayListExtra(
-                "listMethods", getIntent().getIntegerArrayListExtra("listMethods")
-        );
-        intent.putExtra(
-                "loops",
-                loops
-        );
-        startActivity(intent);
-    }//startAnyMethod
 
     //Строим RecyclerView
     private void buildUserRecyclerView() {
         // получаем данные из БД в виде курсора
         // создаем адаптер, передаем в него курсор
         selectNextLearnWordRecyclerAdapter
-                = new SelectNextLearnWordRecyclerAdapter(context, mainQuery, filter, listCursorNum, selectIdHebrew);
+                = new SelectNextLearnWordRecyclerAdapter(this, context, mainQuery, filter);
 
         rvSelectNextLearnWordSNLWAc.setAdapter(selectNextLearnWordRecyclerAdapter);
 
@@ -152,4 +129,9 @@ finish();
         rvSelectNextLearnWordSNLWAc.setItemViewCacheSize(cursor.getCount());
     }//buildUserRecyclerView
 
+    //интерфейс передачи данных из RecyclerView в Activity
+    @Override
+    public void dataFromRecyclerToActivityInterface(int data) {
+        selectIdHebrew = data;
+    }//dataFromRecyclerToActivityInterface
 }//SelectLearnWordActivity

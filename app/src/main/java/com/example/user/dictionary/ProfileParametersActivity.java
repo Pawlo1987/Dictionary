@@ -199,11 +199,27 @@ public class ProfileParametersActivity extends AppCompatActivity {
                     "flAuthorization",
                     true
             );
-            startActivity(intent);
+
+            // собственно передача параметров
+            startActivityForResult(intent, 1);
         } else {
             Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
         }//if(listMethods.size()>0)
     }//selectWords
+
+    //результат полученный из активности SelectNextLearnWordActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {return;}
+        idWordLastLearn = data.getIntExtra("selectNextIdHebrew",0);
+        //получаем слово с которого начинается изучение
+        String query = "SELECT hebrew.word_he FROM hebrew " +
+                "WHERE hebrew.id = \"" + String.valueOf(idWordLastLearn) + "\"";
+        cursor = dbUtilities.getDb().rawQuery(query, null);
+        cursor.moveToPosition(0);
+        //id последнего изучаемого слова оно же первое
+        tvNextWordLearnPPAc.setText(cursor.getString(0));
+    }//onActivityResult
 
     //старт изучения обучения
     private void startLearn() {

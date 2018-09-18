@@ -12,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.example.user.dictionary.Interface.DataFromRecyclerToActivityInterface;
+
 import java.util.List;
 
 public class SelectNextLearnWordRecyclerAdapter extends
@@ -21,24 +23,22 @@ public class SelectNextLearnWordRecyclerAdapter extends
     private LayoutInflater inflater;
     Context context;
     private RadioButton lastCheckedRB = null;
-    private int selectIdHebrew;
+    public DataFromRecyclerToActivityInterface dataFromRecyclerToActivityInterface;
 
     private Cursor cursor;
     DBUtilities dbUtilities;
     private String filter;
     private String translations, word;
-    private List<String> listCursorNum;
 
     //конструктор
-    SelectNextLearnWordRecyclerAdapter(Context context, String mainQuery,
-                                       String filter, List<String> listCursorNum, int selectIdHebrew) {
+    SelectNextLearnWordRecyclerAdapter(DataFromRecyclerToActivityInterface dataFromRecyclerToActivityInterface,
+                                       Context context, String mainQuery, String filter) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
         this.context = context;
+        this.dataFromRecyclerToActivityInterface = dataFromRecyclerToActivityInterface;
         this.filter = filter;
-        this.listCursorNum = listCursorNum;
-        this.selectIdHebrew = selectIdHebrew;
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
@@ -110,9 +110,10 @@ public class SelectNextLearnWordRecyclerAdapter extends
                         lastCheckedRB.setChecked(false);
                     }
                     //store the clicked radiobutton
+                    cursor.moveToPosition(getAdapterPosition());
+                    int selectIdHebrew = Integer.parseInt(cursor.getString(0));
+                    dataFromRecyclerToActivityInterface.dataFromRecyclerToActivityInterface(selectIdHebrew);
                     lastCheckedRB = rbSelectNextLearnWordRA;
-                    selectIdHebrew = getAdapterPosition();
-
                 }//onCheckedChanged
             });
         } // ViewHolder
