@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -88,6 +89,7 @@ public class AddNewWordActivity extends AppCompatActivity {
         //id из таблицы transcription
         //для записи в другие таблицы
         int transcId = 0;
+        int hebrewId = 0;
         //id из таблицы meaning
         //для записи в другие таблицы
         int meaningId = 0;
@@ -125,21 +127,22 @@ public class AddNewWordActivity extends AppCompatActivity {
         if(!fl) {
             //проверяем на повторение транскипцию
             //получаем курсор данных из БД
-            String query = "SELECT transcriptions.id, transcriptions.word_tr FROM transcriptions";
+            String query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            int n = cursor.getCount();
-            for (int i = 0; i < n; i++) {
-                cursor.moveToPosition(i);
-                if (transc.equals(cursor.getString(1))) {
-                    transcId = Integer.parseInt(cursor.getString(0));
-                    break;
-                }
-            }//for
-            if(transcId == 0) {
+            if(cursor.getCount() > 0){
+                cursor.moveToPosition(0);
+                Log.d("ididid", "tr_id"+cursor.getString(0));
+                transcId = Integer.parseInt(cursor.getString(0));
+            }else{
                 //записываем новое слово в таблицу transcriptions
                 dbUtilities.insertIntoTranscriptions(transc);
-                transcId = n+1;
-            }//if(transcId == 0)
+                //получаем id последней записи transcriptions
+                query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                cursor.moveToPosition(0);
+                Log.d("ididid", "tr_id"+cursor.getString(0));
+                transcId = Integer.parseInt(cursor.getString(0));
+            }//if-else
 
             //определяем id из таблицы meaning
             //получаем курсор данных из БД
@@ -151,11 +154,15 @@ public class AddNewWordActivity extends AppCompatActivity {
             //записываем новое слово в таблицу hebrew
             dbUtilities.insertIntoHebrew(heWord, transcId, heGender, meaningId);
 
-            //получаем количество записей в таблице
-            n = dbUtilities.getCountTable("hebrew");
+            //получаем id последней записи hebrew
+            query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
+            cursor = dbUtilities.getDb().rawQuery(query, null);
+            cursor.moveToPosition(0);
+            Log.d("ididid", "he_id"+cursor.getString(0));
+            hebrewId = Integer.parseInt(cursor.getString(0));
 
             //записываем новое слово в таблицу russian
-            dbUtilities.insertIntoRussians(ruWord, n, ruGender, quantity, meaningId);
+            dbUtilities.insertIntoRussians(ruWord, hebrewId, ruGender, quantity, meaningId);
 
             Toast.makeText(context, "New word additionally!", Toast.LENGTH_SHORT).show();
             finish();

@@ -51,6 +51,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         spMeaningVDAc = findViewById(R.id.spMeaningVDAc);
         buildSpinner();
         etSearchWordVDAc = findViewById(R.id.etSearchWordVDAc);
+        etSearchWordVDAc.isFocused();
         rvWordsVDAc = findViewById(R.id.rvWordsVDAc);
         //Строим RecyclerView
         buildUserRecyclerView(
@@ -129,7 +130,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         //заполнить spListMeaningVDAc данные для отображения в Spinner
         spListMeaningVDAc.add("ALL");
         //запрос для спиннера
-        String query = "SELECT meanings.option FROM meanings;";
+        String query = "SELECT meanings.option FROM meanings";
         spListMeaningVDAc.addAll(dbUtilities.fillList(query));
 
         //создание адаптера для спинера

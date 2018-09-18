@@ -2,6 +2,7 @@
     <string name="app_name">Dictionary</string>
     <string name="tvHeadMAc">Dictionary</string>
     <string name="btnAddNewWord">Add new word</string>
+    <string name="btnImportToFileFromDBMA">Import to *.csv</string>
     <string name="btnViewDictionary">View dictionary</string>
     <string name="edHintRussianANWAc">Russian word</string>
     <string name="edHintHebrewANWAc">Hebrew word</string>

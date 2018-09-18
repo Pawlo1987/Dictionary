@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -141,21 +142,23 @@ public class EditWordActivity extends AppCompatActivity {
         if(!fl) {
             //проверяем на повторение транскипцию
             //получаем курсор данных из БД
-            String query = "SELECT transcriptions.id, transcriptions.word_tr FROM transcriptions";
+            String query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-            int n = cursor.getCount();
-            for (int i = 0; i < n; i++) {
-                cursor.moveToPosition(i);
-                if (transc.equals(cursor.getString(1))) {
-                    transcId = Integer.parseInt(cursor.getString(0));
-                    break;
-                }
-            }//for
-            if(transcId == -1) {
+            if(cursor.getCount() > 0){
+                cursor.moveToPosition(0);
+                Log.d("ididid", "tr_id"+cursor.getString(0));
+                transcId = Integer.parseInt(cursor.getString(0));
+            }else{
                 //записываем новое слово в таблицу transcriptions
                 dbUtilities.insertIntoTranscriptions(transc);
-                transcId = n+1;
-            }//if(transcId == 0)
+                //получаем id последней записи transcriptions
+                query = "SELECT transcriptions.id FROM transcriptions WHERE transcriptions.word_tr = \"" + transc + "\"";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                cursor.moveToPosition(0);
+                Log.d("ididid", "tr_id"+cursor.getString(0));
+                transcId = Integer.parseInt(cursor.getString(0));
+            }//if-else
+
 
             //определяем id из таблицы meaning
             //получаем курсор данных из БД

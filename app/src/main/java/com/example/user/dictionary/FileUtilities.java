@@ -3,127 +3,157 @@ package com.example.user.dictionary;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+
 
 public class FileUtilities {
     DBUtilities dbUtilities;
     Context context;
+    final String LOG_TAG = "myLogs";
+    final String DIR_SD = "Dictionary";
+    final String FILENAME_SD = "Dictionary.csv";
 
     //конструктор
-    public FileUtilities(DBUtilities dbUtilities, Context context) {
-        this.dbUtilities = dbUtilities;
+    public FileUtilities(Context context) {
         this.context = context;
+        dbUtilities = new DBUtilities(context);
+        dbUtilities.open();
     }//FileUtilities
+
+
+    //копирование файла
+    //https://ru.stackoverflow.com/questions/442228/%D0%9A%D0%BE%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B8-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-%D1%84%D0%B0%D0%B9%D0%BB-%D0%B2-android
+    public void copyFile(File sourceFile, File destFile) throws IOException {
+        if(!destFile.exists()) {
+            destFile.createNewFile();
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        }
+        finally {
+            if(source != null) {
+                source.close();
+            }
+            if(destination != null) {
+                destination.close();
+            }
+        }
+    }
 
     //Файл в вормате CSV
     //переносим данные из БазыДанных в Файл
-    public void exportDBToFile() {
+    public void importToFileFromDB() {
 
-        File folder = new File(Environment.getExternalStorageDirectory()
-                + "/Folder");
-        boolean var = false;
-        if (!folder.exists())
-            var = folder.mkdir();
-        System.out.println("" + var);
-        final String filename = folder.toString() + "/" + "Dictionary.csv";
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+        // создаем каталог
+        sdPath.mkdirs();
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(sdPath, FILENAME_SD);
+        try {
+            BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(
+                    new FileOutputStream(sdFile), StandardCharsets.UTF_16));
+            // открываем поток для записи
+//            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            // пишем данные
 
-        // show waiting screen
-//        CharSequence contentTitle = getString(R.string.app_name);
-//        final ProgressDialog progDailog = ProgressDialog.show(
-//                MailConfiguration.this, contentTitle, "even geduld aub...",
-//                true);//please wait
-//        final Handler handler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//
-//
-//
-//
-//            }
-//        };
+            //получаем курсор с данными для формирования файла
+            String query = "SELECT russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
+                    "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
+                    "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
+                    "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
+            Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
-        new Thread() {
-            public void run() {
-                try {
+            bw.append("word_ru");
+            bw.append('\t');
 
-                    FileWriter fw = new FileWriter(filename);
-                    //получаем курсор с данными для формирования файла
-                    String query = "SELECT russians.word_ru, hebrew.word_he, transcriptions.word_tr, " +
-                            "russians.gender_ru, hebrew.gender_he, meanings.option, russians.quantity FROM russians " +
-                            "INNER JOIN hebrew ON hebrew.id = russians.hebrew_id " +
-                            "INNER JOIN meanings ON meanings.id = russians.meaning_id " +
-                            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id";
-                    Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+            bw.append("word_he");
+            bw.append('\t');
 
-                    fw.append("word_ru");
-                    fw.append(',');
+            bw.append("word_tr");
+            bw.append('\t');
 
-                    fw.append("word_he");
-                    fw.append(',');
+            bw.append("gender_ru");
+            bw.append('\t');
 
-                    fw.append("word_tr");
-                    fw.append(',');
+            bw.append("gender_he");
+            bw.append('\t');
 
-                    fw.append("gender_ru");
-                    fw.append(',');
+            bw.append("option");
+            bw.append('\t');
 
-                    fw.append("gender_he");
-                    fw.append(',');
+            bw.append("quantity");
+            bw.append('\t');
 
-                    fw.append("option");
-                    fw.append(',');
+            bw.append('\n');
 
-                    fw.append("quantity");
-                    fw.append(',');
+            if (cursor.moveToFirst()) {
+                do {
+                    bw.append(cursor.getString(0));
+                    bw.append('\t');
 
-                    fw.append('\n');
+                    bw.append(cursor.getString(1));
+                    bw.append('\t');
 
-                    if (cursor.moveToFirst()) {
-                        do {
-                            fw.append(cursor.getString(0));
-                            fw.append(',');
+                    bw.append(cursor.getString(2));
+                    bw.append('\t');
 
-                            fw.append(cursor.getString(1));
-                            fw.append(',');
+                    bw.append(cursor.getString(3));
+                    bw.append('\t');
 
-                            fw.append(cursor.getString(2));
-                            fw.append(',');
+                    bw.append(cursor.getString(4));
+                    bw.append('\t');
 
-                            fw.append(cursor.getString(3));
-                            fw.append(',');
+                    bw.append(cursor.getString(5));
+                    bw.append('\t');
 
-                            fw.append(cursor.getString(4));
-                            fw.append(',');
+                    bw.append(cursor.getString(6));
+                    bw.append('\t');
 
-                            fw.append(cursor.getString(5));
-                            fw.append(',');
+                    bw.append('\n');
 
-                            fw.append(cursor.getString(6));
-                            fw.append(',');
-
-                            fw.append('\n');
-
-                        } while (cursor.moveToNext());
-                    }
-                    if (cursor != null && !cursor.isClosed()) {
-                        cursor.close();
-                    }
-
-                    // fw.flush();
-                    fw.close();
-
-                } catch (Exception e) {
-                }
-//                handler.sendEmptyMessage(0);
-//                progDailog.dismiss();
+                } while (cursor.moveToNext());
             }
-        }.start();
-    }//exportDBToFile
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            // закрываем поток
+            bw.close();
+            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(context, "File created!", Toast.LENGTH_SHORT).show();
+    }//importToFileFromDB
 
     //переносим данные из Файл в БазуДанных
-    public void importFileToDB(){
+    public void exporToDBFromFile() {
 
-    }
+    }//exporToDBFromFile
 }//class FileUtilities

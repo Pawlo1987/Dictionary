@@ -39,4 +39,12 @@
         android:onClick="onClick"
         android:text="@string/btnViewDictionary" />
 
+    <Button
+        android:id="@+id/btnImportToFileFromDBMA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:onClick="onClick"
+        android:text="@string/btnImportToFileFromDBMA" />
+
 </LinearLayout>

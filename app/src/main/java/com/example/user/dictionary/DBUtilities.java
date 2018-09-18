@@ -65,7 +65,7 @@ public class DBUtilities {
 
     //получаем количество записей в таблице
     public int getCountTable(String tableName){
-        String query = "SELECT id FROM " + tableName;
+        String query = "SELECT " + tableName +".id FROM " + tableName;
         Cursor cursor = getDb().rawQuery(query, null);
         return cursor.getCount();
     }
