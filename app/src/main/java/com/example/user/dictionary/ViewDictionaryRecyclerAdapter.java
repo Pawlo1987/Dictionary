@@ -1,5 +1,8 @@
 package com.example.user.dictionary;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
 import static android.view.View.GONE;
 
 public class ViewDictionaryRecyclerAdapter  extends
@@ -29,6 +33,10 @@ public class ViewDictionaryRecyclerAdapter  extends
     private String idRussian, idHebrew, idTranscription;
     private String ruWord, ruGender, heWord, heGender,
                    trans, meaning, quantity;
+    //Объекты фрейморка clipboard framework
+    //(фреймворк буфера обмена) для копирования и вставки различных типов данных
+    ClipboardManager clipboardManager;
+    ClipData clipData;
 
     //конструктор
     public ViewDictionaryRecyclerAdapter(Context context, String mainQuery, String filter) {
@@ -110,6 +118,7 @@ public class ViewDictionaryRecyclerAdapter  extends
             tvTransVDRA = view.findViewById(R.id.tvTransVDRA);
             tvMeaningVDRA = view.findViewById(R.id.tvMeaningVDRA);
             tvQuantityVDRA = view.findViewById(R.id.tvQuantityVDRA);
+            clipboardManager=(ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
 
             btnEditVDRA.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,7 +138,19 @@ public class ViewDictionaryRecyclerAdapter  extends
                     alertDialogTwoButton(view.getContext(), "Delete", idRussian);
                 }// onClick
             });// btnDellVDRA.setOnClickListener
+            cvMainVDRA.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    cursor.moveToPosition(getAdapterPosition());
+                    //id из таблицы russian
+                    heWord = cursor.getString(2);   //слово на иврите
+                    clipData = ClipData.newPlainText("text",heWord);
+                    clipboardManager.setPrimaryClip(clipData);
 
+                    Toast.makeText(context,"Translation copied ",Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
         } // ViewHolder
 
         //AlertDialog с двумя кнопками

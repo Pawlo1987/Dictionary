@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 public class FileUtilities {
     DBUtilities dbUtilities;
     Context context;
+    File sourceFile;
+    File destFile;
     final String LOG_TAG = "myLogs";
     final String DIR_SD = "Dictionary";
     final String FILENAME_SD = "Dictionary.csv";
@@ -31,6 +33,59 @@ public class FileUtilities {
         dbUtilities.open();
     }//FileUtilities
 
+    //процедура импорта БД из кореня устройства (из папки Dictionary)
+    public void importDB(){
+        //объект File откуда копируем, из папки assets область приложения
+        destFile = new File(context.getFilesDir().getPath() + "/dictionary.db");
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            return;
+        }
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/Dictionary");
+        // создаем каталог если папка отсутствует
+        if (!sdPath.exists()) {
+            sdPath.mkdirs();
+        }
+        //объект File куда копируем, в папку общего доступа,
+        //область устройства
+        sourceFile = new File(sdPath,"dictionary.db");
+        try {
+            copyFile(sourceFile,destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//importDB
+
+    //процедура экспорта БД в корень устройства (в папку Dictionary)
+    public void exportDB(){
+        //объект File откуда копируем, из папки assets область приложения
+        sourceFile = new File(context.getFilesDir().getPath() + "/dictionary.db");
+        // проверяем доступность SD
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            return;
+        }
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/Dictionary");
+        // создаем каталог если папка отсутствует
+        if (!sdPath.exists()) {
+            sdPath.mkdirs();
+        }
+        //объект File куда копируем, в папку общего доступа,
+        //область устройства
+        destFile = new File(sdPath,"dictionary.db");
+        try {
+            copyFile(sourceFile,destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//exportDB
 
     //копирование файла
     //https://ru.stackoverflow.com/questions/442228/%D0%9A%D0%BE%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%B8-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-%D1%84%D0%B0%D0%B9%D0%BB-%D0%B2-android
@@ -38,10 +93,8 @@ public class FileUtilities {
         if(!destFile.exists()) {
             destFile.createNewFile();
         }
-
         FileChannel source = null;
         FileChannel destination = null;
-
         try {
             source = new FileInputStream(sourceFile).getChannel();
             destination = new FileOutputStream(destFile).getChannel();
@@ -60,7 +113,7 @@ public class FileUtilities {
 
     //Файл в вормате CSV
     //переносим данные из БазыДанных в Файл
-    public void importToFileFromDB() {
+    public void importToCSVFromDB() {
 
         // проверяем доступность SD
         if (!Environment.getExternalStorageState().equals(
@@ -73,9 +126,12 @@ public class FileUtilities {
         // добавляем свой каталог к пути
         sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
         // создаем каталог
-        sdPath.mkdirs();
+        sdPath.setWritable(true);
+        // если папка не существует
+        if (sdPath.exists()) sdPath.mkdirs();
         // формируем объект File, который содержит путь к файлу
         File sdFile = new File(sdPath, FILENAME_SD);
+        sdFile.setWritable(true);
         try {
             BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(
                     new FileOutputStream(sdFile), StandardCharsets.UTF_16));
@@ -151,10 +207,5 @@ public class FileUtilities {
             e.printStackTrace();
         }
         Toast.makeText(context, "*.CSV File created!", Toast.LENGTH_SHORT).show();
-    }//importToFileFromDB
-
-    //переносим данные из Файл в БазуДанных
-    public void exporToDBFromFile() {
-
-    }//exporToDBFromFile
+    }//importToCSVFromDB
 }//class FileUtilities

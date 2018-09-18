@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -72,35 +71,14 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
     //конвертируем в CSV и экпортируем в корень устройства в папку Dictionary
     private void exportDBtoCSV() {
-        FileUtilities.importToFileFromDB();
+        FileUtilities.importToCSVFromDB();
     }//exportDBtoCSV
 
     //процедура импорта БД из кореня устройства из папки Dictionary
     private void importDB() {
-        //объект File откуда копируем, из папки assets область приложения
-        destFile = new File(this.getFilesDir().getPath() + "/dictionary.db");
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            return;
-        }
-        // получаем путь к SD
-        File sdPath = Environment.getExternalStorageDirectory();
-        // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/Dictionary");
-        // создаем каталог если папка отсутствует
-        if (!sdPath.exists()) {
-            sdPath.mkdirs();
-        }
-        //объект File куда копируем, в папку общего доступа,
-        //область устройства
-        sourceFile = new File(sdPath,"dictionary.db");
-        try {
-            FileUtilities.copyFile(sourceFile,destFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
+        FileUtilities.importDB();
+
+        //обновляем адаптер
         //Строим RecyclerView
         buildUserRecyclerView(
                 spMeaningVDAc.getItemAtPosition(spPos).toString(),
@@ -110,30 +88,7 @@ public class ViewDictionaryActivity extends AppCompatActivity {
 
     //процедура экспорта БД в корень устройства в папку Dictionary
     private void exportDB() {
-        //объект File откуда копируем, из папки assets область приложения
-        sourceFile = new File(this.getFilesDir().getPath() + "/dictionary.db");
-        // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            return;
-        }
-        // получаем путь к SD
-        File sdPath = Environment.getExternalStorageDirectory();
-        // добавляем свой каталог к пути
-        sdPath = new File(sdPath.getAbsolutePath() + "/Dictionary");
-        // создаем каталог если папка отсутствует
-        if (!sdPath.exists()) {
-            sdPath.mkdirs();
-        }
-        //объект File куда копируем, в папку общего доступа,
-        //область устройства
-        destFile = new File(sdPath,"dictionary.db");
-
-        try {
-            FileUtilities.copyFile(sourceFile,destFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileUtilities.exportDB();
     }//exportDB
 
 
