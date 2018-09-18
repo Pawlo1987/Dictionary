@@ -22,6 +22,8 @@
     <string name="item_export_db">Export DB</string>
     <string name="item_import_db">Import DB</string>
     <string name="item_export_to_csv">Export *.CSV</string>
+    <string name="item_learn_words_count">Words count</string>
+    <string name="item_learn_method">Method</string>
     <string name="title_activity_settings">Settings</string>
     <string name="btnSelectWordsLWAc">SelectWords</string>
     <string name="btnRandomWordsLWAc">RandomWords</string>

@@ -6,7 +6,11 @@ import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +18,18 @@ import java.util.List;
 
 public class LearnWordActivity extends AppCompatActivity {
     Context context;
+    int countCursor;
     DBUtilities dbUtilities;
     FileUtilities FileUtilities;
+    TextView tvWordsCountForRandomLWAc;
+    TextView tvMethodLWAc;
+    Button btnPlWC;
+    Button btnMiWC;
+    Button btnPlMet;
+    Button btnMiMet;
     List<String> listIdLearnWords; // коллекция id слов для изучения
+    int method = 1;
+    int wordsCount = 10;
 
     private Cursor cursor;
 
@@ -34,6 +47,12 @@ public class LearnWordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn_word);
+        tvWordsCountForRandomLWAc = findViewById(R.id.tvWordsCountForRandomLWAc);
+        tvMethodLWAc = findViewById(R.id.tvMethodLWAc);
+        btnPlWC = findViewById(R.id.btnPlWC);
+        btnMiWC = findViewById(R.id.btnMiWC);
+        btnPlMet = findViewById(R.id.btnPlMet);
+        btnMiMet = findViewById(R.id.btnMiMet);
         FileUtilities = new FileUtilities(this);
 
         context = getBaseContext();
@@ -41,6 +60,9 @@ public class LearnWordActivity extends AppCompatActivity {
         dbUtilities.open();
         listIdLearnWords = new ArrayList<>();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+        tvMethodLWAc.setText(String.valueOf(method));
+        tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
+        countCursor = cursor.getCount();
     }//onCreate
 
     public void onClick(View view) {
@@ -53,20 +75,77 @@ public class LearnWordActivity extends AppCompatActivity {
                 selectWords();
                 break;
 
+            case R.id.btnPlWC:
+                if(wordsCount < countCursor){
+                    wordsCount++;
+                    tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
+                }
+                break;
+
+            case R.id.btnMiWC:
+                if(wordsCount > 8){
+                    wordsCount--;
+                    tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
+                }
+                break;
+
+            case R.id.btnPlMet:
+                if(method < 3){
+                    method++;
+                    tvMethodLWAc.setText(String.valueOf(method));
+                }
+                break;
+
+            case R.id.btnMiMet:
+                if(method > 1){
+                    method--;
+                    tvMethodLWAc.setText(String.valueOf(method));
+                }
+                break;
+
         }//switch
 
     }//onClick
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_learn_words, menu);
+        return true;
+    }//onCreateOptionsMenu
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.item_learn_words_count :
+                learnWordsCount();
+                return true;
+            case R.id.item_learn_method:
+                learnMethod();
+                return true;
+        }//switch
+        return super.onOptionsItemSelected(item);
+    }//onOptionsItemSelected
+
+    private void learnMethod() {
+
+    }//learnMethod
+
+    private void learnWordsCount() {
+
+    }//learnWordsCount
+
     private void selectWords() {
+        Intent intent = new Intent(this, SelectLearnWordActivity.class);
+        startActivity(intent);
     }//selectWords
 
     //выбор процедуры при рандомном подборе слов для изучения
     private void randomWords() {
         String nextInter;
         listIdLearnWords.clear();
-        int countCursor = cursor.getCount();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < wordsCount; i++) {
             //проверка повторяющегося варианта
             while(true) {
                 nextInter = String.valueOf(Utils.getRandom(0, countCursor));
@@ -78,6 +157,10 @@ public class LearnWordActivity extends AppCompatActivity {
         intent.putStringArrayListExtra(
                 "idList",
                 (ArrayList<String>) listIdLearnWords
+        );
+        intent.putExtra(
+                "wordsCount",
+                wordsCount
         );
         startActivity(intent);
     }//randomWords

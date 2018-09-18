@@ -27,6 +27,7 @@ public class ChooseTranslationActivity extends AppCompatActivity {
     Button btnTr4ChTrAc;
     Button btnTr5ChTrAc;
     int selectPos = 0;  //выбранная позиция
+    int wordsCount = 10;
 
     private Cursor cursor;
 
@@ -59,6 +60,7 @@ public class ChooseTranslationActivity extends AppCompatActivity {
         btnTr5ChTrAc = findViewById(R.id.btnTr5ChTrAc);
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         listIdLearnWords.addAll(getIntent().getStringArrayListExtra("idList"));
+        wordsCount = getIntent().getIntExtra("wordsCount",0);
         createWordList();
         startLearnWord();
     }//onCreate
@@ -117,7 +119,7 @@ public class ChooseTranslationActivity extends AppCompatActivity {
 
     //обработка правельно выбранного перевода
     private void btnSelectTrue() {
-        if(selectPos < 19){
+        if(selectPos < wordsCount-1){
             selectPos++;
             startLearnWord();
         }else{
@@ -133,8 +135,8 @@ public class ChooseTranslationActivity extends AppCompatActivity {
         for (int i = 0; i < 4; i++) {
             int k;
             while(true) {
-                k = Utils.getRandom(0, 19);
-                if((k>0)&&(k<19)&&(!listNumForBtn.contains(k))) break;
+                k = Utils.getRandom(0, wordsCount-1);
+                if((k>0)&&(k<wordsCount-1)&&(!listNumForBtn.contains(k))) break;
             }//while
             listNumForBtn.add(k);
         }//for
@@ -157,7 +159,7 @@ public class ChooseTranslationActivity extends AppCompatActivity {
     //создаем коллекцию объектов слов для изучения
     private void createWordList() {
         Word word = new Word();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < wordsCount; i++) {
             cursor.moveToPosition(
                     Integer.parseInt(listIdLearnWords.get(i))
             );
