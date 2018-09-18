@@ -47,7 +47,7 @@ public class WriteInTranslationFragment extends Fragment {
     int interForMixMethod = 0;
     int selectPos;  //выбранная позиция
     int wordsCount = 10;
-    int progressTime = 0;
+    int progressTime;
     int progressIter;
     CountDownTimer countDownTimer;
     ProgressBar pbBaMeAc;
@@ -120,7 +120,7 @@ public class WriteInTranslationFragment extends Fragment {
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
         if(wordsCount>0) progressIter = 100 / wordsCount;
-        progressTime = 0;
+        progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
         return resultView;
@@ -256,6 +256,8 @@ public class WriteInTranslationFragment extends Fragment {
 
     //процедура перехода к следующему слову
     private void nextWord() {
+        //возвращаем в исходное состояние
+        if (swHelpWrInTrFr.isChecked()) swHelpWrInTrFr.setChecked(false);
         //спрятать клавиатуру
         hideKeyboard(getActivity());
         //для создания небольшой задерки в 500 миллисекунд

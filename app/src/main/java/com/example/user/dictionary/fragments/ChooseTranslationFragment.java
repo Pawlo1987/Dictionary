@@ -46,7 +46,7 @@ public class ChooseTranslationFragment extends Fragment{
     Button btnTr3ChTrWo;
     Button btnTr4ChTrWo;
     Button btnTr5ChTrWo;
-    int progressTime = 0;
+    int progressTime;
     int progressIter;
     CountDownTimer countDownTimer;
     int selectPos;  //выбранная позиция
@@ -142,7 +142,7 @@ public class ChooseTranslationFragment extends Fragment{
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
         if(wordsCount>0) progressIter = 100 / wordsCount;
-        progressTime = 0;
+        progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
         return resultView;

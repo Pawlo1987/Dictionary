@@ -190,7 +190,7 @@ public class ChooseCoupleFragment extends Fragment {
                     Integer.parseInt(tvMixMethodPos.getText().toString());
         }else wordsCount = listCursorNumFromActivity.size();
         progressIter = 100 / wordsCount;
-        progressTime = 0;
+        progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
         return resultView;
@@ -289,6 +289,7 @@ public class ChooseCoupleFragment extends Fragment {
             flagAnyBtnPressTr = false;
             //увеличиваем прогресс бар
             progressTime = progressTime + progressIter;
+            pbBaMeAc.setProgress(progressTime);
             // убираем с экрана элементы которые совпали
             //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
             for (int i = 0; i < 10; i++) {

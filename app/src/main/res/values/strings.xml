@@ -16,6 +16,8 @@
     <string name="tvTitleWrInHeAc">Write in Hebrew</string>
     <string name="hintTransWrInRuAc">Translate write here.....</string>
     <string name="btnOkANWAc">OK</string>
+    <string name="leftArrow">&lt;</string>
+    <string name="rightArrow">&gt;</string>
     <string name="btnCancelANWAc">Cancel</string>
     <string name="tvHeadEWAc">Edit word</string>
     <string name="btnOkEWAc">OK</string>

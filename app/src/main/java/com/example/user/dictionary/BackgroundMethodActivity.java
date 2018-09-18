@@ -34,8 +34,8 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     int mixMethodPos;//глобальной позиция для mixMethod
     int wasMethod = 0;//переменная для определения какий метод вызывался последний в mixMethod
 
-    int wordsCount = 10;
-    int progressTime = 0;
+    int wordsCount;
+    int progressTime;
     int progressIter;
     ProgressBar pbBaMeAc;
 
@@ -61,7 +61,6 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
         args.putInt("wordsCount", wordsCount);
         args.putBoolean("isMixMethod", false);
-        progressIter = 100 / wordsCount;
         progressTime = 0;
 
         //непосредстенное начало работы фрагмента
@@ -73,29 +72,29 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         //выбираем метод изучения слов
         fTrans = getFragmentManager().beginTransaction();
         switch (method) {
-            case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
+            case 1:   //метод "произвольного запуска методов"
+                tvMixMethodPos.setText("0");
+                mixMethod(listCursorNum, wordsCount, false);
+                break;
+            case 2:   //метод "к слову на иврите необходимо выбрать перевод на русском"
                 chooseTranslationFragment.setArguments(args);
                 fTrans.replace(R.id.frameLayoutBaMeAc, chooseTranslationFragment).commit();
                 break;
-            case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
+            case 3:   //метод "к слову на русском необходимо выбрать перевод на иврите"
                 chooseHebrewWordFragment.setArguments(args);
                 fTrans.replace(R.id.frameLayoutBaMeAc, chooseHebrewWordFragment).commit();
                 break;
-            case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
+            case 4:   //метод "необходимо подобрать пары переводов русский-иврит"
                 chooseCoupleFragment.setArguments(args);
                 fTrans.replace(R.id.frameLayoutBaMeAc, chooseCoupleFragment).commit();
                 break;
-            case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
+            case 5:   //метод "необходимо напечатать слова переводов с иврита на русский"
                 writeInTranslationFragment.setArguments(args);
                 fTrans.replace(R.id.frameLayoutBaMeAc, writeInTranslationFragment).commit();
                 break;
-            case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
+            case 6:   //метод "необходимо напечатать слова переводов с русского на иврит"
                 writeInHebrewFragment.setArguments(args);
                 fTrans.replace(R.id.frameLayoutBaMeAc, writeInHebrewFragment).commit();
-                break;
-            case 6:   //метод "произвольного запуска методов"
-                tvMixMethodPos.setText("0");
-                mixMethod(listCursorNum, wordsCount, false);
                 break;
         }//switch
     }//goFragment

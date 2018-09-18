@@ -30,6 +30,14 @@ public class LearnWordActivity extends AppCompatActivity {
     int method = 1;
     int wordsCount = 10;
     ActionBar actionBar;                //стрелка НАЗАД
+    String[] methodName = {
+            "Mix",
+            "Choose Russian",
+            "Choose Hebrew",
+            "Choose Couple",
+            "Write Russian",
+            "Write Hebrew"
+    };
 
     private Cursor cursor;
 
@@ -66,7 +74,7 @@ public class LearnWordActivity extends AppCompatActivity {
         dbUtilities.open();
         listIdLearnWords = new ArrayList<>();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
-        tvMethodLWAc.setText(String.valueOf(method));
+        tvMethodLWAc.setText(methodName[method-1]);
         tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
         countCursor = cursor.getCount();
     }//onCreate
@@ -98,14 +106,14 @@ public class LearnWordActivity extends AppCompatActivity {
             case R.id.btnPlMet:
                 if (method < 6) {
                     method++;
-                    tvMethodLWAc.setText(String.valueOf(method));
+                    tvMethodLWAc.setText(methodName[method-1]);
                 }
                 break;
 
             case R.id.btnMiMet:
                 if (method > 1) {
                     method--;
-                    tvMethodLWAc.setText(String.valueOf(method));
+                    tvMethodLWAc.setText(methodName[method-1]);
                 }
                 break;
         }//switch

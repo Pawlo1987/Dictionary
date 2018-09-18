@@ -47,7 +47,7 @@ public class WriteInHebrewFragment extends Fragment {
     int interForMixMethod;
     int selectPos;  //выбранная позиция
     int wordsCount;
-    int progressTime = 0;
+    int progressTime;
     int progressIter;
     CountDownTimer countDownTimer;
     ProgressBar pbBaMeAc;
@@ -72,8 +72,8 @@ public class WriteInHebrewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbUtilities.open();
-        listWords  = new ArrayList<>();
-        listCursorNumFromActivity  = new ArrayList<>();
+        listWords = new ArrayList<>();
+        listCursorNumFromActivity = new ArrayList<>();
         isMixMethod = getArguments().getBoolean("isMixMethod");
         tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
@@ -83,7 +83,7 @@ public class WriteInHebrewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View resultView = inflater.inflate(R.layout.fragment_write_in_hebrew,  container, false);
+        View resultView = inflater.inflate(R.layout.fragment_write_in_hebrew, container, false);
         swHelpWrInHeFr = resultView.findViewById(R.id.swHelpWrInHeFr);
         tvWordWrInHeFr = resultView.findViewById(R.id.tvWordWrInHeFr);
         etTransWrInHeFr = resultView.findViewById(R.id.etTransWrInHeFr);
@@ -114,13 +114,13 @@ public class WriteInHebrewFragment extends Fragment {
 
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         //устанавливаем текущую позицию для коллекции слов
-        if(isMixMethod) {
+        if (isMixMethod) {
             selectPos = Integer.parseInt(tvMixMethodPos.getText().toString());
-        }else selectPos = 0;
+        } else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        if(wordsCount>0) progressIter = 100 / wordsCount;
-        progressTime = 0;
+        if (wordsCount > 0) progressIter = 100 / wordsCount;
+        progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
         return resultView;
@@ -130,10 +130,10 @@ public class WriteInHebrewFragment extends Fragment {
     private void pressBtnTest(int k) {
         switch (k) {
             case 0:
-                if(listWords.get(selectPos).getStrHeb().equals(etTransWrInHeFr.getText().toString())){
+                if (listWords.get(selectPos).getStrHeb().equals(etTransWrInHeFr.getText().toString())) {
                     translationOK();
-                }else{
-                    Toast.makeText(context,"wrong translation!",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "wrong translation!", Toast.LENGTH_SHORT).show();
                 }//if-else
                 break;
             case 1:
@@ -219,7 +219,7 @@ public class WriteInHebrewFragment extends Fragment {
         // на иврите появляется слово перевод на русском
         //для того что бы убрать перевод на русском
         // необходимо выключить переключатель
-        if(swHelpWrInHeFr.isChecked())
+        if (swHelpWrInHeFr.isChecked())
             tvWordWrInHeFr.setText(listWords.get(selectPos).getStrHeb());
         else
             tvWordWrInHeFr.setText(listWords.get(selectPos).getStrRus());
@@ -256,53 +256,56 @@ public class WriteInHebrewFragment extends Fragment {
 
     //процедура перехода к следующему слову
     private void nextWord() {
-            //спрятать клавиатуру
-            hideKeyboard(getActivity());
-            //для создания небольшой задерки в 500 миллисекунд
-            //Создаем таймер обратного отсчета на 500 миллисекунд с шагом отсчета
-            //в 1 секунду (задаем значения в миллисекундах):
-            countDownTimer = new CountDownTimer(500, 1000) {
-                //Здесь можно выполнить какието дейстивия через кажду секунду
-                //до конца счета таймера
-                public void onTick(long millisUntilFinished) {
-                }
-                //Задаем действия после завершения отсчета (запускаем главную активность)
-                public void onFinish() {
-                    //если фрагмент запущени из mixMethod
-                    //и количество изученных слов в фрагменте уже 5
-                    if (isMixMethod && (interForMixMethod == 4)) {
-                        interForMixMethod = 0;
-                        //вызываем onClick активности для продажения работы mixMethod
-                        //устанавливаем глобальную переменую tvMixMethodPos
-                        int temp = Integer.parseInt(tvMixMethodPos.getText().toString());
-                        tvMixMethodPos.setText(String.valueOf(temp+5));
-                        //если количество слов для изучения кратно 5
-                        //необходимо такая проверка
-                        if(temp+5 == listCursorNumFromActivity.size())
-                            getActivity().finish();
-                        else
-                            btnActivity.callOnClick();
+        //возвращаем в исходное состояние
+        if (swHelpWrInHeFr.isChecked()) swHelpWrInHeFr.setChecked(false);
+        //спрятать клавиатуру
+        hideKeyboard(getActivity());
+        //для создания небольшой задерки в 500 миллисекунд
+        //Создаем таймер обратного отсчета на 500 миллисекунд с шагом отсчета
+        //в 1 секунду (задаем значения в миллисекундах):
+        countDownTimer = new CountDownTimer(500, 1000) {
+            //Здесь можно выполнить какието дейстивия через кажду секунду
+            //до конца счета таймера
+            public void onTick(long millisUntilFinished) {
+            }
+
+            //Задаем действия после завершения отсчета (запускаем главную активность)
+            public void onFinish() {
+                //если фрагмент запущени из mixMethod
+                //и количество изученных слов в фрагменте уже 5
+                if (isMixMethod && (interForMixMethod == 4)) {
+                    interForMixMethod = 0;
+                    //вызываем onClick активности для продажения работы mixMethod
+                    //устанавливаем глобальную переменую tvMixMethodPos
+                    int temp = Integer.parseInt(tvMixMethodPos.getText().toString());
+                    tvMixMethodPos.setText(String.valueOf(temp + 5));
+                    //если количество слов для изучения кратно 5
+                    //необходимо такая проверка
+                    if (temp + 5 == listCursorNumFromActivity.size())
+                        getActivity().finish();
+                    else
+                        btnActivity.callOnClick();
+                } else {
+                    interForMixMethod++;
+                    //переход к следующему слову или выход из режима изучения
+                    //так как закончились слова
+                    if (selectPos != listCursorNumFromActivity.size() - 1) {
+                        selectPos++;
+                        //включаем кнопки обратно
+                        btnCheckWrInHeFr.setEnabled(true);
+                        btnNextWrInHeFr.setEnabled(true);
+                        etTransWrInHeFr.setText("");
+                        etTransWrInHeFr.clearFocus();
+                        startLearnWord();
                     } else {
-                        interForMixMethod++;
-                        //переход к следующему слову или выход из режима изучения
-                        //так как закончились слова
-                        if (selectPos != listCursorNumFromActivity.size()-1) {
-                            selectPos++;
-                            //включаем кнопки обратно
-                            btnCheckWrInHeFr.setEnabled(true);
-                            btnNextWrInHeFr.setEnabled(true);
-                            etTransWrInHeFr.setText("");
-                            etTransWrInHeFr.clearFocus();
-                            startLearnWord();
-                        } else {
-                            //если закнчились слова для изучения
-                            getActivity().finish();
-                        }//if-else
-                    }//if(isMixMethod&&(interForMixMethod==4))
-                }//onFinish
-            };//countDownTimer
-            //запускам таймер
-            countDownTimer.start();
+                        //если закнчились слова для изучения
+                        getActivity().finish();
+                    }//if-else
+                }//if(isMixMethod&&(interForMixMethod==4))
+            }//onFinish
+        };//countDownTimer
+        //запускам таймер
+        countDownTimer.start();
     }//nextWord
 
     @Override

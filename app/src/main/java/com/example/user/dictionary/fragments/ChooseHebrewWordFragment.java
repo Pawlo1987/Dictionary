@@ -44,7 +44,7 @@ public class ChooseHebrewWordFragment extends Fragment {
     Button btnTr3ChTrWo;
     Button btnTr4ChTrWo;
     Button btnTr5ChTrWo;
-    int progressTime = 0;
+    int progressTime;
     int progressIter;
     //переменная необходимая для итераци слов если фрагмент вызван из mixMethod
     int interForMixMethod = 0;
@@ -142,8 +142,8 @@ public class ChooseHebrewWordFragment extends Fragment {
         }else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        if(wordsCount>0) progressIter = 100 / wordsCount;
-        progressTime = 0;
+        progressIter = 100 / wordsCount;
+        progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
         return resultView;
