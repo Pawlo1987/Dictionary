@@ -16,9 +16,9 @@ import java.util.List;
 
 //активность в которой происходит работа
 //по изучению слов
-//выводится слово на русском
+//выводится слово на иврите
 //и нужно выбрать правельный перевод
-public class ChooseHebWordActivity extends AppCompatActivity {
+public class ChooseRussianWordActivity extends AppCompatActivity {
     Context context;
     DBUtilities dbUtilities;
     FileUtilities FileUtilities;
@@ -53,7 +53,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_translation);
+        setContentView(R.layout.activity_choose_word);
         FileUtilities = new FileUtilities(this);
 
         context = getBaseContext();
@@ -69,12 +69,6 @@ public class ChooseHebWordActivity extends AppCompatActivity {
         btnTr3ChTrAc = findViewById(R.id.btnTr3ChTrAc);
         btnTr4ChTrAc = findViewById(R.id.btnTr4ChTrAc);
         btnTr5ChTrAc = findViewById(R.id.btnTr5ChTrAc);
-        //устанавливаем размер шрифта
-        btnTr1ChTrAc.setTextSize(18);
-        btnTr2ChTrAc.setTextSize(18);
-        btnTr3ChTrAc.setTextSize(18);
-        btnTr4ChTrAc.setTextSize(18);
-        btnTr5ChTrAc.setTextSize(18);
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         listCursorNum.addAll(getIntent().getStringArrayListExtra("idList"));
         wordsCount = getIntent().getIntExtra("wordsCount",0);
@@ -90,7 +84,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btnTr1ChTrAc:
                 selectWord = btnTr1ChTrAc.getText().toString();
-                if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+                if(!listWords.get(selectPos).getStrRus().equals(selectWord)){
                     btnTr1ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 }else {
                     btnTr1ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
@@ -99,7 +93,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
                 break;
             case R.id.btnTr2ChTrAc:
                 selectWord = btnTr2ChTrAc.getText().toString();
-                if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+                if(!listWords.get(selectPos).getStrRus().equals(selectWord)){
                     btnTr2ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 }else {
                     btnTr2ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
@@ -108,7 +102,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
                 break;
             case R.id.btnTr3ChTrAc:
                 selectWord = btnTr3ChTrAc.getText().toString();
-                if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+                if(!listWords.get(selectPos).getStrRus().equals(selectWord)){
                     btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 }else {
                     btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
@@ -117,7 +111,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
                 break;
             case R.id.btnTr4ChTrAc:
                 selectWord = btnTr4ChTrAc.getText().toString();
-                if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+                if(!listWords.get(selectPos).getStrRus().equals(selectWord)){
                     btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 }else {
                     btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
@@ -126,7 +120,7 @@ public class ChooseHebWordActivity extends AppCompatActivity {
                 break;
             case R.id.btnTr5ChTrAc:
                 selectWord = btnTr5ChTrAc.getText().toString();
-                if(!listWords.get(selectPos).getStrHeb().equals(selectWord)){
+                if(!listWords.get(selectPos).getStrRus().equals(selectWord)){
                     btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
                 }else {
                     btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
@@ -178,8 +172,8 @@ public class ChooseHebWordActivity extends AppCompatActivity {
 
     //запуск начала изучения
     private void startLearnWord() {
-        tvWordChTrAc.setText(listWords.get(selectPos).getStrRus());
-        tvTranscChTrAc.setVisibility(View.GONE);
+        tvWordChTrAc.setText(listWords.get(selectPos).getStrHeb());
+        tvTranscChTrAc.setText(listWords.get(selectPos).getStrTrans());
         List<Integer> listNumForBtn = new ArrayList<>();
         listNumForBtn.add(selectPos);
         for (int i = 0; i < 4; i++) {
@@ -199,12 +193,12 @@ public class ChooseHebWordActivity extends AppCompatActivity {
         btnTr3ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
         btnTr4ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
         btnTr5ChTrAc.setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
-        //устанавливаем слова на иврите в кнопки
-        btnTr1ChTrAc.setText(listWords.get(listNumForBtn.get(0)).getStrHeb());
-        btnTr2ChTrAc.setText(listWords.get(listNumForBtn.get(1)).getStrHeb());
-        btnTr3ChTrAc.setText(listWords.get(listNumForBtn.get(2)).getStrHeb());
-        btnTr4ChTrAc.setText(listWords.get(listNumForBtn.get(3)).getStrHeb());
-        btnTr5ChTrAc.setText(listWords.get(listNumForBtn.get(4)).getStrHeb());
+        //устанавливаем слова на русском в кнопки
+        btnTr1ChTrAc.setText(listWords.get(listNumForBtn.get(0)).getStrRus());
+        btnTr2ChTrAc.setText(listWords.get(listNumForBtn.get(1)).getStrRus());
+        btnTr3ChTrAc.setText(listWords.get(listNumForBtn.get(2)).getStrRus());
+        btnTr4ChTrAc.setText(listWords.get(listNumForBtn.get(3)).getStrRus());
+        btnTr5ChTrAc.setText(listWords.get(listNumForBtn.get(4)).getStrRus());
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения
@@ -229,7 +223,5 @@ public class ChooseHebWordActivity extends AppCompatActivity {
             listWords.add(word);
             word = new Word();
         }//while
-
     }//createWordList
-}//ChooseHebWordActivity
-
+}//ChooseRussianWordActivity

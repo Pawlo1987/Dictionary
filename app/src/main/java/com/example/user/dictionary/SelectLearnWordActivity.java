@@ -112,42 +112,45 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         //перемешать коллекцию выбранных слов
         Collections.shuffle(listCursorNum);
         int method = getIntent().getIntExtra("method", 0);
+
         //выбираем метод изучения слов
-        if (method == 1) {
-            Intent intent = new Intent(this, ChooseTranslationActivity.class);
-            intent.putStringArrayListExtra(
-                    "idList",
-                    (ArrayList<String>) listCursorNum
-            );
-            intent.putExtra(
-                    "wordsCount",
-                    listCursorNum.size()
-            );
-            startActivity(intent);
-        } else if (method == 2) {
-            Intent intent = new Intent(this, ChooseHebWordActivity.class);
-            intent.putStringArrayListExtra(
-                    "idList",
-                    (ArrayList<String>) listCursorNum
-            );
-            intent.putExtra(
-                    "wordsCount",
-                    listCursorNum.size()
-            );
-            startActivity(intent);
-        } else if (method == 3) {
-            Intent intent = new Intent(this, ChooseCoupleActivity.class);
-            intent.putStringArrayListExtra(
-                    "idList",
-                    (ArrayList<String>) listCursorNum
-            );
-            intent.putExtra(
-                    "wordsCount",
-                    listCursorNum.size()
-            );
-            startActivity(intent);
-        }//if-else-if
+        Intent intent;
+        switch (method) {
+            case 1:   //метод "к слову на иврите необходимо выбрать перевод на русском"
+                intent = new Intent(this, ChooseRussianWordActivity.class);
+                startAnyMethod(intent);
+                break;
+            case 2:   //метод "к слову на русском необходимо выбрать перевод на иврите"
+                intent = new Intent(this, ChooseHebrewWordActivity.class);
+                startAnyMethod(intent);
+                break;
+            case 3:   //метод "необходимо подобрать пары переводов русский-иврит"
+                intent = new Intent(this, ChooseCoupleActivity.class);
+                startAnyMethod(intent);
+                break;
+            case 4:   //метод "необходимо напечатать слова переводов с иврита на русский"
+                intent = new Intent(this, WriteInRussianActivity.class);
+                startAnyMethod(intent);
+                break;
+            case 5:   //метод "необходимо напечатать слова переводов с русского на иврит"
+                intent = new Intent(this, WriteInHebrewActivity.class);
+                startAnyMethod(intent);
+                break;
+        }//switch
     }//startLearnSelectWords
+
+    //запуск активности любого метода изучения слов
+    private void startAnyMethod(Intent intent) {
+        intent.putStringArrayListExtra(
+                "idList",
+                (ArrayList<String>) listCursorNum
+        );
+        intent.putExtra(
+                "wordsCount",
+                listCursorNum.size()
+        );
+        startActivity(intent);
+    }//startAnyMethod
 
     //Строим RecyclerView
     private void buildUserRecyclerView() {
