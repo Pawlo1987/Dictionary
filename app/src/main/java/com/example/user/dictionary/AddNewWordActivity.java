@@ -72,13 +72,13 @@ public class AddNewWordActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnConfirmANWAc:
+            case R.id.btnOkANWAc:
                 addNewWordToDB();
                 break;
 
-//            case R.id.btnViewDictionary:
-//                viewDictionary();
-//                break;
+            case R.id.btnCancelANWAc:
+                finish();
+                break;
 
         }//switch
     }//onClick
@@ -155,7 +155,7 @@ public class AddNewWordActivity extends AppCompatActivity {
 
             cv.put("word", heWord);
             cv.put("transcription_id", transcId);
-            cv.put("gender", ruGender);
+            cv.put("gender", heGender);
             cv.put("quantity", quantity);
             cv.put("meaning_id", meaningId);
             //добваить данные через объект ContentValues(cv), в таблицу
@@ -170,7 +170,7 @@ public class AddNewWordActivity extends AppCompatActivity {
 
             cv.put("word", ruWord);
             cv.put("hebrew_id", n);
-            cv.put("gender", heGender);
+            cv.put("gender", ruGender);
             cv.put("quantity", quantity);
             cv.put("meaning_id", meaningId);
             //добваить данные через объект ContentValues(cv), в таблицу

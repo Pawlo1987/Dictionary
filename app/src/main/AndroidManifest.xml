@@ -19,7 +19,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddNewWordActivity" />
-        <activity android:name=".ViewDictionaryActivity"></activity>
+        <activity android:name=".ViewDictionaryActivity" />
+        <activity android:name=".EditWordActivity"></activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

@@ -1,12 +1,15 @@
 package com.example.user.dictionary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import static android.view.View.GONE;
@@ -16,20 +19,26 @@ public class ViewDictionaryRecyclerAdapter  extends
 
     //поля класса ViewDictionaryRecyclerAdapter
     private LayoutInflater inflater;
+    Context context;
     private Cursor cursor;
-    private Context context;
+    private String mainQuery;
+    DBUtilities dbUtilities;
     private String filter;
+    private String idRussian, idHebrew, idTranscription;
     private String ruWord, ruGender, heWord, heGender,
                    trans, meaning, quantity;
 
     //конструктор
-    public ViewDictionaryRecyclerAdapter(Context context, Cursor cursor, String filter) {
+    public ViewDictionaryRecyclerAdapter(Context context, String mainQuery, String filter) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
+        this.mainQuery = mainQuery;
         this.context = context;
-        this.cursor = cursor;
         this.filter = filter;
+        dbUtilities = new DBUtilities(context);
+        dbUtilities.open();
+        cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
     } // ViewDictionaryRecyclerAdapter
 
     //создаем новую разметку(View) путем указания разметки
@@ -45,6 +54,7 @@ public class ViewDictionaryRecyclerAdapter  extends
     public void onBindViewHolder(ViewDictionaryRecyclerAdapter.ViewHolder holder, int position) {
         // переходим в курсоре на текущую позицию
         cursor.moveToPosition(position);
+
         //получаем данные из курсора для фильтрации
         ruWord = cursor.getString(1);   //слово на русском
         heWord = cursor.getString(2);   //слово на иврите
@@ -84,9 +94,12 @@ public class ViewDictionaryRecyclerAdapter  extends
         final TextView tvRUWordVDRA, tvGenderRUVDRA, tvHEWordVDRA,
                 tvGenderHEVDRA, tvTransVDRA, tvMeaningVDRA, tvQuantityVDRA;
         final CardView cvMainVDRA;
+        final Button btnEditVDRA, btnDellVDRA;
 
         ViewHolder(View view) {
             super(view);
+            btnDellVDRA = view.findViewById(R.id.btnDellVDRA);
+            btnEditVDRA = view. findViewById(R.id.btnEditVDRA);
             cvMainVDRA = view.findViewById(R.id.cvMainVDRA);
             tvRUWordVDRA = view.findViewById(R.id.tvRUWordVDRA);
             tvGenderRUVDRA = view.findViewById(R.id.tvGenderRUVDRA);
@@ -95,8 +108,49 @@ public class ViewDictionaryRecyclerAdapter  extends
             tvTransVDRA = view.findViewById(R.id.tvTransVDRA);
             tvMeaningVDRA = view.findViewById(R.id.tvMeaningVDRA);
             tvQuantityVDRA = view.findViewById(R.id.tvQuantityVDRA);
-        } // ViewHolder
 
+            btnEditVDRA.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cursor.moveToPosition(getAdapterPosition());
+                    //id из таблицы russian
+                    idRussian = cursor.getString(0);
+                    Intent intent = new Intent(context, EditWordActivity.class);
+                    intent.putExtra("id", idRussian);
+                    context.startActivity(intent);
+                }
+            });
+            btnDellVDRA.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cursor.moveToPosition(getAdapterPosition());
+                    //id из таблицы russian
+                    idRussian = cursor.getString(0);
+                    //подготавливаем информацию для удаления
+                    //получаем idHebrew
+                    String query = "SELECT hebrew_id FROM russian " +
+                            "WHERE russian.id = \"" + idRussian + "\"";
+                    cursor = dbUtilities.getDb().rawQuery(query, null);
+                    cursor.moveToPosition(0);
+                    idHebrew = cursor.getString(0);
+                    //получаем idTranscription
+                    query = "SELECT transcription_id FROM hebrew " +
+                            "WHERE hebrew.id = \"" + String.valueOf(idHebrew) + "\"";
+                    cursor = dbUtilities.getDb().rawQuery(query, null);
+                    cursor.moveToPosition(0);
+                    idTranscription = cursor.getString(0);
+
+                    //удаляем поочереди таблицы
+                    dbUtilities.removeColumnById(idRussian, "russian");
+                    dbUtilities.removeColumnById(idHebrew, "hebrew");
+                    dbUtilities.removeColumnById(idTranscription, "transcription");
+
+                    //обновляем данные для Adapter
+                    cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+                    notifyDataSetChanged();
+                }// onClick
+            });// btnDellVDRA.setOnClickListener
+        } // ViewHolder
     }//class ViewHolder
 
 }//ViewDictionaryRecyclerAdapter

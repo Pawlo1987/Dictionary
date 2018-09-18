@@ -31,8 +31,6 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     RecyclerView rvWordsVDAc;
     // адаптер для отображения recyclerView
     ViewDictionaryRecyclerAdapter viewDictionaryRecyclerAdapter;
-    // поля для доступа к записям БД
-    Cursor cursor;                // прочитанные данные
 
     // при запросе с INNER JOIN обязательно указываем в запросе:
     // имя таблицы и имя столбца
@@ -123,11 +121,10 @@ public class ViewDictionaryActivity extends AppCompatActivity {
                     "INNER JOIN transcription ON transcription.id = hebrew.transcription_id " +
                     "WHERE meaning.option = \"" + meaning + "\"";
         }
-        cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
 
         // создаем адаптер, передаем в него курсор
         viewDictionaryRecyclerAdapter
-                = new ViewDictionaryRecyclerAdapter(context, cursor, filter);
+                = new ViewDictionaryRecyclerAdapter(context, mainQuery, filter);
 
         rvWordsVDAc.setAdapter(viewDictionaryRecyclerAdapter);
     }//buildUserRecyclerView

@@ -51,16 +51,10 @@ public class DBUtilities {
         return list;
     }//fillList
 
-    public Cursor updCursor(){
-        String query =
-                "SELECT id, word, hebrew.word, transcription.word, " +
-                   "gender, hebrew.gender, meaning.option, quantity " +
-                   "FROM russian " +
-                   "INNER JOIN hebrew ON hebrew.id = russian.hebrew_id " +
-                   "INNER JOIN meaning ON meaning.id = russian.meaning_id " +
-                   "INNER JOIN transcription ON " +
-                   "transcription.id = hebrew.transcription_id";
-        return db.rawQuery(query, null);
+    public int updTable(String tableName, ContentValues cv, String id){
+        int updCount = db.update(tableName, cv, "id = ?",
+                new String[] { id });
+        return updCount;
     }
 
     public SQLiteDatabase getDb() {
@@ -72,11 +66,11 @@ public class DBUtilities {
         db = dbHelper.open();
     } // open
 
-    // открытие подключения к БД
-    public void remove(int _id){
+    // удаляем столбец по id из таблицы по названию
+    public void removeColumnById(String id, String tableName){
 
         //удаляем элемент
-        db.delete("employees","_id = " + _id, null);
+        db.delete(tableName,"id = " + id, null);
     } // remove
 
     // закрытие подключения к БД

@@ -3,11 +3,17 @@
     <string name="tvHeadMAc">Словарь для Ульпана</string>
     <string name="btnAddNewWord">Добавить новое слово</string>
     <string name="btnViewDictionary">Просмотр словаря</string>
-    <string name="tvHeadANWAc">Создаем новое слово</string>
     <string name="edHintRussianANWAc">Слово на русском</string>
     <string name="edHintHebrewANWAc">Слово на иврите</string>
+    <string name="edHintRussianEWAc">Слово на русском</string>
+    <string name="edHintHebrewEWAc">Слово на иврите</string>
+    <string name="edHintTranscriptionEWAc">Транскрипция</string>
     <string name="edHintTranscriptionANWAc">Транскрипция</string>
-    <string name="btnConfirmANWAc">Добавить</string>
+    <string name="tvHeadANWAc">New word</string>
+    <string name="btnOkANWAc">Добавить</string>
     <string name="btnCancelANWAc">Отмена</string>
+    <string name="tvHeadEWAc">Edit word</string>
+    <string name="btnOkEWAc">Добавить</string>
+    <string name="btnCancelEWAc">Отмена</string>
     <string name="edHintSearchWordVDAc">Быстрый поиск...</string>
 </resources>

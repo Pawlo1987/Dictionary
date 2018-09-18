@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     android:orientation="vertical"
     tools:context=".ViewDictionaryActivity">
 
     <Spinner
         android:id="@+id/spMeaningVDAc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -28,9 +30,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvWordsVDAc"
-        app:layoutManager="LinearLayoutManager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager">
 
     </android.support.v7.widget.RecyclerView>
 
