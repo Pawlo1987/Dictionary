@@ -27,7 +27,7 @@ public class AddNewWordActivity extends AppCompatActivity {
     private Spinner spGenderANWAc;       //сппинер для рода в иврите
     private Spinner spQuantityANWAc;        //сппинер множест. или единств. число
     private Spinner spMeaningANWAc;         //сппинер значения слова в предложении
-    private List<String> translations;      //переводы к данному слову
+    private List<String> listTypesPOS;      //коллекция видов частей речи
     private LinearLayout llTranslationsANWAc; //LinearLayout для переводов
     //TextView для вывода количества заказанных переводов
     private TextView tvTranslationsCountANWAc;
@@ -59,7 +59,18 @@ public class AddNewWordActivity extends AppCompatActivity {
         spGenderANWAc = findViewById(R.id.spGenderANWAc);
         spQuantityANWAc = findViewById(R.id.spQuantityANWAc);
         spMeaningANWAc = findViewById(R.id.spMeaningANWAc);
-        translations = new ArrayList<>();
+        listTypesPOS = new ArrayList<>(
+                Arrays.asList(
+                        "adjective",            //имя прилагательное;
+                        "noun",                 //имя существительное;
+                        "verb",                 //глагол;
+                        "union",                //союз;
+                        "collocation",          //словосочетание;
+                        "numeral",              //имя числительное;
+                        "pronoun",              //местоимение;
+                        "pretext",              //предлог;
+                        "adverb")               //наречие;
+        );
         tvTranslationsCountANWAc = findViewById(R.id.tvTranslationsCountANWAc);
         llTranslationsANWAc = findViewById(R.id.llTranslationsANWAc);
         listETTranslations = new ArrayList<>();
@@ -74,8 +85,7 @@ public class AddNewWordActivity extends AppCompatActivity {
                 buildSpinnerAdapter(Arrays.asList("one", "many")));
         //строим спиннер для значения в предложении
         spMeaningANWAc.setAdapter(
-                buildSpinnerAdapter(
-                        Arrays.asList("adjective", "noun", "verb", "binders")));
+                buildSpinnerAdapter(listTypesPOS));
         spMeaningANWAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -304,8 +314,11 @@ public class AddNewWordActivity extends AppCompatActivity {
             ///////////////////////работа с ивритовским словом////////////////////
             //записываем новое слово в таблицу hebrew
             dbUtilities.insertIntoHebrew(heWord, transcId, meaningId, genderId, quantityId);
-            //получаем id последней записи hebrew
-            query = "SELECT hebrew.id FROM hebrew WHERE hebrew.word_he = \"" + heWord + "\"";
+            //получаем id последней записи
+            // c heWord и transcId
+            query = "SELECT hebrew.id FROM hebrew " +
+                    "WHERE hebrew.word_he = \"" + heWord + "\" " +
+                    "AND hebrew.transcription_id = \"" + transcId + "\"";
             cursor = dbUtilities.getDb().rawQuery(query, null);
             cursor.moveToPosition(0);
             hebrewId = Integer.parseInt(cursor.getString(0));

@@ -27,7 +27,7 @@ public class EditWordActivity extends AppCompatActivity {
     private Spinner spGenderEWAc;       //сппинер для рода в иврите
     private Spinner spQuantityEWAc;        //сппинер множест. или единств. число
     private Spinner spMeaningEWAc;         //сппинер значения слова в предложении
-    private List<String> translations;      //переводы к данному слову
+    private List<String> listTypesPOS;      //коллекция видов частей речи
     private LinearLayout llTranslationsEWAc; //LinearLayout для переводов
     //TextView для вывода количества заказанных переводов
     private TextView tvTranslationsCountEWAc;
@@ -63,7 +63,18 @@ public class EditWordActivity extends AppCompatActivity {
         spGenderEWAc = findViewById(R.id.spGenderEWAc);
         spQuantityEWAc = findViewById(R.id.spQuantityEWAc);
         spMeaningEWAc = findViewById(R.id.spMeaningEWAc);
-        translations = new ArrayList<>();
+        listTypesPOS = new ArrayList<>(
+                Arrays.asList(
+                        "adjective",            //имя прилагательное;
+                        "noun",                 //имя существительное;
+                        "verb",                 //глагол;
+                        "union",                //союз;
+                        "collocation",          //словосочетание;
+                        "numeral",              //имя числительное;
+                        "pronoun",              //местоимение;
+                        "pretext",              //предлог;
+                        "adverb")               //наречие;
+        );
         tvTranslationsCountEWAc = findViewById(R.id.tvTranslationsCountEWAc);
         llTranslationsEWAc = findViewById(R.id.llTranslationsEWAc);
         listETTranslations = new ArrayList<>();
@@ -76,8 +87,7 @@ public class EditWordActivity extends AppCompatActivity {
                 buildSpinnerAdapter(Arrays.asList("one", "many", "infinitive")));
         //строим спиннер для значения в предложении
         spMeaningEWAc.setAdapter(
-                buildSpinnerAdapter(
-                        Arrays.asList("adjective", "noun", "verb", "binders")));
+                buildSpinnerAdapter(listTypesPOS));
 
         spMeaningEWAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

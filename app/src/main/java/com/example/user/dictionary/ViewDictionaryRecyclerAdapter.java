@@ -22,8 +22,8 @@ import java.util.List;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
-public class ViewDictionaryRecyclerAdapter  extends
-        RecyclerView.Adapter<ViewDictionaryRecyclerAdapter.ViewHolder>{
+public class ViewDictionaryRecyclerAdapter extends
+        RecyclerView.Adapter<ViewDictionaryRecyclerAdapter.ViewHolder> {
 
     //поля класса ViewDictionaryRecyclerAdapter
     private LayoutInflater inflater;
@@ -31,10 +31,9 @@ public class ViewDictionaryRecyclerAdapter  extends
     private Cursor cursor;
     private String mainQuery;
     DBUtilities dbUtilities;
-    private String filter;
     private String idHebrew, idTranscription;
     private String ruWord, heWord, gender,
-                   trans, meaning, quantity;
+            trans, meaning, quantity;
     //коллекция содержащая переводы одного слова
     private List<String> listTranslationsOneWord = new ArrayList<>();
     //Объекты фрейморка clipboard framework
@@ -43,13 +42,12 @@ public class ViewDictionaryRecyclerAdapter  extends
     ClipData clipData;
 
     //конструктор
-    ViewDictionaryRecyclerAdapter(Context context, String mainQuery, String filter) {
+    ViewDictionaryRecyclerAdapter(Context context, String mainQuery) {
         this.inflater = LayoutInflater.from(context);
         //получение интерфеса из класса Фрагмента
         //для обработки нажатия элементов RecyclerAdapter
         this.mainQuery = mainQuery;
         this.context = context;
-        this.filter = filter;
         dbUtilities = new DBUtilities(context);
         dbUtilities.open();
         cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
@@ -74,9 +72,6 @@ public class ViewDictionaryRecyclerAdapter  extends
         heWord = cursor.getString(1);   //слово на иврите
         trans = cursor.getString(2);    //транскрпция слова на иврите
 
-        //флаг содержания фильтра бинарного поиска в переводе
-        boolean flTranslation = false;
-
         //для получения перевода необходимо сделать запрос к БД
         String query = "SELECT russian.word_ru FROM translations " +
                 "INNER JOIN russian ON russian.id = translations.russian_id " +
@@ -92,38 +87,29 @@ public class ViewDictionaryRecyclerAdapter  extends
             TextView newTextView = new TextView(context);
             cursorRu.moveToPosition(i);
             ruWord = cursorRu.getString(0);
-            newTextView.setText((i+1)+". "+ruWord);//устанавливаем слово в в textView
+            newTextView.setText((i + 1) + ". " + ruWord);//устанавливаем слово в в textView
             holder.llTranslationsVDRA.addView(newTextView);
             listTranslationsOneWord.add(ruWord);//собираем коллекцию для бинарного поиска
 
-            //обработка бинарного поиска для перевода
-            if(ruWord.contains(filter)) flTranslation = true;
         }//for (int i = 0; i < l; i++)
 
-        // получение данных
-        //фильтрация элементов для бинарного поиска
-        if((filter.equals("")) ||(heWord.contains(filter))
-                ||(trans.contains(filter))||(flTranslation)){
-            //получаем остальные данные из курсора
-            meaning = cursor.getString(3);  //значение слова в предложении
-            gender = cursor.getString(4); //род слова в иврите
-            quantity = cursor.getString(5); //множественное или едиственное слово
-            //устанавливаем данные в текстовые поля адаптера
-            holder.tvWordVDRA.setText(heWord);
-            holder.tvGenderVDRA.setText(gender);
-            holder.tvTransсVDRA.setText(trans);
-            holder.tvMeaningVDRA.setText(meaning);
-            holder.tvQuantityVDRA.setText(quantity);
-        }else {
-            //setVisibility(View.GONE) отключаем ненужные элементы для просмотра
-            holder.cvMainVDRA.setVisibility(View.GONE);
-        }//if-else
-
+        //получаем остальные данные из курсора
+        meaning = cursor.getString(3);  //значение слова в предложении
+        gender = cursor.getString(4); //род слова в иврите
+        quantity = cursor.getString(5); //множественное или едиственное слово
+        //устанавливаем данные в текстовые поля адаптера
+        holder.tvWordVDRA.setText(heWord);
+        holder.tvGenderVDRA.setText(gender);
+        holder.tvTransсVDRA.setText(trans);
+        holder.tvMeaningVDRA.setText(meaning);
+        holder.tvQuantityVDRA.setText(quantity);
     } // onBindViewHolder
 
     //получаем количество элементов объекта(курсора)
     @Override
-    public int getItemCount() { return cursor.getCount(); }
+    public int getItemCount() {
+        return cursor.getCount();
+    }
 
     //Создаем класс ViewHolder с помощью которого мы получаем ссылку на каждый элемент
     //отдельного пункта списка и подключаем слушателя события нажатия меню
@@ -137,14 +123,14 @@ public class ViewDictionaryRecyclerAdapter  extends
             super(view);
             llTranslationsVDRA = view.findViewById(R.id.llTranslationsVDRA);
             btnDellVDRA = view.findViewById(R.id.btnDellVDRA);
-            btnEditVDRA = view. findViewById(R.id.btnEditVDRA);
+            btnEditVDRA = view.findViewById(R.id.btnEditVDRA);
             cvMainVDRA = view.findViewById(R.id.cvMainVDRA);
             tvWordVDRA = view.findViewById(R.id.tvWordVDRA);
             tvGenderVDRA = view.findViewById(R.id.tvGenderVDRA);
             tvTransсVDRA = view.findViewById(R.id.tvTranscVDRA);
             tvMeaningVDRA = view.findViewById(R.id.tvMeaningVDRA);
             tvQuantityVDRA = view.findViewById(R.id.tvQuantityVDRA);
-            clipboardManager=(ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+            clipboardManager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
 
             btnEditVDRA.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -170,10 +156,10 @@ public class ViewDictionaryRecyclerAdapter  extends
                     cursor.moveToPosition(getAdapterPosition());
                     //id из таблицы hebrew
                     heWord = cursor.getString(1);   //слово на иврите
-                    clipData = ClipData.newPlainText("text",heWord);
+                    clipData = ClipData.newPlainText("text", heWord);
                     clipboardManager.setPrimaryClip(clipData);
 
-                    Toast.makeText(context,"Word copied ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Word copied ", Toast.LENGTH_SHORT).show();
                     return false;
                 }
             });//cvMainVDRA.setOnLongClickListener
@@ -192,11 +178,11 @@ public class ViewDictionaryRecyclerAdapter  extends
             ad.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int arg1) {
                     //проверка какая функция вызвала AlertDialog
-                    if (message.equals("Edit")){
+                    if (message.equals("Edit")) {
                         Intent intent = new Intent(context, EditWordActivity.class);
                         intent.putExtra("idHebrew", idHebrew);
                         context.startActivity(intent);
-                    }else{
+                    } else {
                         //подготавливаем информацию для удаления из таблиц
                         //сначало translations а затем russian
                         //получаем listIdRussian из таблицы translations
@@ -231,11 +217,13 @@ public class ViewDictionaryRecyclerAdapter  extends
                 }//onClick
             });
             ad.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int arg1) {}
+                public void onClick(DialogInterface dialog, int arg1) {
+                }
             });
             ad.setCancelable(true);
             ad.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                public void onCancel(DialogInterface dialog) {}
+                public void onCancel(DialogInterface dialog) {
+                }
             });
             ad.show();
         }//alertDialogTwoButton

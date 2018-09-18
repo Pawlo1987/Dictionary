@@ -87,23 +87,61 @@ public class ViewDictionaryActivity extends AppCompatActivity {
         tvWordsCountVDAc = findViewById(R.id.tvWordsCountVDAc);
         etSearchWordVDAc.isFocused();
         rvWordsVDAc = findViewById(R.id.rvWordsVDAc);
+
+        String meaning = spMeaningVDAc.getItemAtPosition(spPos).toString();
+
+        // согласовуем с выбранной позицией спиннера
+        if(meaning.equals("ALL")) {
+            mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                    "meanings.option, gender.option, quantity.option FROM hebrew " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+        }else {
+            mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                    "meanings.option, gender.option, quantity.option FROM hebrew " +
+                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
+                    "WHERE meanings.option = \"" + meaning + "\" ORDER BY hebrew.word_he";
+        }//if(meaning.equals("ALL"))
+
         //Строим RecyclerView
-        buildUserRecyclerView(
-                spMeaningVDAc.getItemAtPosition(spPos).toString(),
-                filter
-        );
+        buildUserRecyclerView();
 
         //Слушатель для позиции спинера и фильтрации RecyclerView по изменению позиции
         spMeaningVDAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //чистим строку для бинарного поиска
+                etSearchWordVDAc.setText("");
+                etSearchWordVDAc.clearFocus();
+
                 spPos = position;
+                String meaning = spMeaningVDAc.getItemAtPosition(spPos).toString();
+
+                // согласовуем с выбранной позицией спиннера
+                if(meaning.equals("ALL")) {
+                    mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                            "meanings.option, gender.option, quantity.option FROM hebrew " +
+                            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+                }else {
+                    mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                            "meanings.option, gender.option, quantity.option FROM hebrew " +
+                            "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                            "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                            "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                            "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
+                            "WHERE meanings.option = \"" + meaning + "\" ORDER BY hebrew.word_he";
+                }//if(meaning.equals("ALL"))
 
                 //Строим RecyclerView
-                buildUserRecyclerView(
-                        spMeaningVDAc.getItemAtPosition(spPos).toString(),
-                        filter
-                );
+                buildUserRecyclerView();
             }//onItemSelected
 
             @Override
@@ -121,11 +159,17 @@ public class ViewDictionaryActivity extends AppCompatActivity {
                 //получаем фильтрующие слово
                 filter = etSearchWordVDAc.getText().toString();
 
+                //запрос для бинарного посика
+                mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                        "meanings.option, gender.option, quantity.option FROM hebrew " +
+                        "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                        "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                        "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                        "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
+                        "WHERE hebrew.word_he LIKE '%" + filter + "%'";
+
                 //Строим RecyclerView
-                buildUserRecyclerView(
-                        spMeaningVDAc.getItemAtPosition(spPos).toString(),
-                        filter
-                );
+                buildUserRecyclerView();
             }//onTextChanged
 
             public void afterTextChanged(Editable s) { }
@@ -172,12 +216,20 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     private void importDB() {
         FileUtilities.importDB();
 
+        mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
+                "meanings.option, gender.option, quantity.option FROM hebrew " +
+                "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
+                "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
+                "INNER JOIN gender ON gender.id = hebrew.gender_id " +
+                "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
+
+        //чистим строку для бинарного поиска
+        etSearchWordVDAc.setText("");
+        etSearchWordVDAc.clearFocus();
+
         //обновляем адаптер
         //Строим RecyclerView
-        buildUserRecyclerView(
-                spMeaningVDAc.getItemAtPosition(spPos).toString(),
-                filter
-        );
+        buildUserRecyclerView();
     }//importDB
 
     //процедура экспорта БД в корень устройства в папку Dictionary
@@ -186,33 +238,15 @@ public class ViewDictionaryActivity extends AppCompatActivity {
     }//exportDB
 
     //Строим RecyclerView
-    private void buildUserRecyclerView(String meaning, String filter) {
+    private void buildUserRecyclerView() {
         // получаем данные из БД в виде курсора
-        // согласовуем с выбранной позицией спиннера
-        if(meaning.equals("ALL")) {
-            mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                    "meanings.option, gender.option, quantity.option FROM hebrew " +
-                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id ORDER BY hebrew.word_he";
-        }else {
-            mainQuery = "SELECT hebrew.id, hebrew.word_he, transcriptions.word_tr, " +
-                    "meanings.option, gender.option, quantity.option FROM hebrew " +
-                    "INNER JOIN transcriptions ON transcriptions.id = hebrew.transcription_id " +
-                    "INNER JOIN meanings ON meanings.id = hebrew.meaning_id " +
-                    "INNER JOIN gender ON gender.id = hebrew.gender_id " +
-                    "INNER JOIN quantity ON quantity.id = hebrew.quantity_id " +
-                    "WHERE meanings.option = \"" + meaning + "\" ORDER BY hebrew.word_he";
-        }//if(meaning.equals("ALL"))
-
         Cursor cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
         //количество слов в БД
         tvWordsCountVDAc.setText(String.valueOf(cursor.getCount()));
 
         // создаем адаптер, передаем в него курсор
         viewDictionaryRecyclerAdapter
-                = new ViewDictionaryRecyclerAdapter(context, mainQuery, filter);
+                = new ViewDictionaryRecyclerAdapter(context, mainQuery);
 
         rvWordsVDAc.setAdapter(viewDictionaryRecyclerAdapter);
     }//buildUserRecyclerView
