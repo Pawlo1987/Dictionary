@@ -20,7 +20,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SelectLearnWordActivity extends AppCompatActivity {
@@ -164,8 +163,6 @@ public class SelectLearnWordActivity extends AppCompatActivity {
             case R.id.btnOkSLWAc:
                 //проверка - чтоб отмеченных слов для изучения было минимум 8
                 if (listCursorNum.size() >= 8){
-                    //перемешать коллекцию выбранных слов
-                    Collections.shuffle(listCursorNum);
                     startAnyMethod();
                 }
                 else

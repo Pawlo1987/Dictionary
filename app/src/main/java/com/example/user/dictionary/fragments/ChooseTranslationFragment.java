@@ -72,6 +72,7 @@ public class ChooseTranslationFragment extends Fragment{
         listCursorNumFromActivity  = new ArrayList<>();
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
         isMixMethod = getArguments().getBoolean("isMixMethod");
+        progressIter = getArguments().getInt("progressIter");
         tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
     }//onCreate
 
@@ -136,7 +137,6 @@ public class ChooseTranslationFragment extends Fragment{
         }else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        if(wordsCount>0) progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();

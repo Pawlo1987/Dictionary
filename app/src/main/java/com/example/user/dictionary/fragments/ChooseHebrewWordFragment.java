@@ -72,6 +72,7 @@ public class ChooseHebrewWordFragment extends Fragment {
         listCursorNumFromActivity  = new ArrayList<>();
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
         isMixMethod = getArguments().getBoolean("isMixMethod");
+        progressIter = getArguments().getInt("progressIter");
         tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         wordsCount = getArguments().getInt("wordsCount",0);
     }//onCreate
@@ -137,7 +138,6 @@ public class ChooseHebrewWordFragment extends Fragment {
         }else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();

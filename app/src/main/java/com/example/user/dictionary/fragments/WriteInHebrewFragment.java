@@ -70,6 +70,7 @@ public class WriteInHebrewFragment extends Fragment {
         listWords = new ArrayList<>();
         listCursorNumFromActivity = new ArrayList<>();
         isMixMethod = getArguments().getBoolean("isMixMethod");
+        progressIter = getArguments().getInt("progressIter");
         tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
     }//onCreate
@@ -86,7 +87,6 @@ public class WriteInHebrewFragment extends Fragment {
 
         btnActivity = getActivity().findViewById(R.id.btnActivity);
         pbBaMeAc = getActivity().findViewById(R.id.pbBaMeAc);
-
 
         btnNextWrInHeFr.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +108,9 @@ public class WriteInHebrewFragment extends Fragment {
         } else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        if (wordsCount > 0) progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
+        etTransWrInHeFr.setText(""); //предварительно чистим строку ввода
+        etTransWrInHeFr.clearFocus(); //снимаем фокус со строки ввода
         createWordList();
         startLearnWord();
         return resultView;
@@ -169,7 +170,7 @@ public class WriteInHebrewFragment extends Fragment {
     //запуск начала изучения
     private void startLearnWord() {
         tvWordWrInHeFr.setText(listWords.get(selectPos).getStrRus());
-
+        etTransWrInHeFr.setText("");
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения
@@ -288,8 +289,8 @@ public class WriteInHebrewFragment extends Fragment {
                             tvLoopsBaMeAc.setText(String.valueOf(loops)); //отмечаем это значение в TextView
                             //включаем кнопки обратно
                             btnNextWrInHeFr.setEnabled(true);
-                            etTransWrInHeFr.setText("");
-                            etTransWrInHeFr.clearFocus();
+                            etTransWrInHeFr.setText(""); //предварительно чистим строку ввода
+                            etTransWrInHeFr.clearFocus(); //снимаем фокус со строки ввода
                             startLearnWord();//запускаем заново изучение
                         }else getActivity().finish();
                     }else btnActivity.callOnClick(); //возвращение в активность BackgroundMethodActivity

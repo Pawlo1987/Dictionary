@@ -70,6 +70,7 @@ public class WriteInTranslationFragment extends Fragment {
         listWords  = new ArrayList<>();
         listCursorNumFromActivity  = new ArrayList<>();
         isMixMethod = getArguments().getBoolean("isMixMethod");
+        progressIter = getArguments().getInt("progressIter");
         tvMixMethodPos = getActivity().findViewById(R.id.tvMixMethodPos);
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
     }//onCreate
@@ -107,7 +108,6 @@ public class WriteInTranslationFragment extends Fragment {
         }else selectPos = 0;
         //оставшееся количество слов
         wordsCount = listCursorNumFromActivity.size() - selectPos;
-        if(wordsCount>0) progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
@@ -168,7 +168,7 @@ public class WriteInTranslationFragment extends Fragment {
     //запуск начала изучения
     private void startLearnWord() {
         tvWordWrInTrFr.setText(listWords.get(selectPos).getStrHeb());
-
+        etTransWrInTrFr.setText("");
     }//startLearnWord
 
     //создаем коллекцию объектов слов для изучения

@@ -83,6 +83,7 @@ public class ChooseCoupleFragment extends Fragment {
         listWords = new ArrayList<>();
         listCursorNumFromActivity = new ArrayList<>();
         isMixMethod = getArguments().getBoolean("isMixMethod");
+        progressIter = getArguments().getInt("progressIter");
         listCursorNumFromActivity.addAll(getArguments().getStringArrayList("idList"));
     }//onCreate
 
@@ -185,7 +186,6 @@ public class ChooseCoupleFragment extends Fragment {
             wordsCount = listCursorNumFromActivity.size() -
                     Integer.parseInt(tvMixMethodPos.getText().toString());
         } else wordsCount = listCursorNumFromActivity.size();
-        progressIter = 100 / wordsCount;
         progressTime = pbBaMeAc.getProgress();
         createWordList();
         startLearnWord();
@@ -444,6 +444,7 @@ public class ChooseCoupleFragment extends Fragment {
             buttonsList.get(i).setBackgroundColor(context.getResources().getColor(R.color.colorButtonNormal));
             //i:0-4 устанавливаем слова в первом столбике
             //i:5-9 устанавливаем слова во втором столбике
+
             if (i <= 4) {
                 buttonsList.get(i).setText(list5WordsOnScreen.get(listIdNumForBtn.get(j)).getStrRus());
             } else {
@@ -503,8 +504,6 @@ public class ChooseCoupleFragment extends Fragment {
             listWords.add(word);
             word = new Word();
         }//while
-        //перемешаем полученную коллекцию
-//        Collections.shuffle(listWords);
     }//createWordList
 
     @Override

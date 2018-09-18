@@ -42,7 +42,7 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     int wasMethod = 0;//переменная для определения какий метод вызывался последний в mixMethod
 
     int wordsCount;
-    int progressTime;
+    int progressIter;
     ProgressBar pbBaMeAc;
 
     @Override
@@ -73,10 +73,23 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         Bundle args = new Bundle();    // объект для передачи параметров в диалог
         args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
         args.putInt("wordsCount", wordsCount);
+        args.putInt("progressIter", progressIter);
         args.putBoolean("isMixMethod", false);
-        tvLoopsBaMeAc.setText(String.valueOf(getIntent().getIntExtra("loops", 0)));
-        progressTime = 0;
-
+        //количество циклов изучаемой коллекции
+        int loops = getIntent().getIntExtra("loops", 0);
+        tvLoopsBaMeAc.setText(String.valueOf(loops));
+        //формируем шкалу ProgressBar
+        //полная шкала итераций зависит от кол-ва слов и кол-ва циклов изучения
+        int degreeOfTenCount = 0; //кол-во десяти
+        int learnWordsCount = listCursorNum.size()*loops;      //кол-во изучаемых слов
+        while(learnWordsCount > 0){
+            learnWordsCount = learnWordsCount/10;
+            degreeOfTenCount++;
+        }//while()
+        int maxValueProgressBar = (int)Math. pow(10, degreeOfTenCount);
+        progressIter = (maxValueProgressBar)/(listCursorNum.size()*loops);
+        //устанавливаем максимальное значение progressBar
+        pbBaMeAc.setMax(maxValueProgressBar);
         //переменная method переданная из активности LearnWordActivity
         listMethods.addAll(getIntent().getIntegerArrayListExtra("listMethods"));
         fTrans = getFragmentManager().beginTransaction();
@@ -128,6 +141,7 @@ public class BackgroundMethodActivity extends AppCompatActivity {
             Bundle args = new Bundle();    // объект для передачи параметров в диалог
             args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
             args.putInt("wordsCount", wordsCount);
+            args.putInt("progressIter", progressIter);
             args.putBoolean("isMixMethod", false);
             //непосредстенное начало работы фрагмента
             goFragment(
@@ -173,6 +187,7 @@ public class BackgroundMethodActivity extends AppCompatActivity {
             Bundle args = new Bundle();    // объект для передачи параметров в диалог
             args.putStringArrayList("idList", (ArrayList<String>) listCursorNum);
             args.putInt("wordsCount", wordsCount);
+            args.putInt("progressIter", progressIter);
             args.putBoolean("isMixMethod", true);
 
             fTrans = getFragmentManager().beginTransaction();
@@ -220,6 +235,7 @@ public class BackgroundMethodActivity extends AppCompatActivity {
 
         Bundle args = new Bundle();    // объект для передачи параметров в диалог
         args.putStringArrayList("idList", (ArrayList<String>) listCursor);
+        args.putInt("progressIter", progressIter);
         args.putBoolean("isMixMethod", true);
 
         fTrans = getFragmentManager().beginTransaction();
