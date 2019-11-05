@@ -95,21 +95,11 @@ public class SelectLearnWordActivity extends AppCompatActivity {
         });
     }//onCreate
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_select_next_learn_word, menu);
-        return true;
-    }//onCreateOptionsMenu
-
     //обработчик actionBar (стрелка сверху слева)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-
-            case R.id.item_select_semantic_group :
-                selectSemanticGroup();
-                return true;
 
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
@@ -119,44 +109,6 @@ public class SelectLearnWordActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }//switch
     }//onOptionsItemSelected
-
-    //выбрать семантическую группу
-    private void selectSemanticGroup() {
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Select semantic group!");
-//        alert.setMessage("Create new data!");
-            alert.setIcon(R.drawable.icon_information);
-        final RadioGroup rg = new RadioGroup(this);
-        rg.setOrientation(RadioGroup.VERTICAL);
-        //коллекиция со списком имен симантических групп
-        String query = "SELECT semantic.name FROM semantic";
-        Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-        final int l = cursor.getCount();
-        final RadioButton[] masRB = new RadioButton[l];
-        for (int i = 0; i < l; i++) {
-            cursor.moveToPosition(i);
-            masRB[i] = new RadioButton(this);
-            masRB[i].setText(cursor.getString(0));
-            rg.addView(masRB[i]);
-        }//for (int i = 0; i < l; i++)
-            alert.setView(rg);
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    for (int i = 0; i < l; i++) {
-                        if(masRB[i].isChecked()){
-                            buildUserRecyclerView(masRB[i].getText().toString());
-                            break;
-                        }//if(masRB[i].isChecked())
-                    }//for (int i = 0; i < l; i++)
-                }//onClick
-            });
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Canceled.
-                }
-            });
-            alert.show();
-    }//selectSemanticGroup
 
     public void onClick(View view) {
         switch (view.getId()) {

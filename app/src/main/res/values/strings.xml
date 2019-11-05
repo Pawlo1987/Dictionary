@@ -56,6 +56,7 @@
     <string name="btnAddSemanticEWAc">add</string>
     <string name="btnEditSemanticEWAc">edit</string>
     <string name="item_select_semantic_group">Select semantic group</string>
+    <string name="tvSemanticGroupANWAc">Semantic Group</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -68,4 +69,12 @@
     <string name="tvInstructions">* - obligatory actions</string>
     <string name="btnSemanticGroupLWAc">Semantic Group</string>
     <string name="tvHeadLWAc">Choose Mode</string>
+    <string name="tvSemanticGroupEWAc">SemanticGroup</string>
+    <string name="tvSentenceMeaningEWAc">SentenceMeaning</string>
+    <string name="tvTranslationsCountEWAc">Translations Count</string>
+    <string name="tvQuantityANWAc">Quantity</string>
+    <string name="tvGenderANWAc">Gender</string>
+    <string name="tvWordsCountLWAc">Words Count</string>
+    <string name="tvLoopsLWAc">*Loops</string>
+    <string name="btnKillSemanticEWAc">Kill</string>
 </resources>

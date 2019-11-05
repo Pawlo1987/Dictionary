@@ -25,8 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/unkempt"
                 android:text="@string/tvHeadEWAc"
                 android:textAlignment="center"
@@ -37,10 +37,10 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="4dp">
+                android:layout_marginBottom="4dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/edHebrewEWAc"
@@ -51,14 +51,22 @@
                     android:textSize="18sp" />
 
             </android.support.design.widget.TextInputLayout>
+            //разделяющая линия между элементами
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="#000000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -66,8 +74,26 @@
                     android:layout_height="match_parent"
                     android:layout_weight="5"
                     android:gravity="center_vertical"
-                    android:text="Semantic group"
+                    android:text="@string/tvSemanticGroupEWAc"
                     android:textSize="18sp" />
+
+
+                <Spinner
+                    android:id="@+id/spSemanticEWAc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"></Spinner>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
 
                 <Button
                     android:id="@+id/btnAddSemanticEWAc"
@@ -85,27 +111,38 @@
                     android:onClick="onClick"
                     android:text="@string/btnEditSemanticEWAc" />
 
-                <Spinner
-                    android:id="@+id/spSemanticEWAc"
+                <Button
+                    android:id="@+id/btnKillSemanticEWAc"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="5"></Spinner>
+                    android:layout_weight="6"
+                    android:onClick="onClick"
+                    android:text="@string/btnKillSemanticEWAc" />
+
             </LinearLayout>
+            //разделяющая линия между элементами
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="#000000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Sentence meaning"
+                    android:text="@string/tvSentenceMeaningEWAc"
                     android:textSize="18sp" />
 
                 <Spinner
@@ -119,8 +156,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -130,7 +167,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Translations Count:          "
+                    android:text="@string/tvTranslationsCountEWAc"
                     android:textSize="18sp" />
 
                 <LinearLayout
@@ -163,10 +200,10 @@
                 android:id="@+id/llTranslationsEWAc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -174,10 +211,10 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginBottom="8dp">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/edTranscriptionEWAc"
@@ -192,17 +229,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Quantity"
+                    android:text="@string/tvQuantityANWAc"
                     android:textSize="18sp" />
 
                 <Spinner
@@ -215,17 +252,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="gender"
+                    android:text="@string/tvGenderANWAc"
                     android:textSize="18sp" />
 
                 <Spinner

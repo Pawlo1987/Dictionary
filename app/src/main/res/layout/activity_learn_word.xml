@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_weight="3"
-                android:text="Words Count: "/>
+                android:text="@string/tvWordsCountLWAc"/>
 
             <TextView
                 android:id="@+id/tvWordsCountForSemanticGroupLWAc"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:text="Words Count:          "
+                    android:text="@string/tvWordsCountLWAc"
                     android:textAlignment="inherit" />
 
                 <LinearLayout
@@ -185,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:text="*Loops"
+                    android:text="@string/tvLoopsLWAc"
                     android:textAlignment="inherit" />
 
                 <LinearLayout
