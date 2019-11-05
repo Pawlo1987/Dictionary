@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.user.dictionary">
+    package="com.pavel.meule.dictionary">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -12,29 +12,29 @@
         android:roundIcon="@mipmap/icon_app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity">
+        <activity android:name="com.pavel.meule.dictionary.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".AddNewWordActivity" />
-        <activity android:name=".ViewDictionaryActivity" />
-        <activity android:name=".EditWordActivity" />
+        <activity android:name="com.pavel.meule.dictionary.MainActivity" />
+        <activity android:name="com.pavel.meule.dictionary.AddNewWordActivity" />
+        <activity android:name="com.pavel.meule.dictionary.ViewDictionaryActivity" />
+        <activity android:name="com.pavel.meule.dictionary.EditWordActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".LearnWordActivity" />
-        <activity android:name=".SelectLearnWordActivity" />
-        <activity android:name=".BackgroundMethodActivity" />
-        <activity android:name=".CreateProfileActivity" />
-        <activity android:name=".AuthorizationProfileActivity" />
-        <activity android:name=".ProfileParametersActivity" />
-        <activity android:name=".SelectNextLearnWordActivity"></activity>
+        <activity android:name="com.pavel.meule.dictionary.LearnWordActivity" />
+        <activity android:name="com.pavel.meule.dictionary.SelectLearnWordActivity" />
+        <activity android:name="com.pavel.meule.dictionary.BackgroundMethodActivity" />
+        <activity android:name="com.pavel.meule.dictionary.CreateProfileActivity" />
+        <activity android:name="com.pavel.meule.dictionary.AuthorizationProfileActivity" />
+        <activity android:name="com.pavel.meule.dictionary.ProfileParametersActivity" />
+        <activity android:name="com.pavel.meule.dictionary.SelectNextLearnWordActivity"></activity>
     </application>
 
 </manifest>

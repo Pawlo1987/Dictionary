@@ -96,7 +96,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Sentence meaning"
+                    android:text="@string/sentence_meaning"
                     android:textSize="18sp" />
 
                 <Spinner
@@ -121,7 +121,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="Translations Count:          "
+                    android:text="@string/translations_count"
                     android:textSize="18sp" />
 
                 <LinearLayout
@@ -144,7 +144,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="5"
                         android:gravity="center"
-                        android:text="TextView"
                         android:textAlignment="center" />
 
                 </LinearLayout>
@@ -193,7 +192,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Quantity"
+                    android:text="@string/quantity"
                     android:textSize="18sp" />
 
                 <Spinner
@@ -216,7 +215,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="gender"
+                    android:text="@string/gender"
                     android:textSize="18sp" />
 
                 <Spinner
