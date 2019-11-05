@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lern Words</string>
+    <string name="app_name">Learn Words</string>
     <string name="tvHeadMAc">Learn Hebrew</string>
     <string name="btnAddNewWord">Add new word</string>
     <string name="btnViewDictionary">View dictionary</string>

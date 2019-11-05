@@ -128,7 +128,6 @@ public class LearnWordActivity extends AppCompatActivity {
         //проверка на случай невыбранного метода
         if (listMethods.size() > 0) {
             //запрос для получения курсора выбранорй симантической группы в спиннере
-            //запрос для получения курсора выбранорй симантической группы в спиннере
             //заполняем выбранную семантическую группу для изучения
             listIdLearnWords.clear();
             Cursor cursor = dbUtilities.getDb().rawQuery(mainQuery, null);

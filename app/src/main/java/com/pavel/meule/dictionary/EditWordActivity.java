@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -203,48 +204,48 @@ public class EditWordActivity extends AppCompatActivity {
     //AlertDialog для создания новой семантической группы
     private void addAlertDialogEditText() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Add new group!");
+        alert.setTitle("Add new semantic group?");
 //        alert.setMessage("Create new data!");
-        alert.setIcon(R.drawable.icon_information);
+        alert.setIcon(R.drawable.icon_question);
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText("");
         alert.setView(input);
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    String word = input.getText().toString().trim();
-                    //проверка на совпадение
-                    String query = "SELECT semantic.id FROM semantic " +
-                                   "WHERE semantic.name = \"" + word + "\"";
-                    Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-                    if(!word.equals("")&&(cursor.getCount()==0)) {
-                        //непосредственно добавляем новое значение в таблицу
-                        dbUtilities.insertIntoSemantic(String.valueOf(input.getText()));
-                        // Do something with value!
-                    }//if(!word.equals(""))
-                    //перезаполняем и переустанавливаем спиннер
-                    listSemantic.clear();
-                    query = "SELECT semantic.name FROM semantic";
-                    cursor = dbUtilities.getDb().rawQuery(query, null);
-                    int l = cursor.getCount();
-                    for (int i = 0; i < l; i++) {
-                        cursor.moveToPosition(i);
-                        listSemantic.add(cursor.getString(0));
-                    }//for (int i = 0; i < l; i++)
-                    //перезаполняем и переустанавливаем спиннер
-                    listSemantic.clear();
-                    query = "SELECT semantic.name FROM semantic";
-                    cursor = dbUtilities.getDb().rawQuery(query, null);
-                    int p = cursor.getCount();
-                    for (int i = 0; i < p; i++) {
-                        cursor.moveToPosition(i);
-                        listSemantic.add(cursor.getString(0));
-                    }//for (int i = 0; i < l; i++)
-                    //строим спиннер с именами симантических групп
-                    spSemanticEWAc.setAdapter(
-                            buildSpinnerAdapter(listSemantic));
-                }
-            });
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String word = input.getText().toString().trim();
+                //проверка на совпадение
+                String query = "SELECT semantic.id FROM semantic " +
+                        "WHERE semantic.name = \"" + word + "\"";
+                Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+                if (!word.equals("") && (cursor.getCount() == 0)) {
+                    //непосредственно добавляем новое значение в таблицу
+                    dbUtilities.insertIntoSemantic(String.valueOf(input.getText()));
+                    // Do something with value!
+                }//if(!word.equals(""))
+                //перезаполняем и переустанавливаем спиннер
+                listSemantic.clear();
+                query = "SELECT semantic.name FROM semantic";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                int l = cursor.getCount();
+                for (int i = 0; i < l; i++) {
+                    cursor.moveToPosition(i);
+                    listSemantic.add(cursor.getString(0));
+                }//for (int i = 0; i < l; i++)
+                //перезаполняем и переустанавливаем спиннер
+                listSemantic.clear();
+                query = "SELECT semantic.name FROM semantic";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                int p = cursor.getCount();
+                for (int i = 0; i < p; i++) {
+                    cursor.moveToPosition(i);
+                    listSemantic.add(cursor.getString(0));
+                }//for (int i = 0; i < l; i++)
+                //строим спиннер с именами симантических групп
+                spSemanticEWAc.setAdapter(
+                        buildSpinnerAdapter(listSemantic));
+            }
+        });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
@@ -261,47 +262,47 @@ public class EditWordActivity extends AppCompatActivity {
         cursor.moveToPosition(0);
         final String idSemantic = String.valueOf(cursor.getInt(0));
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Edit group!");
+        alert.setTitle("Edit semantic group?");
 //        alert.setMessage("Create new data!");
-        alert.setIcon(R.drawable.icon_information);
+        alert.setIcon(R.drawable.icon_question);
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(spSemanticEWAc.getSelectedItem().toString());
         alert.setView(input);
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    String word = input.getText().toString().trim();
-                    //проверка на совпадение
-                    String query = "SELECT semantic.id FROM semantic " +
-                            "WHERE semantic.name = \"" + word + "\"";
-                    Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
-                    if(!word.equals("")&&(cursor.getCount()==0)) {
-                        //непосредственно обновляем значение в таблице
-                        dbUtilities.updTableSemantic(idSemantic, word);
-                        // Do something with value!
-                    }//if(!word.equals(""))
-                    //перезаполняем и переустанавливаем спиннер
-                    listSemantic.clear();
-                    query = "SELECT semantic.name FROM semantic";
-                    cursor = dbUtilities.getDb().rawQuery(query, null);
-                    int l = cursor.getCount();
-                    for (int i = 0; i < l; i++) {
-                        cursor.moveToPosition(i);
-                        listSemantic.add(cursor.getString(0));
-                    }//for (int i = 0; i < l; i++)
-                    //строим спиннер с именами симантических групп
-                    spSemanticEWAc.setAdapter(
-                            buildSpinnerAdapter(listSemantic));
-                    //выставляем сохранненую семантическую группу
-                    String mainQuery = "SELECT semantic.id FROM hebrew " +
-                            "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
-                            "WHERE hebrew.id = " + idHebrew;
-                    cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
-                    cursor.moveToPosition(0);
-                    int iSemantic = cursor.getInt(0) - 1;
-                    spSemanticEWAc.setSelection(iSemantic);
-                }
-            });
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String word = input.getText().toString().trim();
+                //проверка на совпадение
+                String query = "SELECT semantic.id FROM semantic " +
+                        "WHERE semantic.name = \"" + word + "\"";
+                Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+                if (!word.equals("") && (cursor.getCount() == 0)) {
+                    //непосредственно обновляем значение в таблице
+                    dbUtilities.updTableSemantic(idSemantic, word);
+                    // Do something with value!
+                }//if(!word.equals(""))
+                //перезаполняем и переустанавливаем спиннер
+                listSemantic.clear();
+                query = "SELECT semantic.name FROM semantic";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                int l = cursor.getCount();
+                for (int i = 0; i < l; i++) {
+                    cursor.moveToPosition(i);
+                    listSemantic.add(cursor.getString(0));
+                }//for (int i = 0; i < l; i++)
+                //строим спиннер с именами симантических групп
+                spSemanticEWAc.setAdapter(
+                        buildSpinnerAdapter(listSemantic));
+                //выставляем сохранненую семантическую группу
+                String mainQuery = "SELECT semantic.id FROM hebrew " +
+                        "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
+                        "WHERE hebrew.id = " + idHebrew;
+                cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+                cursor.moveToPosition(0);
+                int iSemantic = cursor.getInt(0) - 1;
+                spSemanticEWAc.setSelection(iSemantic);
+            }
+        });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
@@ -309,6 +310,90 @@ public class EditWordActivity extends AppCompatActivity {
         });
         alert.show();
     }//editAlertDialogEditText
+
+    //AlertDialog для удаления семантической группы
+    private void killAlertDialogEditText() {
+        String word = spSemanticEWAc.getSelectedItem().toString();
+        String query1 = "SELECT hebrew.id, hebrew.word_he, hebrew.transcription_id, " +
+                "hebrew.meaning_id, hebrew.gender_id, hebrew.quantity_id, hebrew.semantic_id FROM hebrew " +
+                "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
+                "WHERE semantic.name = \"" + word + "\"";
+        Cursor cursor1 = dbUtilities.getDb().rawQuery(query1, null);
+        cursor1.moveToPosition(0);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Delete semantic group?");
+        alert.setIcon(R.drawable.icon_question);
+        final TextView tvNameGr = new TextView(this);
+        tvNameGr.setInputType(InputType.TYPE_CLASS_TEXT);
+        tvNameGr.setText(word);
+        alert.setView(tvNameGr);
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //если есть слова с данной семантической группой
+                if (cursor1.getCount() > 0) {
+                    List<String> listIdTableWorlds = new ArrayList<>(); // коллекция id-ов для таблицы word
+                    List<String> listHeWords = new ArrayList<>(); // коллекция слов с данной семантической группой
+                    List<Integer> listIdTrans = new ArrayList<>(); // коллекция id transcription для таблицы word
+                    List<Integer> listIdMeaning = new ArrayList<>(); // коллекция id meanings для таблицы word
+                    List<Integer> listIdGender = new ArrayList<>(); // коллекция id Gender для таблицы word
+                    List<Integer> listIdQuantity = new ArrayList<>(); // коллекция id Quantity для таблицы word
+                    int t = cursor1.getCount();
+                    //получаем значения id word(s) в которых установленое значение данной семантической группы
+                    for (int i = 0; i < t; i++) {
+                        cursor1.moveToPosition(i);
+                        //записываем значение в listCursorNum
+                        listIdTableWorlds.add(cursor1.getString(0));
+                        listHeWords.add(cursor1.getString(1));
+                        listIdTrans.add(cursor1.getInt(2));
+                        listIdMeaning.add(cursor1.getInt(3));
+                        listIdGender.add(cursor1.getInt(4));
+                        listIdQuantity.add(cursor1.getInt(5));
+                    }// for (int i = 0; i < t; i++)
+                    //изменяем значение данной семантической группы
+                    // путем записи семантической группы "global"
+                    t = listIdTableWorlds.size();
+                    for (int i = 0; i < t; i++) {
+                        dbUtilities.updTableHebrew(listIdTableWorlds.get(i), listHeWords.get(i),
+                                listIdTrans.get(i), listIdMeaning.get(i), listIdGender.get(i),
+                                listIdQuantity.get(i), 0);
+                        cursor1.moveToPosition(i);
+                    }// for (int i = 0; i < t; i++)
+                }//if(cursor1.getCount() > 0)
+                String query = "SELECT semantic.id, semantic.name FROM semantic " +
+                        "WHERE semantic.name = \"" + word + "\"";
+                Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+                cursor.moveToPosition(0);
+                String iSemantic = cursor.getString(0);
+                //удаляем запись из таблицы semantic
+                dbUtilities.removeColumnById(iSemantic, "semantic");
+                //перезаполняем и переустанавливаем спиннер
+                listSemantic.clear();
+                query = "SELECT semantic.name FROM semantic ";
+                cursor = dbUtilities.getDb().rawQuery(query, null);
+                int l = cursor.getCount();
+                for (int i = 0; i < l; i++) {
+                    cursor.moveToPosition(i);
+                    listSemantic.add(cursor.getString(0));
+                }//for (int i = 0; i < l; i++)
+                //строим спиннер с именами симантических групп
+                spSemanticEWAc.setAdapter(
+                        buildSpinnerAdapter(listSemantic));
+                //выставляем сохранненую семантическую группу
+                String mainQuery = "SELECT semantic.id FROM hebrew " +
+                        "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
+                        "WHERE hebrew.id = " + idHebrew;
+                cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+                cursor.moveToPosition(0);
+                spSemanticEWAc.setSelection(0);
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }//killAlertDialogEditText
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -345,13 +430,18 @@ public class EditWordActivity extends AppCompatActivity {
                 break;
 
             case R.id.btnAddSemanticEWAc:
-                // вызываем alertDialog для создания группы
+                // вызываем alertDialog для создания семантической группы
                 addAlertDialogEditText();
                 break;
 
             case R.id.btnEditSemanticEWAc:
-                // вызываем alertDialog для создания группы
-                editAlertDialogEditText();
+                // вызываем alertDialog для переименования семантической группы
+                if (checkForProtectGlobalGroup()) editAlertDialogEditText();
+                break;
+
+            case R.id.btnKillSemanticEWAc:
+                // вызываем alertDialog для удаления семантической группы
+                if (checkForProtectGlobalGroup()) killAlertDialogEditText();
                 break;
 
             case R.id.btnOkEWAc:
@@ -364,6 +454,18 @@ public class EditWordActivity extends AppCompatActivity {
 
         }//switch
     }//onClick
+
+    //проверка для защиты от изменения и удаления группы global
+    private boolean checkForProtectGlobalGroup() {
+        if ("global".equals(spSemanticEWAc.getSelectedItem().toString())) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "This group protected!",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            return false;
+        } else return true;
+    }//checkForProtectGlobalGroup
 
     //процедура постороения layout для строк переводов
     private void countTranslationsLayoutBuilding() {
@@ -433,7 +535,7 @@ public class EditWordActivity extends AppCompatActivity {
             Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
 
             //если найденны совподения
-            if(cursor.getCount()>0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToPosition(0);
                 //если найденно idHebrew не равнное данному
                 if (!cursor.getString(0).equals(idHebrew)) {
