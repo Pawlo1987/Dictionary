@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorButtonNormal">#d6d7d7</color>
     <color name="colorButtonPress">#777777</color>
+    <color name="my_color_for_background_1">#aaa</color>
+    <color name="my_color_for_background_2">#969696</color>
 </resources>

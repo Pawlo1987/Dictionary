@@ -22,8 +22,8 @@
                 style="@android:style/Widget.DeviceDefault.Light.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/unkempt"
                 android:text="@string/tvHeadLWAc"
                 android:textAlignment="center"
@@ -31,62 +31,57 @@
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
-            //разделяющая линия между элементами
-            <View
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000000" />
-
-            <Button
-                android:id="@+id/btnSemanticGroupLWAc"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:onClick="onClick"
-                android:text="@string/btnSemanticGroupLWAc" />
+                android:background="@color/my_color_for_background_2"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="8dp"
-            android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btnSemanticGroupLWAc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="onClick"
+                    android:text="@string/btnSemanticGroupLWAc" />
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="3"
-                android:text="@string/tvWordsCountLWAc"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvWordsCountForSemanticGroupLWAc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:text="TextView"
-                android:textAlignment="center" />
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="5"
+                        android:text="@string/tvWordsCountLWAc" />
 
-            <Spinner
-                android:id="@+id/spSemanticGroupLWAc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="5"/>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvWordsCountForSemanticGroupLWAc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="TextView"
+                        android:textAlignment="center" />
 
-            //разделяющая линия между элементами
-            <View
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000000" />
+                    <Spinner
+                        android:id="@+id/spSemanticGroupLWAc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3" />
+                </LinearLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnRandomWordsLWAc"
@@ -147,30 +142,28 @@
 
             </LinearLayout>
 
-            //разделяющая линия между элементами
-            <View
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000000" />
-
-            <Button
-                android:id="@+id/btnSelectWordsLWAc"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:onClick="onClick"
-                android:text="@string/btnSelectWordsLWAc" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:background="@color/my_color_for_background_2"
+                android:orientation="vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
-            //разделяющая линия между элементами
-            <View
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000000" />
+
+                <Button
+                    android:id="@+id/btnSelectWordsLWAc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:onClick="onClick"
+                    android:text="@string/btnSelectWordsLWAc" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -245,8 +238,8 @@
                         android:id="@+id/cbChooseRussianMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:checked="true" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -265,8 +258,8 @@
                         android:id="@+id/cbChooseHebrewMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:checked="true" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -285,8 +278,8 @@
                         android:id="@+id/cbChooseCoupleMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:checked="true" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -305,8 +298,8 @@
                         android:id="@+id/cbWriteHebrewMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:checked="true" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -315,8 +308,8 @@
                 android:id="@+id/tvInstructions"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:text="@string/tvInstructions" />
 
         </LinearLayout>
