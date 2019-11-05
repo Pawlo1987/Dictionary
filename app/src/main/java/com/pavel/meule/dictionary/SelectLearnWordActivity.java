@@ -175,7 +175,7 @@ public class SelectLearnWordActivity extends AppCompatActivity {
     private void startAnyMethod() {
         int loops = getIntent().getIntExtra("loops", 0);
 
-        Intent intent = new Intent(this, BackgroundMethodActivity.class);
+         Intent intent = new Intent(this, BackgroundMethodActivity.class);
         intent.putStringArrayListExtra(
                 "idList",
                 (ArrayList<String>) listCursorNum

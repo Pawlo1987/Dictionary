@@ -25,7 +25,6 @@ public class BackgroundMethodActivity extends AppCompatActivity {
     ChooseTranslationFragment chooseTranslationFragment;
     ChooseHebrewWordFragment chooseHebrewWordFragment;
     ChooseCoupleFragment chooseCoupleFragment;
-//    WriteInTranslationFragment writeInTranslationFragment;
     WriteInHebrewFragment writeInHebrewFragment;
     FragmentTransaction fTrans;
     List<String> listCursorNum; // коллекция id слов для изучения
@@ -66,7 +65,6 @@ public class BackgroundMethodActivity extends AppCompatActivity {
         chooseTranslationFragment = new ChooseTranslationFragment();
         chooseHebrewWordFragment = new ChooseHebrewWordFragment();
         chooseCoupleFragment = new ChooseCoupleFragment();
-//        writeInTranslationFragment = new WriteInTranslationFragment();
         writeInHebrewFragment = new WriteInHebrewFragment();
         tvPreviewFlagBaMeAc.setText("0");
         Bundle args = new Bundle();    // объект для передачи параметров в диалог

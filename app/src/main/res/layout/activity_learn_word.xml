@@ -17,31 +17,92 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvHeadLWAc"
+                style="@android:style/Widget.DeviceDefault.Light.TextView.SpinnerItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/unkempt"
+                android:text="@string/tvHeadLWAc"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_dark"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            //разделяющая линия между элементами
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
+            <Button
+                android:id="@+id/btnSemanticGroupLWAc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="onClick"
+                android:text="@string/btnSemanticGroupLWAc" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="3"
+                android:text="Words Count: "/>
+
+            <TextView
+                android:id="@+id/tvWordsCountForSemanticGroupLWAc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+            <Spinner
+                android:id="@+id/spSemanticGroupLWAc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="5"/>
+        </LinearLayout>
+
+            //разделяющая линия между элементами
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
             <Button
                 android:id="@+id/btnRandomWordsLWAc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
                 android:onClick="onClick"
                 android:text="@string/btnRandomWordsLWAc" />
-
-            <Button
-                android:id="@+id/btnSelectWordsLWAc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:onClick="onClick"
-                android:text="@string/btnSelectWordsLWAc" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="8dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -86,12 +147,36 @@
 
             </LinearLayout>
 
+            //разделяющая линия между элементами
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
+            <Button
+                android:id="@+id/btnSelectWordsLWAc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:onClick="onClick"
+                android:text="@string/btnSelectWordsLWAc" />
+
+            //разделяющая линия между элементами
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -100,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:text="Loops"
+                    android:text="*Loops"
                     android:textAlignment="inherit" />
 
                 <LinearLayout
@@ -140,8 +225,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
-                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -160,6 +245,7 @@
                         android:id="@+id/cbChooseRussianMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -179,6 +265,7 @@
                         android:id="@+id/cbChooseHebrewMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -198,6 +285,7 @@
                         android:id="@+id/cbChooseCoupleMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -217,30 +305,19 @@
                         android:id="@+id/cbWriteHebrewMethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvWriteRussianMethod"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/tvWriteRussianMethod" />
-
-                    <CheckBox
-                        android:id="@+id/cbWriteRussianMethod"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:checked="true"
                         android:layout_weight="1" />
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/tvInstructions" />
 
         </LinearLayout>
 

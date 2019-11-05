@@ -34,7 +34,6 @@ public class ProfileParametersActivity extends AppCompatActivity {
     CheckBox cbChooseRussianMethodPPAc;
     CheckBox cbChooseHebrewMethodPPAc;
     CheckBox cbChooseCoupleMethodPPAc;
-    CheckBox cbWriteRussianMethodPPAc;
     CheckBox cbWriteHebrewMethodPPAc;
     List<String> listIdLearnWords; // коллекция id слов для изучения
     List<Integer> listMethods; //коллекция выбранных методов
@@ -72,13 +71,11 @@ public class ProfileParametersActivity extends AppCompatActivity {
         cbChooseRussianMethodPPAc = findViewById(R.id.cbChooseRussianMethodPPAc);
         cbChooseHebrewMethodPPAc = findViewById(R.id.cbChooseHebrewMethodPPAc);
         cbChooseCoupleMethodPPAc = findViewById(R.id.cbChooseCoupleMethodPPAc);
-        cbWriteRussianMethodPPAc = findViewById(R.id.cbWriteRussianMethodPPAc);
         cbWriteHebrewMethodPPAc = findViewById(R.id.cbWriteHebrewMethodPPAc);
         //устанавливаем по умолчанию все методы включенны
         cbChooseRussianMethodPPAc.setChecked(true);
         cbChooseHebrewMethodPPAc.setChecked(true);
         cbChooseCoupleMethodPPAc.setChecked(true);
-        cbWriteRussianMethodPPAc.setChecked(false);
         cbWriteHebrewMethodPPAc.setChecked(true);
         listMethods = new ArrayList<>();
         FileUtilities = new FileUtilities(this);
@@ -180,7 +177,6 @@ public class ProfileParametersActivity extends AppCompatActivity {
         if (cbChooseRussianMethodPPAc.isChecked()) listMethods.add(1);
         if (cbChooseHebrewMethodPPAc.isChecked()) listMethods.add(2);
         if (cbChooseCoupleMethodPPAc.isChecked()) listMethods.add(3);
-        if (cbWriteRussianMethodPPAc.isChecked()) listMethods.add(4);
         if (cbWriteHebrewMethodPPAc.isChecked()) listMethods.add(5);
         //проверка на случай невыбранного метода
         if (listMethods.size() > 0) {
@@ -224,7 +220,6 @@ public class ProfileParametersActivity extends AppCompatActivity {
         if (cbChooseRussianMethodPPAc.isChecked()) listMethods.add(1);
         if (cbChooseHebrewMethodPPAc.isChecked()) listMethods.add(2);
         if (cbChooseCoupleMethodPPAc.isChecked()) listMethods.add(3);
-        if (cbWriteRussianMethodPPAc.isChecked()) listMethods.add(4);
         if (cbWriteHebrewMethodPPAc.isChecked()) listMethods.add(5);
         //проверка на случай невыбранного метода
         if (listMethods.size() > 0) {

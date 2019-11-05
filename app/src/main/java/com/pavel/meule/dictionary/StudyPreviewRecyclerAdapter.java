@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class StudyPreviewRecyclerAdapter extends
         // переходим в курсоре на текущую позицию
         // следующая позиция берется из коллекции listCursorNumFromActivity
         cursor.moveToPosition(Integer.parseInt(listCursorNumFromActivity.get(position)));
-
+        Log.d("myvalue",listCursorNumFromActivity.get(position).toString());
         //получаем перевод
         String queryTr = "SELECT russian.word_ru FROM translations " +
                 "INNER JOIN russian ON russian.id = translations.russian_id " +

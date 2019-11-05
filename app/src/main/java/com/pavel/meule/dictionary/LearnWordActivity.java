@@ -1,16 +1,23 @@
 package com.pavel.meule.dictionary;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +31,7 @@ public class LearnWordActivity extends AppCompatActivity {
     DBUtilities dbUtilities;
     FileUtilities FileUtilities;
     TextView tvWordsCountForRandomLWAc;
+    TextView tvWordsCountForSemanticGroupLWAc;
     TextView tvLoopsLWAc;
     Button btnPlWC;
     Button btnMiWC;
@@ -32,12 +40,13 @@ public class LearnWordActivity extends AppCompatActivity {
     CheckBox cbChooseRussianMethod;
     CheckBox cbChooseHebrewMethod;
     CheckBox cbChooseCoupleMethod;
-    CheckBox cbWriteRussianMethod;
     CheckBox cbWriteHebrewMethod;
+    private Spinner spSemanticGroupLWAc;         //сппинер c именнами симантических групп
+    private List<String> listSemantic;      //коллекиция со списком имен симантических групп
     List<String> listIdLearnWords; // коллекция id слов для изучения
     List<Integer> listMethods; //коллекция выбранных методов
     int loops = 1;
-    int wordsCount = 8;
+    int wordsCount = 8;  //by default
     ActionBar actionBar;                //стрелка НАЗАД
 
     private Cursor cursor;
@@ -59,6 +68,7 @@ public class LearnWordActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         tvWordsCountForRandomLWAc = findViewById(R.id.tvWordsCountForRandomLWAc);
+        tvWordsCountForSemanticGroupLWAc = findViewById(R.id.tvWordsCountForSemanticGroupLWAc);
         tvLoopsLWAc = findViewById(R.id.tvLoopsLWAc);
         btnPlWC = findViewById(R.id.btnPlWC);
         btnMiWC = findViewById(R.id.btnMiWC);
@@ -67,8 +77,8 @@ public class LearnWordActivity extends AppCompatActivity {
         cbChooseRussianMethod = findViewById(R.id.cbChooseRussianMethod);
         cbChooseHebrewMethod = findViewById(R.id.cbChooseHebrewMethod);
         cbChooseCoupleMethod = findViewById(R.id.cbChooseCoupleMethod);
-        cbWriteRussianMethod = findViewById(R.id.cbWriteRussianMethod);
         cbWriteHebrewMethod = findViewById(R.id.cbWriteHebrewMethod);
+        spSemanticGroupLWAc = findViewById(R.id.spSemanticGroupLWAc);
         listMethods = new ArrayList<>();
         FileUtilities = new FileUtilities(this);
 
@@ -81,10 +91,107 @@ public class LearnWordActivity extends AppCompatActivity {
         tvLoopsLWAc.setText(String.valueOf(loops));
         tvWordsCountForRandomLWAc.setText(String.valueOf(wordsCount));
         countCursor = cursor.getCount();
+        //коллекиция со списком имен симантических групп
+        listSemantic = new ArrayList<>();
+        String query = "SELECT semantic.name FROM semantic";
+        Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+        int l = cursor.getCount();
+        for (int i = 0; i < l; i++) {
+            cursor.moveToPosition(i);
+            listSemantic.add(cursor.getString(0));
+        }//for (int i = 0; i < l; i++)
+        // строим спиннер с именами симантических групп
+        spSemanticGroupLWAc.setAdapter(
+                buildSpinnerAdapter(listSemantic));
+        //запрос для получения курсора выбранорй симантической группы в спиннере
+        cursor = cursorOfSemGrInSpinner(spSemanticGroupLWAc.getSelectedItem().toString());
+        listIdLearnWords.clear();
+        tvWordsCountForSemanticGroupLWAc.setText(String.valueOf(cursor.getCount()));
+        //прописываем изменение на select listener при изменении выбранной симантической группы в спиннере
+        spSemanticGroupLWAc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //запрос для получения курсора выбранорй симантической группы в спиннере
+                Cursor cursor = cursorOfSemGrInSpinner(spSemanticGroupLWAc.getSelectedItem().toString());
+                listIdLearnWords.clear();
+                tvWordsCountForSemanticGroupLWAc.setText(String.valueOf(cursor.getCount()));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }//onCreate
+
+    //выбрать семантическую группу
+    private void bySemanticGroup() {
+        listMethods.clear();
+        if (cbChooseRussianMethod.isChecked()) listMethods.add(1);
+        if (cbChooseHebrewMethod.isChecked()) listMethods.add(2);
+        if (cbChooseCoupleMethod.isChecked()) listMethods.add(3);
+        if (cbWriteHebrewMethod.isChecked()) listMethods.add(5);
+        //проверка на случай невыбранного метода
+        if (listMethods.size() > 0) {
+            //запрос для получения курсора выбранорй симантической группы в спиннере
+            //запрос для получения курсора выбранорй симантической группы в спиннере
+            //заполняем выбранную семантическую группу для изучения
+            listIdLearnWords.clear();
+            Cursor cursor = dbUtilities.getDb().rawQuery(mainQuery, null);
+            int t = cursor.getCount();
+            //проверка - чтоб отмеченных слов для изучения было минимум 8
+            if (t >= 8) {
+            String semantic = spSemanticGroupLWAc.getSelectedItem().toString();
+            for (int i = 0; i < t; i++) {
+                cursor.moveToPosition(i);
+                //записываем значение в listCursorNum
+                if (semantic.equals(cursor.getString(3))) {
+                    listIdLearnWords.add(String.valueOf(i));
+                }//if(semantic.equals(cursor.getString(3)))
+            }// for (int i = 0; i < t; i++)
+            //перемешать коллекцию выбранных слов
+            Collections.shuffle(listIdLearnWords);
+                Collections.shuffle(listIdLearnWords);
+                //количество изучаемых слов
+                wordsCount = t;
+                startMethod();
+            } else
+                Toast.makeText(context, "You need 8 word minimum", Toast.LENGTH_SHORT).show();
+            } //if (t >= 8)
+        else {
+            Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
+        }//if(listMethods.size()>0)
+    }//selectSemanticGroup
+
+    //запрос для получения курсора выбранорй симантической группы в спиннере
+    private Cursor cursorOfSemGrInSpinner(String toString) {
+        //получаем коллекцию со списком выбранной симантической группы
+        String query = "SELECT hebrew.id, semantic_id, semantic.name FROM hebrew " +
+                "INNER JOIN semantic ON semantic.id = hebrew.semantic_id " +
+                "WHERE semantic.name = \"" + spSemanticGroupLWAc.getSelectedItem().toString() + "\"";
+        Cursor cursor = dbUtilities.getDb().rawQuery(query, null);
+        return cursor;
+    }//cursorOfSemGrInSpinner
+
+    //строим адаптер для Spinner
+    private ArrayAdapter<String> buildSpinnerAdapter(List<String> spList) {
+        ArrayAdapter<String> spAdapter;  //Адаптер для спинера
+        //создание адаптера для спинера
+        spAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                spList
+        );
+        // назначение адапетра для списка
+        spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return spAdapter;
+    }//buildCitySpinner
 
     public void onClick(View view) {
         switch (view.getId()) {
+
+            case R.id.btnSemanticGroupLWAc:
+                bySemanticGroup();
+                break;
+
             case R.id.btnRandomWordsLWAc:
                 randomWords();
                 break;
@@ -127,7 +234,7 @@ public class LearnWordActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.item_authorization :
+            case R.id.item_authorization:
                 authorization();
                 return true;
             case R.id.item_create_profile:
@@ -163,13 +270,12 @@ public class LearnWordActivity extends AppCompatActivity {
 
     private void selectWords() {
         listMethods.clear();
-        if(cbChooseRussianMethod.isChecked())   listMethods.add(1);
-        if(cbChooseHebrewMethod.isChecked())    listMethods.add(2);
-        if(cbChooseCoupleMethod.isChecked())    listMethods.add(3);
-        if(cbWriteRussianMethod.isChecked())    listMethods.add(4);
-        if(cbWriteHebrewMethod.isChecked())     listMethods.add(5);
+        if (cbChooseRussianMethod.isChecked()) listMethods.add(1);
+        if (cbChooseHebrewMethod.isChecked()) listMethods.add(2);
+        if (cbChooseCoupleMethod.isChecked()) listMethods.add(3);
+        if (cbWriteHebrewMethod.isChecked()) listMethods.add(5);
         //проверка на случай невыбранного метода
-        if(listMethods.size()>0) {
+        if (listMethods.size() > 0) {
             Intent intent = new Intent(this, SelectLearnWordActivity.class);
             intent.putIntegerArrayListExtra(
                     "listMethods", (ArrayList<Integer>) listMethods
@@ -183,7 +289,7 @@ public class LearnWordActivity extends AppCompatActivity {
                     false
             );
             startActivity(intent);
-        }else{
+        } else {
             Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
         }//if(listMethods.size()>0)
     }//selectWords
@@ -191,13 +297,12 @@ public class LearnWordActivity extends AppCompatActivity {
     //выбор процедуры при рандомном подборе слов для изучения
     private void randomWords() {
         listMethods.clear();
-        if(cbChooseRussianMethod.isChecked())   listMethods.add(1);
-        if(cbChooseHebrewMethod.isChecked())    listMethods.add(2);
-        if(cbChooseCoupleMethod.isChecked())    listMethods.add(3);
-        if(cbWriteRussianMethod.isChecked())    listMethods.add(4);
-        if(cbWriteHebrewMethod.isChecked())     listMethods.add(5);
+        if (cbChooseRussianMethod.isChecked()) listMethods.add(1);
+        if (cbChooseHebrewMethod.isChecked()) listMethods.add(2);
+        if (cbChooseCoupleMethod.isChecked()) listMethods.add(3);
+        if (cbWriteHebrewMethod.isChecked()) listMethods.add(5);
         //проверка на случай невыбранного метода
-        if(listMethods.size()>0) {
+        if (listMethods.size() > 0) {
             //проверка достаточно ли у вас слов в словоре для изучения
             if (countCursor < wordsCount) {
                 Toast.makeText(this, "You need add more words to DB!", Toast.LENGTH_SHORT).show();
@@ -217,7 +322,7 @@ public class LearnWordActivity extends AppCompatActivity {
                 Collections.shuffle(listIdLearnWords);
                 startMethod();
             } //if(countCursor<wordsCount)
-        }else{
+        } else {
             Toast.makeText(this, "Check minimum one method", Toast.LENGTH_SHORT).show();
         }//if(listMethods.size()>0)
     }//randomWords
@@ -238,7 +343,7 @@ public class LearnWordActivity extends AppCompatActivity {
         );
         intent.putExtra(
                 "wordsCount",
-                wordsCount
+                listIdLearnWords.size()
         );
         startActivity(intent);
     }//startAnyMethod
